@@ -103,11 +103,12 @@
  * { "getFocus": true }
  * ```
  *
- * Get the full PDOM tree:
+ * Look at the current simulation state (PDOM tree + focus order):
  * ```json
- * { "getPDOM": true }
+ * { "look": true }
  * ```
- * Returns the entire accessible DOM as HTML. This is verbose - only request when needed.
+ * Returns the entire accessible DOM as text with the focused element marked,
+ * plus the full tab order showing all focusable elements with current focus indicated.
  *
  * ### Timing
  *
@@ -334,8 +335,11 @@ type CommandResult = {
   /** ARIA live region announcements captured after command execution */
   ariaLive?: string[];
 
-  /** Full PDOM tree (only present for getPDOM commands) */
+  /** Full PDOM tree with focused element marked (only present for look commands) */
   pdom?: string;
+
+  /** Tab order showing all focusable elements with current focus marked (only present for look commands) */
+  focusOrder?: string[];
 
   /** Error message if command failed */
   error?: string;
@@ -350,7 +354,7 @@ type Command =
   | { shiftTab: number }
   | { press: string }
   | { find: string; press?: string }
-  | { getPDOM: true }
+  | { look: true }
   | { getFocus: true }
   | { wait: number }
   | { navigate: string };
@@ -383,6 +387,86 @@ function waitForAriaLiveMessages( page: playwright.Page, timeoutMs: number ): Pr
     page.on( 'console', handleConsole );
     timeoutId = setTimeout( cleanup, timeoutMs );
   } );
+}
+
+/**
+ * Create a handle to the currently focused element and a function to restore focus to it.
+ * Returns both the handle (which must be disposed) and the restore function.
+ */
+async function createFocusRestoration( page: playwright.Page ): Promise<{
+  handle: playwright.JSHandle;
+  restore: () => Promise<boolean>;
+}> {
+  // @ts-expect-error
+  const handle = await page.evaluateHandle( () => document.activeElement );
+
+  const restore = async (): Promise<boolean> => {
+    const element = handle.asElement?.();
+    if ( element ) {
+      return element.evaluate( ( el: IntentionalAny ) => {
+        // @ts-expect-error
+        if ( el && 'focus' in el && typeof ( el as HTMLElement ).focus === 'function' ) {
+          // @ts-expect-error
+          ( el as HTMLElement ).focus();
+          return true;
+        }
+        return false;
+      } );
+    }
+    return false;
+  };
+
+  return { handle: handle, restore: restore };
+}
+
+/**
+ * Get the tab order - all focusable elements with current focus indicated.
+ * Tabs through the actual focus loop to discover the real tab order.
+ * Returns an array of element names in tab order.
+ */
+async function getFocusOrder( page: playwright.Page ): Promise<string[]> {
+  const tabDelay = Number( getOptionIfProvided( 'tabDelay', `${TAB_DELAY_MS}` ) );
+  const maxTabs = Number( getOptionIfProvided( 'tabPressCount', `${TAB_PRESS_COUNT}` ) );
+
+  const { handle: originalFocusHandle, restore: restoreOriginalFocus } = await createFocusRestoration( page );
+  const originalFocus = await getFocusInfo( page );
+
+  const focusOrder: string[] = [];
+
+  try {
+    // Tab through and collect all focusable elements
+    for ( let i = 0; i < maxTabs; i++ ) {
+      const currentFocus = await getFocusInfo( page );
+
+      // Check if we've looped back to the start (but allow first iteration)
+      if ( i > 0 && currentFocus.name === originalFocus.name ) {
+        break;
+      }
+
+      // Somehow the entire document shows up as the accessible name of an item,
+      // filter it out (same logic as in find command)
+      if ( currentFocus.name.length < 100 ) {
+        // Mark the original focus with >>>
+        if ( currentFocus.name === originalFocus.name ) {
+          focusOrder.push( `>>> ${currentFocus.name} <<<` );
+        }
+        else {
+          focusOrder.push( currentFocus.name );
+        }
+      }
+
+      await page.keyboard.press( 'Tab' );
+      await page.waitForTimeout( tabDelay );
+    }
+
+    // Restore original focus
+    await restoreOriginalFocus();
+
+    return focusOrder;
+  }
+  finally {
+    await originalFocusHandle.dispose();
+  }
 }
 
 /**
@@ -498,19 +582,48 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
       };
     }
 
-    // Get PDOM
-    if ( 'getPDOM' in cmd ) {
+    // Look at current state (PDOM + focus loop)
+    if ( 'look' in cmd ) {
       const pdom = await page.evaluate( () => {
+        // @ts-expect-error
+        const pdomRoot = ( window.phet as IntentionalAny )?.joist?.sim?.display?.pdomRootElement;
+        if ( !pdomRoot ) {
+          return 'PDOM not available';
+        }
 
         // @ts-expect-error
-        return ( window.phet as IntentionalAny ).joist.sim.display.pdomRootElement.innerText;
+        const focusedElement = document.activeElement;
+        const lines = pdomRoot.innerText.split( '\n' );
+
+        // Try to mark the focused element in the text
+        // @ts-expect-error
+        if ( focusedElement && focusedElement !== document.body ) {
+          const ariaLabel = focusedElement.getAttribute?.( 'aria-label' );
+          const innerText = focusedElement.innerText || '';
+          const focusedName = ariaLabel || innerText || focusedElement.tagName;
+
+          // Find and mark the line containing the focused element
+          return lines.map( ( line: string ) => {
+            const trimmedLine = line.trim();
+            if ( trimmedLine && focusedName && trimmedLine.includes( focusedName ) ) {
+              return `>>> ${line} <<<`;
+            }
+            return line;
+          } ).join( '\n' );
+        }
+
+        return pdomRoot.innerText;
       } );
+
+      const focusOrder = await getFocusOrder( page );
+
       return {
         success: true,
         command: cmd,
-        action: 'Retrieved PDOM',
+        action: 'Looked at current state',
         focus: await getFocusInfo( page ),
-        pdom: pdom
+        pdom: pdom,
+        focusOrder: focusOrder
       };
     }
 
@@ -532,26 +645,7 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
 
       const availableFocus: string[] = [];
 
-      // Remember the starting focus so we can restore it if the search fails.
-      // @ts-expect-error
-      const originalFocusHandle = await page.evaluateHandle( () => document.activeElement );
-      const restoreOriginalFocus = async (): Promise<boolean> => {
-        const originalElement = originalFocusHandle.asElement?.();
-        if ( originalElement ) {
-          return originalElement.evaluate( ( element: IntentionalAny ) => {
-
-            // @ts-expect-error
-            if ( element && 'focus' in element && typeof ( element as HTMLElement ).focus === 'function' ) {
-
-              // @ts-expect-error
-              ( element as HTMLElement ).focus();
-              return true;
-            }
-            return false;
-          } );
-        }
-        return false;
-      };
+      const { handle: originalFocusHandle, restore: restoreOriginalFocus } = await createFocusRestoration( page );
 
       try {
         for ( let i = 0; i < maxTabs; i++ ) {
