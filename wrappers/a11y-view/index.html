@@ -64,24 +64,6 @@
       top: 0;
     }
 
-    .external-sim-placeholder {
-      display: none;
-      margin-bottom: 1em;
-      padding: 1em;
-      background: #ffffff;
-      border-radius: 0.75em;
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-      color: #1f1f1f;
-    }
-
-    body.external-sim-mode .external-sim-placeholder {
-      display: block;
-    }
-
-    body.external-sim-mode .aspect-ratio {
-      display: none;
-    }
-
     div.right {
       background: #ccc;
       float: right;
@@ -461,26 +443,12 @@
   ( () => {
     const IS_BUILT_STRING = '{{IS_BUILT}}';
     const IS_BUILT = IS_BUILT_STRING.indexOf( '{{' ) !== 0; // escape for better syntax highlighting support
-    const SIM_FRAME_INFO = resolveSimulationFrame();
-    window.__a11yViewSimFrameInfo = SIM_FRAME_INFO;
 
     /**
      * Initializes the embedded simulation iframe by reading the search parameters, building the expected
      * simulation URL, and enabling sticky layout behavior once the iframe is configured.
      */
     function initializeSimulationFrame() {
-      const { iframe, usingExternalSim, localIframe } = SIM_FRAME_INFO;
-
-      if ( !iframe ) {
-        return;
-      }
-
-      if ( usingExternalSim ) {
-        enableExternalSimMode( localIframe );
-        applyStickyBehavior();
-        return;
-      }
-
       const simulationQueryString = new URLSearchParams( window.location.search );
 
       // TODO: This code is very PhET-sim specific, we would like a way to specify an arbitrary scenery-stack app
@@ -513,6 +481,11 @@
 
       // Unbuilt sims include all locales in the en file, built versions only include all strings in the all file
       const simWithLocale = `${sim}_${IS_BUILT ? 'all' : 'en'}`;
+      const iframe = document.getElementById( 'iframe' );
+      if ( !iframe ) {
+        return;
+      }
+
       let simURL = `../../../${sim}/${simWithLocale}${filenameEnding}?${simulationQueryString}`;
       if ( IS_BUILT ) {
         simURL = `./${simWithLocale}${filenameEnding}?${simulationQueryString}`;
@@ -523,29 +496,6 @@
     }
 
     initializeSimulationFrame();
-
-    /**
-     * Puts the wrapper into "external sim" mode so we mirror an iframe that lives outside of this document.
-     *
-     * @param {HTMLIFrameElement|null} localIframe
-     */
-    function enableExternalSimMode( localIframe ) {
-      document.body.classList.add( 'external-sim-mode' );
-
-      if ( localIframe ) {
-        localIframe.removeAttribute( 'src' );
-      }
-
-      const leftColumn = document.getElementById( 'left' );
-      if ( !leftColumn || leftColumn.querySelector( '.external-sim-placeholder' ) ) {
-        return;
-      }
-
-      const placeholder = document.createElement( 'div' );
-      placeholder.className = 'external-sim-placeholder';
-      placeholder.textContent = 'The simulation is running in PhET-iO Studio. Accessible descriptions below mirror that instance.';
-      leftColumn.insertBefore( placeholder, leftColumn.firstChild );
-    }
 
     /**
      * Adds sticky positioning styles to the left column, accounting for Safari's non-standard behavior.
@@ -566,57 +516,11 @@
         }
       }
     }
-
-    /**
-     * Resolves which iframe should be used to communicate with the simulation. When Studio embeds the a11y view,
-     * it provides a data attribute pointing to the shared sim frame so we can reuse it instead of launching
-     * another copy of the sim.
-     *
-     * @returns {{ iframe: HTMLIFrameElement|null, usingExternalSim: boolean, localIframe: HTMLIFrameElement|null }}
-     */
-    function resolveSimulationFrame() {
-      const localIframe = document.getElementById( 'iframe' );
-
-      const frameElement = window.frameElement;
-      if ( frameElement ) {
-        const simFrameId = frameElement.getAttribute( 'data-sim-frame-id' );
-
-        if ( simFrameId && window.parent && window.parent !== window ) {
-          try {
-            const parentDocument = window.parent.document;
-            const parentIframe = parentDocument.getElementById( simFrameId );
-
-            if ( parentIframe && parentIframe.tagName && parentIframe.tagName.toLowerCase() === 'iframe' ) {
-              return {
-                iframe: parentIframe,
-                usingExternalSim: true,
-                localIframe: localIframe
-              };
-            }
-          }
-          catch( error ) {
-            console.warn( 'A11y View: unable to access parent sim frame', error );
-          }
-        }
-      }
-
-      return {
-        iframe: localIframe,
-        usingExternalSim: false,
-        localIframe: localIframe
-      };
-    }
   } )();
 </script>
 
 <script>
   ( () => {
-    const SIM_FRAME_INFO = window.__a11yViewSimFrameInfo || {
-      iframe: document.getElementById( 'iframe' ),
-      usingExternalSim: false,
-      localIframe: document.getElementById( 'iframe' )
-    };
-
     // Number of alerts that remain in the Activity log
     const ACTIVITY_LOG_LENGTH = 40;
 
@@ -2388,7 +2292,7 @@
      */
     function createDomReferences() {
       return {
-        iframe: SIM_FRAME_INFO.iframe,
+        iframe: document.getElementById( 'iframe' ),
         alertList: document.getElementById( 'alert-list' ),
         alertContainer: document.getElementById( 'alert-copy-container' ),
         clearActivityLogButton: document.getElementById( 'clear-activity-log-button' ),
