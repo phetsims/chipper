@@ -9,7 +9,8 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import fs from 'fs';
+// eslint-disable-next-line phet/default-import-match-filename
+import fsPromises from 'fs/promises';
 import yaml from 'js-yaml';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
@@ -20,8 +21,19 @@ import convertHoistedSelects from './convertHoistedSelects.js';
  * @param repo - The name of a repo, e.g. 'joist'
  */
 export default async ( repo: string ): Promise<void> => {
+  // Convert to a pretty-printed JSON string.
+  const jsonContents = await getJSONFromYamlStrings( repo );
+  const jsonFilename = `${repo}-strings_en.json`;
+
+  await writeFileAndGitAdd( repo, jsonFilename, jsonContents );
+};
+
+/**
+ * @param repo - The name of a repo, e.g. 'joist'
+ */
+export const getJSONFromYamlStrings = async ( repo: string ): Promise<string> => {
   const filePath = `../${repo}/${repo}-strings_en.yaml`;
-  const yamlContents = fs.readFileSync( filePath, 'utf8' );
+  const yamlContents = await fsPromises.readFile( filePath, 'utf8' );
 
   const parsed = safeLoadYaml( yamlContents );
   const unhoisted = convertHoistedSelects( parsed );
@@ -32,9 +44,8 @@ export default async ( repo: string ): Promise<void> => {
   // Convert to a pretty-printed JSON string.
   const jsonContents = JSON.stringify( nested, null, 2 )
     .split( '"phetioReadOnly": "true"' ).join( '"phetioReadOnly": true' );
-  const jsonFilename = `${repo}-strings_en.json`;
 
-  await writeFileAndGitAdd( repo, jsonFilename, jsonContents );
+  return jsonContents;
 };
 
 /**

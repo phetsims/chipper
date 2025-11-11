@@ -19,7 +19,13 @@ import { replace } from './modulify.js';
 const OFF = 'off';
 
 export default async ( repo: string ): Promise<void> => {
+  const stringModuleName = `${pascalCase( repo )}Strings`;
+  const relativeStringModuleFile = `js/${stringModuleName}.ts`;
 
+  await writeFileAndGitAdd( repo, relativeStringModuleFile, await getStringModuleContents( repo ) );
+};
+
+export const getStringModuleContents = async ( repo: string ): Promise<string> => {
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   const stringModuleName = `${pascalCase( repo )}Strings`;
   const relativeStringModuleFile = `js/${stringModuleName}.ts`;
@@ -31,8 +37,7 @@ export default async ( repo: string ): Promise<void> => {
   }
 
   const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeStringModuleFile );
-  await writeFileAndGitAdd( repo, relativeStringModuleFile,
-    `${copyrightLine}
+  return `${copyrightLine}
 
 /* eslint-disable */
 /* @formatter:${OFF} */
@@ -52,7 +57,7 @@ const ${stringModuleName} = getStringModule( '${packageObject.phet.requirejsName
 ${namespace}.register( '${stringModuleName}', ${stringModuleName} );
 
 export default ${stringModuleName};
-` );
+`;
 };
 
 /**

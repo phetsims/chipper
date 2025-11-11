@@ -11,6 +11,8 @@
 
 import assert from 'assert';
 import fs from 'fs';
+// eslint-disable-next-line phet/default-import-match-filename
+import fsPromises from 'fs/promises';
 import path from 'path';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
@@ -55,7 +57,7 @@ const addValuesRecursively = ( source: Record<string, IntentionalAny>, destinati
 /**
  * @param repo - repo to generate strings for
  */
-export default ( repo: string ): void => {
+export default async ( repo: string ): Promise<void> => {
 
   const rootPath = path.join( __dirname, '..', '..', '..' );
 
@@ -64,6 +66,39 @@ export default ( repo: string ): void => {
 
   // Create a file name for the conglomerate string file.
   const conglomerateStringFileName = `${repo}_all.json`;
+
+  const developmentStringContents = await getDevelopmentStringsContents( repo );
+
+  // Do not generate a file if no translations were found.
+  if ( developmentStringContents ) {
+
+    // Make sure the output directory exists. The name starts with an underscore so that it appears alphabetically
+    // first and looks different from the repo names.
+    const outputDir = path.join( babelPath, '_generated_development_strings' );
+    try {
+      fs.mkdirSync( outputDir );
+    }
+    catch( e ) {
+      // Directory already exists
+    }
+
+    const outputPath = path.join( outputDir, conglomerateStringFileName );
+    fs.writeFileSync( outputPath, developmentStringContents );
+  }
+  else {
+    console.log( 'no translations found' );
+  }
+};
+
+export const getDevelopmentStringsContents = async (
+  repo: string,
+  englishStringData?: string
+): Promise<string | null> => {
+
+  const rootPath = path.join( __dirname, '..', '..', '..' );
+
+  // OS-independent path to babel repo.
+  const babelPath = path.join( rootPath, 'babel' );
 
   // Create an empty object for the conglomerate string file that we will add to later.
   const conglomerateStringObject: Record<string, object> = {};
@@ -108,7 +143,8 @@ export default ( repo: string ): void => {
       }
 
       // Get the contents of the string file.
-      const stringFileContents = fs.readFileSync( stringFile, 'utf8' );
+      const overrideEnglish = ( locale === 'en' && englishStringData );
+      const stringFileContents = overrideEnglish ? englishStringData : ( await fsPromises.readFile( stringFile, 'utf8' ) );
 
       // Parse the string file contents.
       const parsedStringFileContents = JSON.parse( stringFileContents );
@@ -121,20 +157,9 @@ export default ( repo: string ): void => {
       conglomerateStringObject[ locale ] = objectToAddToLocale;
     }
 
-    // Make sure the output directory exists. The name starts with an underscore so that it appears alphabetically
-    // first and looks different from the repo names.
-    const outputDir = path.join( babelPath, '_generated_development_strings' );
-    try {
-      fs.mkdirSync( outputDir );
-    }
-    catch( e ) {
-      // Directory already exists
-    }
-
-    const outputPath = path.join( outputDir, conglomerateStringFileName );
-    fs.writeFileSync( outputPath, fixEOL( JSON.stringify( conglomerateStringObject, null, 2 ) ) );
+    return fixEOL( JSON.stringify( conglomerateStringObject, null, 2 ) );
   }
   else {
-    console.log( 'no translations found' );
+    return null;
   }
 };

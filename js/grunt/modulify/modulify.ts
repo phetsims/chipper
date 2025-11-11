@@ -7,7 +7,7 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
-import fs, { readFileSync } from 'fs';
+import fs from 'fs';
 // eslint-disable-next-line phet/default-import-match-filename
 import fsPromises from 'fs/promises';
 import _ from 'lodash';
@@ -18,11 +18,11 @@ import { asyncLoadFileAsDataURI } from '../../common/loadFileAsDataURI.js';
 import pascalCase from '../../common/pascalCase.js';
 import toLessEscapedString from '../../common/toLessEscapedString.js';
 import createMipmap from '../createMipmap.js';
-import generateDevelopmentStrings from '../generateDevelopmentStrings.js';
+import generateDevelopmentStrings, { getDevelopmentStringsContents } from '../generateDevelopmentStrings.js';
 import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
-import convertStringsYamlToJson from './convertStringsYamlToJson.js';
-import createStringModule from './createStringModule.js';
-import generateFluentTypes from './generateFluentTypes.js';
+import convertStringsYamlToJson, { getJSONFromYamlStrings } from './convertStringsYamlToJson.js';
+import createStringModule, { getStringModuleContents } from './createStringModule.js';
+import generateFluentTypes, { getFluentTypesFileContent } from './generateFluentTypes.js';
 import modulifyFluentFile, { getModulifiedFluentFile } from './modulifyFluentFile.js';
 
 const svgo = require( 'svgo' );
@@ -211,6 +211,91 @@ if ( decodePromise ) {
 export default wrappedAudioBuffer;`;
 };
 
+// the image module at js/${_.camelCase( repo )}Images.js for repos that need it.
+const getImageModule = async ( repo: string, supportedRegionsAndCultures: string[] ): Promise<string> => {
+  const spec: Record<string, Record<string, string>> = JSON.parse( await fsPromises.readFile( `../${repo}/${repo}-images.json`, 'utf8' ) );
+  const namespace = _.camelCase( repo );
+  const imageModuleName = `${pascalCase( repo )}Images`;
+  const relativeImageModuleFile = `js/${imageModuleName}.ts`;
+
+  const providedRegionsAndCultures = Object.keys( spec );
+
+  // Ensure our regionAndCultures in the -images.json file match with the supportedRegionsAndCultures in the package.json
+  supportedRegionsAndCultures.forEach( regionAndCulture => {
+    if ( !providedRegionsAndCultures.includes( regionAndCulture ) ) {
+      throw new Error( `regionAndCulture '${regionAndCulture}' is required, but not found in ${repo}-images.json` );
+    }
+  } );
+  providedRegionsAndCultures.forEach( regionAndCulture => {
+    if ( !supportedRegionsAndCultures.includes( regionAndCulture ) ) {
+      throw new Error( `regionAndCulture '${regionAndCulture}' is not supported, but found in ${repo}-images.json` );
+    }
+  } );
+
+  const imageNames: string[] = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
+    return Object.keys( spec[ regionAndCulture ] );
+  } ) ).sort();
+
+  const imageFiles: string[] = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
+    return Object.values( spec[ regionAndCulture ] );
+  } ) ).sort();
+
+  // Do images exist?
+  imageFiles.forEach( imageFile => {
+    if ( !fs.existsSync( `../${repo}/${imageFile}` ) ) {
+      throw new Error( `Image file ${imageFile} is referenced in ${repo}-images.json, but does not exist` );
+    }
+  } );
+
+  // Ensure that all image names are provided for all regionAndCultures
+  providedRegionsAndCultures.forEach( regionAndCulture => {
+    imageNames.forEach( imageName => {
+      if ( !spec[ regionAndCulture ].hasOwnProperty( imageName ) ) {
+        throw new Error( `Image name ${imageName} is not provided for regionAndCulture ${regionAndCulture} (but provided for others)` );
+      }
+    } );
+  } );
+
+  const getImportName = ( imageFile: string ) => path.basename( imageFile, path.extname( imageFile ) );
+
+  // Check that import names are unique
+  // NOTE: we could disambiguate in the future in an automated way fairly easily, but should it be done?
+  if ( _.uniq( imageFiles.map( getImportName ) ).length !== imageFiles.length ) {
+    // Find and report the name collision
+    const importNames = imageFiles.map( getImportName );
+    const duplicates = importNames.filter( ( name, index ) => importNames.indexOf( name ) !== index );
+    if ( duplicates.length ) { // sanity check!
+      const firstDuplicate = duplicates[ 0 ];
+      const originalNames = imageFiles.filter( imageFile => getImportName( imageFile ) === firstDuplicate );
+      throw new Error( `Multiple images result in the same import name ${firstDuplicate}: ${originalNames.join( ', ' )}` );
+    }
+  }
+
+  const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeImageModuleFile );
+  return `${copyrightLine}
+/* eslint-disable */
+/* @formatter:${OFF} */
+/**
+ * Auto-generated from modulify, DO NOT manually modify.
+ */
+ 
+import LocalizedImageProperty from '../../joist/js/i18n/LocalizedImageProperty.js';
+import ${namespace} from './${namespace}.js';
+${imageFiles.map( imageFile => `import ${getImportName( imageFile )} from '../${imageFile.replace( '.ts', '.js' )}';` ).join( '\n' )}
+
+const ${imageModuleName} = {
+  ${imageNames.map( imageName =>
+      `${imageName}ImageProperty: new LocalizedImageProperty( '${imageName}', {
+    ${supportedRegionsAndCultures.map( regionAndCulture => `${regionAndCulture}: ${getImportName( spec[ regionAndCulture ][ imageName ] )}` ).join( ',\n    ' )}
+  } )` ).join( ',\n  ' )}
+};
+
+${namespace}.register( '${imageModuleName}', ${imageModuleName} );
+
+export default ${imageModuleName};
+`;
+};
+
 /**
  * Transform an image file to a JS file that loads the image.
  * @param repo - repository name for the modulify command
@@ -282,88 +367,10 @@ const getSuffix = ( filename: string ) => {
  * Creates the image module at js/${_.camelCase( repo )}Images.js for repos that need it.
  */
 const createImageModule = async ( repo: string, supportedRegionsAndCultures: string[] ): Promise<void> => {
-  const spec: Record<string, Record<string, string>> = JSON.parse( readFileSync( `../${repo}/${repo}-images.json`, 'utf8' ) );
-  const namespace = _.camelCase( repo );
   const imageModuleName = `${pascalCase( repo )}Images`;
   const relativeImageModuleFile = `js/${imageModuleName}.ts`;
 
-  const providedRegionsAndCultures = Object.keys( spec );
-
-  // Ensure our regionAndCultures in the -images.json file match with the supportedRegionsAndCultures in the package.json
-  supportedRegionsAndCultures.forEach( regionAndCulture => {
-    if ( !providedRegionsAndCultures.includes( regionAndCulture ) ) {
-      throw new Error( `regionAndCulture '${regionAndCulture}' is required, but not found in ${repo}-images.json` );
-    }
-  } );
-  providedRegionsAndCultures.forEach( regionAndCulture => {
-    if ( !supportedRegionsAndCultures.includes( regionAndCulture ) ) {
-      throw new Error( `regionAndCulture '${regionAndCulture}' is not supported, but found in ${repo}-images.json` );
-    }
-  } );
-
-  const imageNames: string[] = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
-    return Object.keys( spec[ regionAndCulture ] );
-  } ) ).sort();
-
-  const imageFiles: string[] = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
-    return Object.values( spec[ regionAndCulture ] );
-  } ) ).sort();
-
-  // Do images exist?
-  imageFiles.forEach( imageFile => {
-    if ( !fs.existsSync( `../${repo}/${imageFile}` ) ) {
-      throw new Error( `Image file ${imageFile} is referenced in ${repo}-images.json, but does not exist` );
-    }
-  } );
-
-  // Ensure that all image names are provided for all regionAndCultures
-  providedRegionsAndCultures.forEach( regionAndCulture => {
-    imageNames.forEach( imageName => {
-      if ( !spec[ regionAndCulture ].hasOwnProperty( imageName ) ) {
-        throw new Error( `Image name ${imageName} is not provided for regionAndCulture ${regionAndCulture} (but provided for others)` );
-      }
-    } );
-  } );
-
-  const getImportName = ( imageFile: string ) => path.basename( imageFile, path.extname( imageFile ) );
-
-  // Check that import names are unique
-  // NOTE: we could disambiguate in the future in an automated way fairly easily, but should it be done?
-  if ( _.uniq( imageFiles.map( getImportName ) ).length !== imageFiles.length ) {
-    // Find and report the name collision
-    const importNames = imageFiles.map( getImportName );
-    const duplicates = importNames.filter( ( name, index ) => importNames.indexOf( name ) !== index );
-    if ( duplicates.length ) { // sanity check!
-      const firstDuplicate = duplicates[ 0 ];
-      const originalNames = imageFiles.filter( imageFile => getImportName( imageFile ) === firstDuplicate );
-      throw new Error( `Multiple images result in the same import name ${firstDuplicate}: ${originalNames.join( ', ' )}` );
-    }
-  }
-
-  const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeImageModuleFile );
-  await writeFileAndGitAdd( repo, relativeImageModuleFile,
-    `${copyrightLine}
-/* eslint-disable */
-/* @formatter:${OFF} */
-/**
- * Auto-generated from modulify, DO NOT manually modify.
- */
- 
-import LocalizedImageProperty from '../../joist/js/i18n/LocalizedImageProperty.js';
-import ${namespace} from './${namespace}.js';
-${imageFiles.map( imageFile => `import ${getImportName( imageFile )} from '../${imageFile.replace( '.ts', '.js' )}';` ).join( '\n' )}
-
-const ${imageModuleName} = {
-  ${imageNames.map( imageName =>
-      `${imageName}ImageProperty: new LocalizedImageProperty( '${imageName}', {
-    ${supportedRegionsAndCultures.map( regionAndCulture => `${regionAndCulture}: ${getImportName( spec[ regionAndCulture ][ imageName ] )}` ).join( ',\n    ' )}
-  } )` ).join( ',\n  ' )}
-};
-
-${namespace}.register( '${imageModuleName}', ${imageModuleName} );
-
-export default ${imageModuleName};
-` );
+  await writeFileAndGitAdd( repo, relativeImageModuleFile, await getImageModule( repo, supportedRegionsAndCultures ) );
 };
 
 /**
@@ -404,7 +411,7 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
   targetSounds && await visitDirectories( SOUND_DIRECTORIES, SOUND_SUFFIXES, modulifySound );
   targetStrings && await visitDirectories( STRING_DIRECTORIES, FLUENT_SUFFIXES, modulifyFluentFile );
 
-  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
+  const packageObject = JSON.parse( await fsPromises.readFile( `../${repo}/package.json`, 'utf8' ) );
 
   // If the YAML strings file exists, transform it into the regular JSON file before going to the next step.
   if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.yaml` ) ) {
@@ -416,7 +423,7 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
   if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
     await createStringModule( repo );
 
-    generateDevelopmentStrings( repo );
+    await generateDevelopmentStrings( repo );
   }
 
   // Images module file (localized images)
@@ -442,6 +449,11 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
   }
 };
 
+/**
+ * Returns either the modulified file content (to be replaced), or null if the file is not a modulified (result) resource.
+ *
+ * @param relativePath - the relative path of the modulified file, from the project root, e.g. 'joist/images/foo_png.ts'
+ */
 export const getModulifiedFileString = async ( relativePath: string ): Promise<string | null> => {
   const repo = relativePath.split( '/' )[ 0 ];
   const repoRelativePath = path.relative( `${repo}/`, relativePath );
@@ -452,6 +464,7 @@ export const getModulifiedFileString = async ( relativePath: string ): Promise<s
     return repoRelativePath.replace( `_${nonDotSuffix}${codeSuffix}`, suffix );
   };
 
+  // Image (SVG/other) module files
   for ( const dir of IMAGE_DIRECTORIES ) {
     if ( relativePath.startsWith( `${repo}/${dir}/` ) ) {
       const imageSuffix = `.${relativePath.match( /_(\w+)\.ts$/ )?.[ 1 ] ?? ''}`;
@@ -464,6 +477,8 @@ export const getModulifiedFileString = async ( relativePath: string ): Promise<s
       }
     }
   }
+
+  // Mipmap module files
   for ( const dir of MIPMAP_DIRECTORIES ) {
     if ( relativePath.startsWith( `${repo}/${dir}/` ) ) {
       const mipmapSuffix = `.${relativePath.match( /_(\w+)\.ts$/ )?.[ 1 ] ?? ''}`;
@@ -473,6 +488,8 @@ export const getModulifiedFileString = async ( relativePath: string ): Promise<s
       }
     }
   }
+
+  // Sound module files
   for ( const dir of SOUND_DIRECTORIES ) {
     if ( relativePath.startsWith( `${repo}/${dir}/` ) ) {
       const soundSuffix = `.${relativePath.match( /_(\w+)\.js$/ )?.[ 1 ] ?? ''}`;
@@ -482,8 +499,51 @@ export const getModulifiedFileString = async ( relativePath: string ): Promise<s
       }
     }
   }
+
+  // Fluent files
   if ( relativePath.startsWith( `${repo}/js/strings/` ) && relativePath.endsWith( 'Messages.ts' ) ) {
     return getModulifiedFluentFile( repo, `strings/${path.basename( relativePath.replace( /Messages\.ts$/, '' ) )}_en.ftl` );
+  }
+
+  const getEnglishStringsContents = async (): Promise<string> => {
+    if ( fs.existsSync( `../${repo}/${repo}-strings_en.yaml` ) ) {
+      return getJSONFromYamlStrings( repo );
+    }
+    else {
+      return fsPromises.readFile( `../${repo}/${repo}-strings_en.json`, 'utf8' );
+    }
+  };
+
+  // If we have YAML strings and get a direct request for the JSON, modulify it on the fly.
+  if ( relativePath === `${repo}/${repo}-strings_en.json` && fs.existsSync( `../${repo}/${repo}-strings_en.yaml` ) ) {
+    return getEnglishStringsContents();
+  }
+
+  // String module file
+  if ( relativePath === `${repo}/js/${_.camelCase( repo )}Strings.js` ) {
+    return getStringModuleContents( repo );
+  }
+
+  // Babel development strings files
+  if ( relativePath.startsWith( 'babel/_generated_development_strings/' ) && relativePath.endsWith( '_all.json' ) ) {
+    const requestedRepo = path.basename( relativePath ).split( '_' )[ 0 ];
+
+    return getDevelopmentStringsContents( requestedRepo, await getEnglishStringsContents() );
+  }
+
+  // Region-and-culture image module file
+  if ( relativePath === `${repo}/js/${pascalCase( repo )}Images.ts` ) {
+    const packageObject = JSON.parse( await fsPromises.readFile( `../${repo}/package.json`, 'utf8' ) );
+
+    const supportedRegionsAndCultures: string[] = packageObject?.phet?.simFeatures?.supportedRegionsAndCultures;
+    const concreteRegionsAndCultures = supportedRegionsAndCultures.filter( regionAndCulture => regionAndCulture !== 'random' );
+
+    return getImageModule( repo, concreteRegionsAndCultures );
+  }
+
+  // Fluent types file
+  if ( relativePath === `${repo}/js/${pascalCase( repo )}Fluent.ts` ) {
+    return getFluentTypesFileContent( repo );
   }
 
   return null;
