@@ -366,9 +366,9 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   }
 
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
-  if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription && ( brand === 'phet' || brand === 'phet-io' ) ) {
+  if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for PDOM viewing.
-    let a11yHTML = getA11yViewHTML( repo, brand );
+    let a11yHTML = getA11yViewHTML( repo );
 
     // this replaceAll is outside of the getA11yViewHTML because we only want it filled in during the build
     a11yHTML = ChipperStringUtils.replaceAll( a11yHTML, '{{IS_BUILT}}', 'true' );
