@@ -500,9 +500,7 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
     // Get PDOM
     if ( 'getPDOM' in cmd ) {
       const pdom = await page.evaluate( () => {
-        // @ts-expect-error
-        const appDiv = document.querySelector( '[id$="-display"]' ) || document.querySelector( '[role="application"]' ) || document.body;
-        return appDiv?.outerHTML || '<no PDOM found>';
+        return phet.joist.sim.display.pdomRootElement.innerText;
       } );
       return {
         success: true,
@@ -529,10 +527,13 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
       const pressKey = cmd.press || 'Space';
       const maxTabs = Number( getOptionIfProvided( 'tabPressCount', `${TAB_PRESS_COUNT}` ) );
 
+      const availableFocus: string[] = [];
+
       for ( let i = 0; i < maxTabs; i++ ) {
         await page.keyboard.press( 'Tab' );
         await page.waitForTimeout( tabDelay );
         const focus = await getFocusInfo( page );
+        availableFocus.push( focus.name );
 
         if ( focus.name === targetName ) {
           const ariaLivePromise = waitForAriaLiveMessages( page, ARIA_LIVE_WAIT_TIMEOUT_MS );
@@ -549,10 +550,14 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
         }
       }
 
+      // Somehow the entire document shows up as the accessible name of an item,
+      // try to filter it out.
+      const uniqueArrayItems = Array.from( new Set( availableFocus.filter( name => name.length < 100 ) ) );
+
       return {
         success: false,
         command: cmd,
-        action: `Failed to find "${targetName}" after ${maxTabs} tabs`,
+        action: `Failed to find "${targetName}" after ${maxTabs} tabs. Available = ${uniqueArrayItems.join( ' | ' )}`,
         focus: await getFocusInfo( page ),
         error: `Target "${targetName}" not found`
       };
