@@ -505,18 +505,18 @@ export const getModulifiedFileString = async ( relativePath: string ): Promise<s
     return getModulifiedFluentFile( repo, `strings/${path.basename( relativePath.replace( /Messages\.ts$/, '' ) )}_en.ftl` );
   }
 
-  const getEnglishStringsContents = async (): Promise<string> => {
-    if ( fs.existsSync( `../${repo}/${repo}-strings_en.yaml` ) ) {
-      return getJSONFromYamlStrings( repo );
+  const getEnglishStringsContents = async ( requestedRepo: string ): Promise<string> => {
+    if ( fs.existsSync( `../${requestedRepo}/${requestedRepo}-strings_en.yaml` ) ) {
+      return getJSONFromYamlStrings( requestedRepo );
     }
     else {
-      return fsPromises.readFile( `../${repo}/${repo}-strings_en.json`, 'utf8' );
+      return fsPromises.readFile( `../${requestedRepo}/${requestedRepo}-strings_en.json`, 'utf8' );
     }
   };
 
   // If we have YAML strings and get a direct request for the JSON, modulify it on the fly.
   if ( relativePath === `${repo}/${repo}-strings_en.json` && fs.existsSync( `../${repo}/${repo}-strings_en.yaml` ) ) {
-    return getEnglishStringsContents();
+    return getEnglishStringsContents( repo );
   }
 
   // String module file
@@ -528,7 +528,7 @@ export const getModulifiedFileString = async ( relativePath: string ): Promise<s
   if ( relativePath.startsWith( 'babel/_generated_development_strings/' ) && relativePath.endsWith( '_all.json' ) ) {
     const requestedRepo = path.basename( relativePath ).split( '_' )[ 0 ];
 
-    return getDevelopmentStringsContents( requestedRepo, await getEnglishStringsContents() );
+    return getDevelopmentStringsContents( requestedRepo, await getEnglishStringsContents( requestedRepo ) );
   }
 
   // Region-and-culture image module file
