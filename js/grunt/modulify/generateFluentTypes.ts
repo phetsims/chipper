@@ -346,8 +346,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
   return lines.join( '\n' );
 }
 
-/** Build nested TS literal from YAML, inserting both helpers at leaves. */
-const generateFluentTypes = async ( repo: string ): Promise<void> => {
+export const getFluentTypesFileContent = async ( repo: string ): Promise<string> => {
   const pascalCaseRepo = pascalCase( repo );
   const camelCaseRepo = _.camelCase( repo );
 
@@ -506,10 +505,16 @@ ${camelCaseRepo}.register('${pascalCaseRepo}Fluent', ${pascalCaseRepo}Fluent);
   const importSection = usedImportLines.length > 0 ? `${usedImportLines.join( '\n' )}\n\n` : '';
 
   // template TypeScript file
-  const fileContents = `${header}${importSection}${body}`;
+  return `${header}${importSection}${body}`;
+};
+
+/** Build nested TS literal from YAML, inserting both helpers at leaves. */
+const generateFluentTypes = async ( repo: string ): Promise<void> => {
+  const pascalCaseRepo = pascalCase( repo );
+  const outPath = `js/${pascalCaseRepo}Fluent.ts`;
 
 // 6 write out
-  await writeFileAndGitAdd( repo, outPath, fileContents );
+  await writeFileAndGitAdd( repo, outPath, await getFluentTypesFileContent( repo ) );
 };
 
 export default generateFluentTypes;
