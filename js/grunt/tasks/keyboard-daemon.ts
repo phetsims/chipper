@@ -249,6 +249,7 @@ import playwrightLoad from '../../../../perennial-alias/js/common/playwrightLoad
 import getOption, { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import playwright from '../../../../perennial-alias/js/npm-dependencies/playwright.js';
+import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
 const DEFAULT_HOST = 'http://localhost';
 const DEFAULT_PORT = 80;
@@ -500,7 +501,9 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
     // Get PDOM
     if ( 'getPDOM' in cmd ) {
       const pdom = await page.evaluate( () => {
-        return phet.joist.sim.display.pdomRootElement.innerText;
+
+        // @ts-expect-error
+        return ( window.phet as IntentionalAny ).joist.sim.display.pdomRootElement.innerText;
       } );
       return {
         success: true,
@@ -529,38 +532,65 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
 
       const availableFocus: string[] = [];
 
-      for ( let i = 0; i < maxTabs; i++ ) {
-        await page.keyboard.press( 'Tab' );
-        await page.waitForTimeout( tabDelay );
-        const focus = await getFocusInfo( page );
-        availableFocus.push( focus.name );
+      // Remember the starting focus so we can restore it if the search fails.
+      // @ts-expect-error
+      const originalFocusHandle = await page.evaluateHandle( () => document.activeElement );
+      const restoreOriginalFocus = async (): Promise<boolean> => {
+        const originalElement = originalFocusHandle.asElement?.();
+        if ( originalElement ) {
+          return originalElement.evaluate( ( element: IntentionalAny ) => {
 
-        if ( focus.name === targetName ) {
-          const ariaLivePromise = waitForAriaLiveMessages( page, ARIA_LIVE_WAIT_TIMEOUT_MS );
-          await page.keyboard.press( pressKey );
-          await page.waitForTimeout( tabDelay );
-          const ariaLive = await ariaLivePromise;
-          return {
-            success: true,
-            command: cmd,
-            action: `Tabbed ${i + 1} time(s), found "${targetName}", pressed ${pressKey}`,
-            focus: await getFocusInfo( page ),
-            ariaLive: ariaLive.length > 0 ? ariaLive : undefined
-          };
+            // @ts-expect-error
+            if ( element && 'focus' in element && typeof ( element as HTMLElement ).focus === 'function' ) {
+
+              // @ts-expect-error
+              ( element as HTMLElement ).focus();
+              return true;
+            }
+            return false;
+          } );
         }
-      }
-
-      // Somehow the entire document shows up as the accessible name of an item,
-      // try to filter it out.
-      const uniqueArrayItems = Array.from( new Set( availableFocus.filter( name => name.length < 100 ) ) );
-
-      return {
-        success: false,
-        command: cmd,
-        action: `Failed to find "${targetName}" after ${maxTabs} tabs. Available = ${uniqueArrayItems.join( ' | ' )}`,
-        focus: await getFocusInfo( page ),
-        error: `Target "${targetName}" not found`
+        return false;
       };
+
+      try {
+        for ( let i = 0; i < maxTabs; i++ ) {
+          await page.keyboard.press( 'Tab' );
+          await page.waitForTimeout( tabDelay );
+          const focus = await getFocusInfo( page );
+          availableFocus.push( focus.name );
+
+          if ( focus.name === targetName ) {
+            const ariaLivePromise = waitForAriaLiveMessages( page, ARIA_LIVE_WAIT_TIMEOUT_MS );
+            await page.keyboard.press( pressKey );
+            await page.waitForTimeout( tabDelay );
+            const ariaLive = await ariaLivePromise;
+            return {
+              success: true,
+              command: cmd,
+              action: `Tabbed ${i + 1} time(s), found "${targetName}", pressed ${pressKey}`,
+              focus: await getFocusInfo( page ),
+              ariaLive: ariaLive.length > 0 ? ariaLive : undefined
+            };
+          }
+        }
+
+        // Somehow the entire document shows up as the accessible name of an item,
+        // try to filter it out.
+        const uniqueArrayItems = Array.from( new Set( availableFocus.filter( name => name.length < 100 ) ) );
+        const focusRestored = await restoreOriginalFocus();
+
+        return {
+          success: false,
+          command: cmd,
+          action: `Failed to find "${targetName}" after ${maxTabs} tabs. Available = ${uniqueArrayItems.join( ' | ' )}${focusRestored ? ' (restored original focus)' : ''}`,
+          focus: await getFocusInfo( page ),
+          error: `Target "${targetName}" not found`
+        };
+      }
+      finally {
+        await originalFocusHandle.dispose();
+      }
     }
 
     // Navigate to a new URL
