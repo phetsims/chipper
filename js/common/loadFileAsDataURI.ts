@@ -5,7 +5,10 @@
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
+
 import fs from 'fs';
+// eslint-disable-next-line phet/default-import-match-filename
+import fsPromises from 'fs/promises';
 
 const MIME_TYPES = {
   png: 'image/png',
@@ -40,3 +43,18 @@ function loadFileAsDataURI( filename: string ): string {
 }
 
 export default loadFileAsDataURI;
+
+// Async version
+export const asyncLoadFileAsDataURI = async ( filename: string ): Promise<string> => {
+  const filenameParts = filename.split( '.' );
+  const suffix = filenameParts[ filenameParts.length - 1 ] as keyof typeof MIME_TYPES;
+
+  const mimeType = MIME_TYPES[ suffix ];
+
+  if ( !mimeType ) {
+    throw new Error( `Unknown mime type for filename: ${filename}` );
+  }
+
+  const base64 = `data:${mimeType};base64,${Buffer.from( await fsPromises.readFile( filename ) ).toString( 'base64' )}`;
+  return base64;
+};

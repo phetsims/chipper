@@ -29,11 +29,9 @@ const readFluentFile = ( abspath: string ): string => {
 };
 
 /**
- * Prepares modules so that contents of fluent files can be used in the simulation.
- * @param repo - repository name for the modulify command
- * @param relativePath - the relative path of the fluent file
+ * Turn a file into a TS file that loads the fluent messages
  */
-const modulifyFluentFile = async ( repo: string, relativePath: string ): Promise<void> => {
+export const getModulifiedFluentFile = async ( repo: string, relativePath: string ): Promise<string> => {
   if ( !relativePath.endsWith( '_en.ftl' ) ) {
     throw new Error( 'Only english fluent files can be modulified.' );
   }
@@ -88,8 +86,7 @@ const modulifyFluentFile = async ( repo: string, relativePath: string ): Promise
   const namespace = _.camelCase( repo );
   const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeModulifiedName );
 
-  await writeFileAndGitAdd( repo, relativeModulifiedName,
-    `${copyrightLine}
+  return `${copyrightLine}
     
 /* eslint-disable */
 /* @formatter:${OFF} */
@@ -110,7 +107,30 @@ const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileC
 ${namespace}.register( '${modulifiedName}', ${modulifiedName} );
 
 export default ${modulifiedName};
-` );
+`;
+};
+
+/**
+ * Prepares modules so that contents of fluent files can be used in the simulation.
+ * @param repo - repository name for the modulify command
+ * @param relativePath - the relative path of the fluent file
+ */
+const modulifyFluentFile = async ( repo: string, relativePath: string ): Promise<void> => {
+  if ( !relativePath.endsWith( '_en.ftl' ) ) {
+    throw new Error( 'Only english fluent files can be modulified.' );
+  }
+
+  const abspath = path.resolve( `../${repo}`, relativePath );
+  const filename = path.basename( abspath );
+
+  const nameWithoutSuffix = filename.replace( '_en.ftl', '' );
+
+  const modulifiedName = `${nameWithoutSuffix}Messages`;
+  const relativeModulifiedName = `js/strings/${modulifiedName}.ts`;
+
+  const contents = await getModulifiedFluentFile( repo, relativePath );
+
+  await writeFileAndGitAdd( repo, relativeModulifiedName, contents );
 };
 
 export default modulifyFluentFile;

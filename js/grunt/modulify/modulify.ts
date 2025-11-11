@@ -8,11 +8,13 @@
  */
 
 import fs, { readFileSync } from 'fs';
+// eslint-disable-next-line phet/default-import-match-filename
+import fsPromises from 'fs/promises';
 import _ from 'lodash';
 import path from 'path';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
-import loadFileAsDataURI from '../../common/loadFileAsDataURI.js';
+import { asyncLoadFileAsDataURI } from '../../common/loadFileAsDataURI.js';
 import pascalCase from '../../common/pascalCase.js';
 import toLessEscapedString from '../../common/toLessEscapedString.js';
 import createMipmap from '../createMipmap.js';
@@ -21,7 +23,7 @@ import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContent
 import convertStringsYamlToJson from './convertStringsYamlToJson.js';
 import createStringModule from './createStringModule.js';
 import generateFluentTypes from './generateFluentTypes.js';
-import modulifyFluentFile from './modulifyFluentFile.js';
+import modulifyFluentFile, { getModulifiedFluentFile } from './modulifyFluentFile.js';
 
 const svgo = require( 'svgo' );
 
@@ -38,6 +40,14 @@ const OTHER_IMAGE_SUFFIXES = IMAGE_SUFFIXES.filter( suffix => !SVG_SUFFIXES.incl
 
 // supported sound file types, not case-sensitive
 const SOUND_SUFFIXES = [ '.mp3', '.wav' ];
+
+const FLUENT_SUFFIXES = [ '.ftl' ];
+
+// Process images in various directories
+const IMAGE_DIRECTORIES = [ 'images', 'phet/images', 'phet-io/images', 'adapted-from-phet/images' ];
+const MIPMAP_DIRECTORIES = [ 'mipmaps', 'phet/mipmaps', 'phet-io/mipmaps', 'adapted-from-phet/mipmaps' ];
+const SOUND_DIRECTORIES = [ 'sounds' ];
+const STRING_DIRECTORIES = [ 'strings' ];
 
 /**
  * String replacement
@@ -64,16 +74,13 @@ const expandDots = ( relativePath: string ): string => {
 };
 
 /**
- * Transform an image file to a JS file that loads the image.
- * @param repo - repository name for the modulify command
- * @param relativePath - the relative path of the image file
+ * Turn a file into a TS file that loads the image.
  */
-const modulifyImage = async ( repo: string, relativePath: string ) => {
-
+const getModulifiedImage = async ( repo: string, relativePath: string ): Promise<string> => {
   const abspath = path.resolve( `../${repo}`, relativePath );
-  const dataURI = loadFileAsDataURI( abspath );
+  const dataURI = await asyncLoadFileAsDataURI( abspath );
 
-  const contents = `${HEADER}
+  return `${HEADER}
 import asyncLoader from '${expandDots( relativePath )}phet-core/js/asyncLoader.js';
 
 const image = new Image();
@@ -81,20 +88,14 @@ const unlock = asyncLoader.createLock( image );
 image.onload = unlock;
 image.src = '${dataURI}';
 export default image;`;
-
-  const tsFilename = convertSuffix( relativePath, '.ts' );
-  await writeFileAndGitAdd( repo, tsFilename, contents );
 };
 
 /**
- * Transform an SVG image file to a JS file that loads the image.
- * @param repo - repository name for the modulify command
- * @param relativePath - the relative path of the SVG file
+ * Turn a file into a TS file that loads the SVG image.
  */
-const modulifySVG = async ( repo: string, relativePath: string ) => {
-
+const getModulifiedSVGImage = async ( repo: string, relativePath: string ): Promise<string> => {
   const abspath = path.resolve( `../${repo}`, relativePath );
-  const fileContents = fs.readFileSync( abspath, 'utf-8' );
+  const fileContents = await fsPromises.readFile( abspath, 'utf-8' );
 
   if ( !fileContents.includes( 'width="' ) || !fileContents.includes( 'height="' ) ) {
     throw new Error( `SVG file ${abspath} does not contain width and height attributes` );
@@ -116,7 +117,7 @@ const modulifySVG = async ( repo: string, relativePath: string ) => {
     ]
   } ).data;
 
-  const contents = `${HEADER}
+  return `${HEADER}
 import asyncLoader from '${expandDots( relativePath )}phet-core/js/asyncLoader.js';
 
 const image = new Image();
@@ -124,18 +125,12 @@ const unlock = asyncLoader.createLock( image );
 image.onload = unlock;
 image.src = \`data:image/svg+xml;base64,\${btoa(${toLessEscapedString( optimizedContents )})}\`;
 export default image;`;
-
-  const tsFilename = convertSuffix( relativePath, '.ts' );
-  await writeFileAndGitAdd( repo, tsFilename, contents );
 };
 
 /**
- * Transform an image file to a JS file that loads the image as a mipmap.
- * @param repo - repository name for the modulify command
- * @param relativePath - the relative path of the image file
+ * Turn a file into a TS file that loads the mipmap
  */
-const modulifyMipmap = async ( repo: string, relativePath: string ) => {
-
+const getModulifiedMipmap = async ( repo: string, relativePath: string ): Promise<string> => {
   // Defaults. NOTE: using the default settings because we have not run into a need, see
   // https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/945
   const config = {
@@ -147,7 +142,7 @@ const modulifyMipmap = async ( repo: string, relativePath: string ) => {
   const mipmapLevels = await createMipmap( abspath, config.level, config.quality );
   const entries = mipmapLevels.map( ( { width, height, url } ) => `  new MipmapElement( ${width}, ${height}, '${url}' )` );
 
-  const mipmapContents = `${HEADER}
+  return `${HEADER}
 import MipmapElement from '${expandDots( relativePath )}chipper/js/browser/MipmapElement.js';
 
 // The levels in the mipmap. Specify explicit types rather than inferring to assist the type checker, for this boilerplate case.
@@ -156,24 +151,19 @@ ${entries.join( ',\n' )}
 ];
 
 export default mipmaps;`;
-  const tsFilename = convertSuffix( relativePath, '.ts' );
-  await writeFileAndGitAdd( repo, tsFilename, mipmapContents );
 };
 
 /**
- * Decode a sound file into a Web Audio AudioBuffer.
- * @param repo - repository name for the modulify command
- * @param relativePath - the relative path of the sound file
+ * Turn a file into a TS file that loads the sound
  */
-const modulifySound = async ( repo: string, relativePath: string ) => {
-
+const getModulifiedSound = async ( repo: string, relativePath: string ): Promise<string> => {
   const abspath = path.resolve( `../${repo}`, relativePath );
 
   // load the sound file
-  const dataURI = loadFileAsDataURI( abspath );
+  const dataURI = await asyncLoadFileAsDataURI( abspath );
 
   // output the contents of the file that will define the sound in JS format
-  const contents = `${HEADER}
+  return `${HEADER}
 import asyncLoader from '${expandDots( relativePath )}phet-core/js/asyncLoader.js';
 import base64SoundToByteArray from '${expandDots( relativePath )}tambo/js/base64SoundToByteArray.js';
 import WrappedAudioBuffer from '${expandDots( relativePath )}tambo/js/WrappedAudioBuffer.js';
@@ -219,6 +209,51 @@ if ( decodePromise ) {
     } );
 }
 export default wrappedAudioBuffer;`;
+};
+
+/**
+ * Transform an image file to a JS file that loads the image.
+ * @param repo - repository name for the modulify command
+ * @param relativePath - the relative path of the image file
+ */
+const modulifyImage = async ( repo: string, relativePath: string ) => {
+  const contents = await getModulifiedImage( repo, relativePath );
+
+  const tsFilename = convertSuffix( relativePath, '.ts' );
+  await writeFileAndGitAdd( repo, tsFilename, contents );
+};
+
+/**
+ * Transform an SVG image file to a JS file that loads the image.
+ * @param repo - repository name for the modulify command
+ * @param relativePath - the relative path of the SVG file
+ */
+const modulifySVG = async ( repo: string, relativePath: string ) => {
+  const contents = await getModulifiedSVGImage( repo, relativePath );
+
+  const tsFilename = convertSuffix( relativePath, '.ts' );
+  await writeFileAndGitAdd( repo, tsFilename, contents );
+};
+
+/**
+ * Transform an image file to a JS file that loads the image as a mipmap.
+ * @param repo - repository name for the modulify command
+ * @param relativePath - the relative path of the image file
+ */
+const modulifyMipmap = async ( repo: string, relativePath: string ) => {
+  const contents = await getModulifiedMipmap( repo, relativePath );
+
+  const tsFilename = convertSuffix( relativePath, '.ts' );
+  await writeFileAndGitAdd( repo, tsFilename, contents );
+};
+
+/**
+ * Decode a sound file into a Web Audio AudioBuffer.
+ * @param repo - repository name for the modulify command
+ * @param relativePath - the relative path of the sound file
+ */
+const modulifySound = async ( repo: string, relativePath: string ) => {
+  const contents = await getModulifiedSound( repo, relativePath );
 
   const jsFilename = convertSuffix( relativePath, '.js' );
   await writeFileAndGitAdd( repo, jsFilename, contents );
@@ -363,15 +398,11 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
     }
   };
 
-  // Process images in various directories
-  const imageDirectories = [ 'images', 'phet/images', 'phet-io/images', 'adapted-from-phet/images' ];
-  const mipmapDirectories = [ 'mipmaps', 'phet/mipmaps', 'phet-io/mipmaps', 'adapted-from-phet/mipmaps' ];
-
-  targetImages && await visitDirectories( imageDirectories, SVG_SUFFIXES, modulifySVG );
-  targetImages && await visitDirectories( imageDirectories, OTHER_IMAGE_SUFFIXES, modulifyImage );
-  targetImages && await visitDirectories( mipmapDirectories, IMAGE_SUFFIXES, modulifyMipmap );
-  targetSounds && await visitDirectories( [ `../${repo}/sounds` ], SOUND_SUFFIXES, modulifySound );
-  targetStrings && await visitDirectories( [ `../${repo}/strings` ], [ '.ftl' ], modulifyFluentFile );
+  targetImages && await visitDirectories( IMAGE_DIRECTORIES, SVG_SUFFIXES, modulifySVG );
+  targetImages && await visitDirectories( IMAGE_DIRECTORIES, OTHER_IMAGE_SUFFIXES, modulifyImage );
+  targetImages && await visitDirectories( MIPMAP_DIRECTORIES, IMAGE_SUFFIXES, modulifyMipmap );
+  targetSounds && await visitDirectories( SOUND_DIRECTORIES, SOUND_SUFFIXES, modulifySound );
+  targetStrings && await visitDirectories( STRING_DIRECTORIES, FLUENT_SUFFIXES, modulifyFluentFile );
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
@@ -409,4 +440,51 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
     // Update the images module file
     await createImageModule( repo, concreteRegionsAndCultures );
   }
+};
+
+export const getModulifiedFileString = async ( relativePath: string ): Promise<string | null> => {
+  const repo = relativePath.split( '/' )[ 0 ];
+  const repoRelativePath = path.relative( `${repo}/`, relativePath );
+
+  const pathWithSuffix = ( suffix: string, codeSuffix: string ) => {
+    const nonDotSuffix = suffix.substring( 1 );
+
+    return repoRelativePath.replace( `_${nonDotSuffix}${codeSuffix}`, suffix );
+  };
+
+  for ( const dir of IMAGE_DIRECTORIES ) {
+    if ( relativePath.startsWith( `${repo}/${dir}/` ) ) {
+      const imageSuffix = `.${relativePath.match( /_(\w+)\.ts$/ )?.[ 1 ] ?? ''}`;
+
+      if ( SVG_SUFFIXES.includes( imageSuffix ) ) {
+        return getModulifiedSVGImage( repo, pathWithSuffix( imageSuffix, '.ts' ) );
+      }
+      else if ( OTHER_IMAGE_SUFFIXES.includes( imageSuffix ) ) {
+        return getModulifiedImage( repo, pathWithSuffix( imageSuffix, '.ts' ) );
+      }
+    }
+  }
+  for ( const dir of MIPMAP_DIRECTORIES ) {
+    if ( relativePath.startsWith( `${repo}/${dir}/` ) ) {
+      const mipmapSuffix = `.${relativePath.match( /_(\w+)\.ts$/ )?.[ 1 ] ?? ''}`;
+
+      if ( IMAGE_SUFFIXES.includes( mipmapSuffix ) ) {
+        return getModulifiedMipmap( repo, pathWithSuffix( mipmapSuffix, '.ts' ) );
+      }
+    }
+  }
+  for ( const dir of SOUND_DIRECTORIES ) {
+    if ( relativePath.startsWith( `${repo}/${dir}/` ) ) {
+      const soundSuffix = `.${relativePath.match( /_(\w+)\.js$/ )?.[ 1 ] ?? ''}`;
+
+      if ( SOUND_SUFFIXES.includes( soundSuffix ) ) {
+        return getModulifiedSound( repo, pathWithSuffix( soundSuffix, '.js' ) );
+      }
+    }
+  }
+  if ( relativePath.startsWith( `${repo}/js/strings/` ) && relativePath.endsWith( 'Messages.ts' ) ) {
+    return getModulifiedFluentFile( repo, `strings/${path.basename( relativePath.replace( /Messages\.ts$/, '' ) )}_en.ftl` );
+  }
+
+  return null;
 };
