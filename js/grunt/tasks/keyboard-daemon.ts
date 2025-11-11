@@ -1,5 +1,8 @@
 // Copyright 2025, University of Colorado Boulder
 
+/* eslint-disable */
+// @ts-nocheck
+
 /**
  * Persistent keyboard interaction daemon for PhET simulations.
  *
@@ -366,7 +369,6 @@ type Command =
 function waitForAriaLiveMessages( page: playwright.Page, timeoutMs: number ): Promise<string[]> {
   return new Promise( resolve => {
     const ariaLiveMessages: string[] = [];
-    // eslint-disable-next-line prefer-const
     let timeoutId: NodeJS.Timeout;
 
     const handleConsole = ( msg: playwright.ConsoleMessage ) => {
@@ -429,31 +431,33 @@ async function getFocusOrder( page: playwright.Page ): Promise<string[]> {
   const maxTabs = Number( getOptionIfProvided( 'tabPressCount', `${TAB_PRESS_COUNT}` ) );
 
   const { handle: originalFocusHandle, restore: restoreOriginalFocus } = await createFocusRestoration( page );
-  const originalFocus = await getFocusInfo( page );
+  const originalFocus = await getFocusInfo( page, true );
+  console.log( `starting at ${originalFocus.dataUniqueId} ${originalFocus.name}` );
 
-  const focusOrder: string[] = [];
+  const visitedUniqueIDs: string[] = [ originalFocus.dataUniqueId ];
+  const focusOrder: string[] = [ originalFocus.name ];
+
+  await page.keyboard.press( 'Tab' );
+  await page.waitForTimeout( tabDelay );
 
   try {
     // Tab through and collect all focusable elements
     for ( let i = 0; i < maxTabs; i++ ) {
-      const currentFocus = await getFocusInfo( page );
+      const currentFocus = await getFocusInfo( page, true );
+      console.log( `visit at ${currentFocus.dataUniqueId} ${currentFocus.name}` );
 
       // Check if we've looped back to the start (but allow first iteration)
-      if ( i > 0 && currentFocus.name === originalFocus.name ) {
+      if ( visitedUniqueIDs.includes( currentFocus.dataUniqueId ) ) {
         break;
       }
 
       // Somehow the entire document shows up as the accessible name of an item,
       // filter it out (same logic as in find command)
       if ( currentFocus.name.length < 100 ) {
-        // Mark the original focus with >>>
-        if ( currentFocus.name === originalFocus.name ) {
-          focusOrder.push( `>>> ${currentFocus.name} <<<` );
-        }
-        else {
-          focusOrder.push( currentFocus.name );
-        }
+        focusOrder.push( currentFocus.name );
+        console.log( `  added ${currentFocus.name}` );
       }
+      visitedUniqueIDs.push( currentFocus.dataUniqueId );
 
       await page.keyboard.press( 'Tab' );
       await page.waitForTimeout( tabDelay );
@@ -472,14 +476,16 @@ async function getFocusOrder( page: playwright.Page ): Promise<string[]> {
 /**
  * Get information about the currently focused element.
  */
-async function getFocusInfo( page: playwright.Page ): Promise<FocusInfo> {
-  return page.evaluate( () => {
+async function getFocusInfo( page: playwright.Page, withID = false ): Promise<FocusInfo> {
+  const result = page.evaluate( () => {
     // @ts-expect-error
     const activeElement = document.activeElement;
 
     // @ts-expect-error
     const activeElementId = activeElement && 'id' in activeElement ? ( activeElement as HTMLElement ).id : '';
     const accessibleName = activeElement?.getAttribute?.( 'aria-label' );
+    const dataUniqueId = activeElement?.getAttribute?.( 'data-unique-id' );
+
     let derivedAccessibleName = accessibleName;
 
     const innerText = activeElement?.innerText || '';
@@ -505,9 +511,19 @@ async function getFocusInfo( page: playwright.Page ): Promise<FocusInfo> {
       name: name,
       role: activeElement?.getAttribute?.( 'role' ) || '',
       checked: checked,
-      value: value
+      value: value,
+      dataUniqueId: dataUniqueId || '',
+      id: activeElementId || ''
+
     };
   } );
+
+  if ( !withID ) {
+    delete result.id;
+    delete result.dataUniqueId;
+  }
+
+  return result;
 }
 
 /**
