@@ -23,7 +23,7 @@
  * The keyboard daemon must be running in another terminal:
  * ```bash
  * cd your-sim-repo
- * grunt keyboard-daemon --screens=2
+ * grunt interact-daemon --screens=2
  * ```
  *
  * ## Basic Usage
@@ -116,7 +116,7 @@
  * - Composable command sequences
  * - Clear, structured output
  * - Minimal token overhead
- * - All keyboard-daemon features accessible
+ * - All interact-daemon features accessible
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
