@@ -9,6 +9,15 @@
  * This tool provides a human-friendly interface to the keyboard daemon API,
  * eliminating the need for curl, JSON construction, and jq parsing.
  *
+ * ## Setup
+ *
+ * Add this alias to your ~/.zshrc (adjust path as needed):
+ * ```bash
+ * alias interact='sage run ~/phet/root/chipper/js/grunt/tasks/interact.ts'
+ * ```
+ *
+ * Then reload: `source ~/.zshrc`
+ *
  * ## Prerequisites
  *
  * The keyboard daemon must be running in another terminal:
@@ -21,33 +30,36 @@
  *
  * Single commands:
  * ```bash
- * grunt interact look                    # Survey the simulation
- * grunt interact status                  # Check daemon status
- * grunt interact tab 5                   # Tab forward 5 times
- * grunt interact shiftTab 3              # Tab backward 3 times
- * grunt interact press Space             # Press a key
- * grunt interact find "Reset All"        # Find and activate element
- * grunt interact wait 500                # Wait 500ms
- * grunt interact getFocus                # Get current focus
- * grunt interact reload                  # Reload the simulation
+ * interact look                    # Survey the simulation (PDOM + focus order)
+ * interact peek                    # Show PDOM without disrupting focus
+ * interact status                  # Check daemon status
+ * interact tab 5                   # Tab forward 5 times
+ * interact tab "Reset All"         # Tab to named element (doesn't press)
+ * interact shiftTab 1              # Shift+Tab once (tab backward)
+ * interact shiftTab 3              # Shift+Tab three times
+ * interact press Space             # Press a key on focused element
+ * interact wait 500                # Wait 500ms
+ * interact getFocus                # Get current focus
+ * interact reload                  # Reload the simulation
  * ```
  *
- * Find with custom key:
+ * Tab to element and activate it:
  * ```bash
- * grunt interact find "Submit" --press=Enter
+ * interact tab "Reset All" + press Space
+ * interact tab "Submit" + press Enter
  * ```
  *
  * Navigate to a different simulation:
  * ```bash
- * grunt interact navigate "http://localhost/number-pairs/number-pairs_en.html?brand=phet-io&ea&debugger"
+ * interact navigate "http://localhost/number-pairs/number-pairs_en.html?brand=phet-io&ea&debugger"
  * ```
  *
  * ## Command Sequences
  *
  * Chain multiple commands using `+` separator:
  * ```bash
- * grunt interact tab 10 + find "Show Current" + wait 100 + look
- * grunt interact find "Lab" + wait 200 + find "Keyboard Shortcuts" + look
+ * interact tab 10 + tab "Show Current" + press Space + wait 100 + look
+ * interact tab "Lab" + press Space + wait 200 + tab "Keyboard Shortcuts" + peek
  * ```
  *
  * ## Options
@@ -55,7 +67,6 @@
  * - `--daemonPort=3001` - Port the daemon is listening on (default: 3001)
  * - `--daemonHost=localhost` - Host the daemon is on (default: localhost)
  * - `--continueOnError` - Continue executing commands even if one fails
- * - `--press=KEY` - Key to press for find commands (default: Space)
  * - `--raw` - Output raw JSON response (no formatting)
  * - `--json` - Alias for --raw
  * - `--debug` - Show debug output (useful for troubleshooting)
@@ -64,28 +75,28 @@
  *
  * Basic interaction workflow:
  * ```bash
- * # Survey the simulation
- * grunt interact look
+ * # Survey the simulation (may hide popups due to focus changes)
+ * interact look
+ *
+ * # Quick peek at PDOM (doesn't change focus)
+ * interact peek
  *
  * # Open keyboard help
- * grunt interact find "Keyboard Shortcuts"
- *
- * # Survey again to see the help dialog
- * grunt interact look
+ * interact tab "Keyboard Shortcuts" + press Space
  *
  * # Navigate and interact
- * grunt interact find "Lab" + wait 200 + look
- * grunt interact tab 5 + press ArrowDown
+ * interact tab "Lab" + press Space + wait 200 + peek
+ * interact tab 5 + press ArrowDown
  * ```
  *
  * Using different daemon port:
  * ```bash
- * grunt interact --daemonPort=3002 look
+ * interact --daemonPort=3002 look
  * ```
  *
  * Continue on error:
  * ```bash
- * grunt interact --continueOnError find "Nonexistent" + look
+ * interact --continueOnError tab "Nonexistent" + look
  * ```
  *
  * ## Output Format
@@ -156,6 +167,11 @@ function parseCommands( args: string[], getOptionFn: ( name: string, defaultValu
         commands.push( { look: true } );
         break;
 
+      case 'peek':
+      case 'pdom':
+        commands.push( { peek: true } );
+        break;
+
       case 'getfocus':
       case 'focus':
         commands.push( { getFocus: true } );
@@ -163,13 +179,19 @@ function parseCommands( args: string[], getOptionFn: ( name: string, defaultValu
 
       case 'tab':
         if ( parts.length < 2 ) {
-          throw new Error( 'tab command requires a count: grunt interact tab 5' );
+          throw new Error( 'tab command requires a count or element name: interact tab 5 OR interact tab "Reset All"' );
         }
+        // Try parsing as number first
         const tabCount = parseInt( parts[ 1 ], 10 );
-        if ( isNaN( tabCount ) || tabCount <= 0 ) {
-          throw new Error( `Invalid tab count: ${parts[ 1 ]}` );
+        if ( !isNaN( tabCount ) && tabCount > 0 ) {
+          // Numeric tab
+          commands.push( { tab: tabCount } );
         }
-        commands.push( { tab: tabCount } );
+        else {
+          // Tab to named element
+          const targetName = parts.slice( 1 ).join( ' ' ).replace( /^["']|["']$/g, '' );
+          commands.push( { find: targetName, pressAfter: false } );
+        }
         break;
 
       case 'shifttab':
@@ -186,31 +208,14 @@ function parseCommands( args: string[], getOptionFn: ( name: string, defaultValu
 
       case 'press':
         if ( parts.length < 2 ) {
-          throw new Error( 'press command requires a key: grunt interact press Space' );
+          throw new Error( 'press command requires a key: interact press Space' );
         }
         commands.push( { press: parts[ 1 ] } );
         break;
 
-      case 'find':
-        if ( parts.length < 2 ) {
-          throw new Error( 'find command requires a target name: grunt interact find "Reset All"' );
-        }
-        // Join remaining parts as the target name (handles quoted strings)
-        const targetName = parts.slice( 1 ).join( ' ' ).replace( /^["']|["']$/g, '' );
-        const findCmd: IntentionalAny = { find: targetName };
-
-        // Check for --press option
-        const pressOption = getOptionFn( 'press' );
-        if ( pressOption ) {
-          findCmd.press = pressOption;
-        }
-
-        commands.push( findCmd );
-        break;
-
       case 'wait':
         if ( parts.length < 2 ) {
-          throw new Error( 'wait command requires milliseconds: grunt interact wait 500' );
+          throw new Error( 'wait command requires milliseconds: interact wait 500' );
         }
         const waitMs = parseInt( parts[ 1 ], 10 );
         if ( isNaN( waitMs ) || waitMs < 0 ) {
@@ -221,14 +226,14 @@ function parseCommands( args: string[], getOptionFn: ( name: string, defaultValu
 
       case 'navigate':
         if ( parts.length < 2 ) {
-          throw new Error( 'navigate command requires a URL: grunt interact navigate "http://..."' );
+          throw new Error( 'navigate command requires a URL: interact navigate "http://..."' );
         }
         const url = parts.slice( 1 ).join( ' ' ).replace( /^["']|["']$/g, '' );
         commands.push( { navigate: url } );
         break;
 
       default:
-        throw new Error( `Unknown command: ${cmdType}. Valid commands: look, getFocus, tab, shiftTab, press, find, wait, navigate` );
+        throw new Error( `Unknown command: ${cmdType}. Valid commands: look, peek, getFocus, tab, shiftTab, press, wait, navigate` );
     }
   }
 
@@ -459,25 +464,26 @@ export const interact = ( async () => {
   // Parse commands
   if ( args.length === 0 ) {
     console.error( 'Error: No command specified' );
-    console.error( '\nUsage: grunt interact <command> [args]' );
+    console.error( '\nUsage: interact <command> [args]' );
+    console.error( '\nSetup: Add to ~/.zshrc:' );
+    console.error( '  alias interact=\'sage run ~/phet/root/chipper/js/grunt/tasks/interact.ts\'' );
     console.error( '\nCommands:' );
     console.error( '  status                   - Check daemon status' );
     console.error( '  reload                   - Reload the simulation' );
-    console.error( '  look                     - Survey simulation (PDOM + focus order)' );
+    console.error( '  look                     - Survey simulation (PDOM + focus order, may hide popups)' );
+    console.error( '  peek                     - Show PDOM without disrupting focus' );
     console.error( '  getFocus                 - Get current focus' );
     console.error( '  tab <count>              - Tab forward N times' );
-    console.error( '  shiftTab <count>         - Tab backward N times' );
-    console.error( '  press <key>              - Press a key' );
-    console.error( '  find "<name>"            - Find and activate element' );
-    console.error( '  find "<name>" --press=KEY - Find and press specific key' );
+    console.error( '  tab "<name>"             - Tab to named element (doesn\'t press)' );
+    console.error( '  shiftTab <count>         - Shift+Tab backward N times' );
+    console.error( '  press <key>              - Press key on focused element (Space, Enter, ArrowDown, etc.)' );
     console.error( '  wait <ms>                - Wait milliseconds' );
     console.error( '  navigate "<url>"         - Navigate to URL' );
-    console.error( '\nChain commands with +: grunt interact tab 5 + find "Reset All" + look' );
+    console.error( '\nChain commands with +: interact tab "Reset All" + press Space + look' );
     console.error( '\nOptions:' );
     console.error( '  --daemonPort=3001        - Daemon port (default: 3001)' );
     console.error( '  --daemonHost=localhost   - Daemon host (default: localhost)' );
     console.error( '  --continueOnError        - Continue on command failure' );
-    console.error( '  --press=KEY              - Key for find commands (default: Space)' );
     console.error( '  --raw or --json          - Output raw JSON' );
     console.error( '  --debug                  - Show debug output' );
     process.exit( 1 );

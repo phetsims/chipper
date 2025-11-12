@@ -356,8 +356,9 @@ type Command =
   | { tab: number }
   | { shiftTab: number }
   | { press: string }
-  | { find: string; press?: string }
+  | { find: string; press?: string; pressAfter?: boolean }
   | { look: true }
+  | { peek: true }
   | { getFocus: true }
   | { wait: number }
   | { navigate: string };
@@ -643,6 +644,48 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
       };
     }
 
+    // Peek at PDOM without disrupting focus
+    if ( 'peek' in cmd ) {
+      const pdom = await page.evaluate( () => {
+        // @ts-expect-error
+        const pdomRoot = ( window.phet as IntentionalAny )?.joist?.sim?.display?.pdomRootElement;
+        if ( !pdomRoot ) {
+          return 'PDOM not available';
+        }
+
+        // @ts-expect-error
+        const focusedElement = document.activeElement;
+        const lines = pdomRoot.innerText.split( '\n' );
+
+        // Try to mark the focused element in the text
+        // @ts-expect-error
+        if ( focusedElement && focusedElement !== document.body ) {
+          const ariaLabel = focusedElement.getAttribute?.( 'aria-label' );
+          const innerText = focusedElement.innerText || '';
+          const focusedName = ariaLabel || innerText || focusedElement.tagName;
+
+          // Find and mark the line containing the focused element
+          return lines.map( ( line: string ) => {
+            const trimmedLine = line.trim();
+            if ( trimmedLine && focusedName && trimmedLine.includes( focusedName ) ) {
+              return `>>> ${line} <<<`;
+            }
+            return line;
+          } ).join( '\n' );
+        }
+
+        return pdomRoot.innerText;
+      } );
+
+      return {
+        success: true,
+        command: cmd,
+        action: 'Peeked at PDOM (no focus disruption)',
+        focus: await getFocusInfo( page ),
+        pdom: pdom
+      };
+    }
+
     // Get focus
     if ( 'getFocus' in cmd ) {
       return {
@@ -656,6 +699,7 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
     // Find element and optionally press key
     if ( 'find' in cmd ) {
       const targetName = cmd.find;
+      const pressAfter = cmd.pressAfter !== false; // Default to true
       const pressKey = cmd.press || 'Space';
       const maxTabs = Number( getOptionIfProvided( 'tabPressCount', `${TAB_PRESS_COUNT}` ) );
 
@@ -671,17 +715,27 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
           availableFocus.push( focus.name );
 
           if ( focus.name === targetName ) {
-            const ariaLivePromise = waitForAriaLiveMessages( page, ARIA_LIVE_WAIT_TIMEOUT_MS );
-            await page.keyboard.press( pressKey );
-            await page.waitForTimeout( tabDelay );
-            const ariaLive = await ariaLivePromise;
-            return {
-              success: true,
-              command: cmd,
-              action: `Tabbed ${i + 1} time(s), found "${targetName}", pressed ${pressKey}`,
-              focus: await getFocusInfo( page ),
-              ariaLive: ariaLive.length > 0 ? ariaLive : undefined
-            };
+            if ( pressAfter ) {
+              const ariaLivePromise = waitForAriaLiveMessages( page, ARIA_LIVE_WAIT_TIMEOUT_MS );
+              await page.keyboard.press( pressKey );
+              await page.waitForTimeout( tabDelay );
+              const ariaLive = await ariaLivePromise;
+              return {
+                success: true,
+                command: cmd,
+                action: `Tabbed ${i + 1} time(s), found "${targetName}", pressed ${pressKey}`,
+                focus: await getFocusInfo( page ),
+                ariaLive: ariaLive.length > 0 ? ariaLive : undefined
+              };
+            }
+            else {
+              return {
+                success: true,
+                command: cmd,
+                action: `Tabbed ${i + 1} time(s), found "${targetName}"`,
+                focus: await getFocusInfo( page )
+              };
+            }
           }
         }
 
