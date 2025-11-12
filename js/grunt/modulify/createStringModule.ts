@@ -14,7 +14,7 @@ import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileA
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
-import { replace } from './modulify.js';
+import { ModulifiedFile, replace } from './modulify.js';
 
 const OFF = 'off';
 
@@ -22,10 +22,10 @@ export default async ( repo: string ): Promise<void> => {
   const stringModuleName = `${pascalCase( repo )}Strings`;
   const relativeStringModuleFile = `js/${stringModuleName}.ts`;
 
-  await writeFileAndGitAdd( repo, relativeStringModuleFile, await getStringModuleContents( repo ) );
+  await writeFileAndGitAdd( repo, relativeStringModuleFile, ( await getStringModuleContents( repo ) ).content );
 };
 
-export const getStringModuleContents = async ( repo: string ): Promise<string> => {
+export const getStringModuleContents = async ( repo: string ): Promise<ModulifiedFile> => {
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   const stringModuleName = `${pascalCase( repo )}Strings`;
   const relativeStringModuleFile = `js/${stringModuleName}.ts`;
@@ -37,7 +37,8 @@ export const getStringModuleContents = async ( repo: string ): Promise<string> =
   }
 
   const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeStringModuleFile );
-  return `${copyrightLine}
+  return {
+    content: `${copyrightLine}
 
 /* eslint-disable */
 /* @formatter:${OFF} */
@@ -57,7 +58,9 @@ const ${stringModuleName} = getStringModule( '${packageObject.phet.requirejsName
 ${namespace}.register( '${stringModuleName}', ${stringModuleName} );
 
 export default ${stringModuleName};
-`;
+`,
+    usedRelativeFiles: [ `${repo}/package.json` ]
+  };
 };
 
 /**

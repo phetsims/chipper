@@ -27,6 +27,14 @@ import modulifyFluentFile, { getModulifiedFluentFile } from './modulifyFluentFil
 
 const svgo = require( 'svgo' );
 
+// Source files used for a resulting modulified file are tracked, so that external services (i.e. launchpad) can
+// determine when to re-modulify by checking timestamps/sizes of source files (or whether chipper/perennial-alias
+// have changed).
+export type ModulifiedFile = {
+  content: string;
+  usedRelativeFiles: string[];
+};
+
 const OFF = 'off';
 
 // disable lint in compiled files, because it increases the linting time
@@ -76,24 +84,27 @@ const expandDots = ( relativePath: string ): string => {
 /**
  * Turn a file into a TS file that loads the image.
  */
-const getModulifiedImage = async ( repo: string, relativePath: string ): Promise<string> => {
+const getModulifiedImage = async ( repo: string, relativePath: string ): Promise<ModulifiedFile> => {
   const abspath = path.resolve( `../${repo}`, relativePath );
   const dataURI = await asyncLoadFileAsDataURI( abspath );
 
-  return `${HEADER}
+  return {
+    content: `${HEADER}
 import asyncLoader from '${expandDots( relativePath )}phet-core/js/asyncLoader.js';
 
 const image = new Image();
 const unlock = asyncLoader.createLock( image );
 image.onload = unlock;
 image.src = '${dataURI}';
-export default image;`;
+export default image;`,
+    usedRelativeFiles: [ relativePath ]
+  };
 };
 
 /**
  * Turn a file into a TS file that loads the SVG image.
  */
-const getModulifiedSVGImage = async ( repo: string, relativePath: string ): Promise<string> => {
+const getModulifiedSVGImage = async ( repo: string, relativePath: string ): Promise<ModulifiedFile> => {
   const abspath = path.resolve( `../${repo}`, relativePath );
   const fileContents = await fsPromises.readFile( abspath, 'utf-8' );
 
@@ -117,20 +128,23 @@ const getModulifiedSVGImage = async ( repo: string, relativePath: string ): Prom
     ]
   } ).data;
 
-  return `${HEADER}
+  return {
+    content: `${HEADER}
 import asyncLoader from '${expandDots( relativePath )}phet-core/js/asyncLoader.js';
 
 const image = new Image();
 const unlock = asyncLoader.createLock( image );
 image.onload = unlock;
 image.src = \`data:image/svg+xml;base64,\${btoa(${toLessEscapedString( optimizedContents )})}\`;
-export default image;`;
+export default image;`,
+    usedRelativeFiles: [ relativePath ]
+  };
 };
 
 /**
  * Turn a file into a TS file that loads the mipmap
  */
-const getModulifiedMipmap = async ( repo: string, relativePath: string ): Promise<string> => {
+const getModulifiedMipmap = async ( repo: string, relativePath: string ): Promise<ModulifiedFile> => {
   // Defaults. NOTE: using the default settings because we have not run into a need, see
   // https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/945
   const config = {
@@ -142,7 +156,8 @@ const getModulifiedMipmap = async ( repo: string, relativePath: string ): Promis
   const mipmapLevels = await createMipmap( abspath, config.level, config.quality );
   const entries = mipmapLevels.map( ( { width, height, url } ) => `  new MipmapElement( ${width}, ${height}, '${url}' )` );
 
-  return `${HEADER}
+  return {
+    content: `${HEADER}
 import MipmapElement from '${expandDots( relativePath )}chipper/js/browser/MipmapElement.js';
 
 // The levels in the mipmap. Specify explicit types rather than inferring to assist the type checker, for this boilerplate case.
@@ -150,20 +165,23 @@ const mipmaps = [
 ${entries.join( ',\n' )}
 ];
 
-export default mipmaps;`;
+export default mipmaps;`,
+    usedRelativeFiles: [ relativePath ]
+  };
 };
 
 /**
  * Turn a file into a TS file that loads the sound
  */
-const getModulifiedSound = async ( repo: string, relativePath: string ): Promise<string> => {
+const getModulifiedSound = async ( repo: string, relativePath: string ): Promise<ModulifiedFile> => {
   const abspath = path.resolve( `../${repo}`, relativePath );
 
   // load the sound file
   const dataURI = await asyncLoadFileAsDataURI( abspath );
 
   // output the contents of the file that will define the sound in JS format
-  return `${HEADER}
+  return {
+    content: `${HEADER}
 import asyncLoader from '${expandDots( relativePath )}phet-core/js/asyncLoader.js';
 import base64SoundToByteArray from '${expandDots( relativePath )}tambo/js/base64SoundToByteArray.js';
 import WrappedAudioBuffer from '${expandDots( relativePath )}tambo/js/WrappedAudioBuffer.js';
@@ -208,11 +226,13 @@ if ( decodePromise ) {
       safeUnlock();
     } );
 }
-export default wrappedAudioBuffer;`;
+export default wrappedAudioBuffer;`,
+    usedRelativeFiles: [ relativePath ]
+  };
 };
 
 // the image module at js/${_.camelCase( repo )}Images.js for repos that need it.
-const getImageModule = async ( repo: string, supportedRegionsAndCultures: string[] ): Promise<string> => {
+const getImageModule = async ( repo: string, supportedRegionsAndCultures: string[] ): Promise<ModulifiedFile> => {
   const spec: Record<string, Record<string, string>> = JSON.parse( await fsPromises.readFile( `../${repo}/${repo}-images.json`, 'utf8' ) );
   const namespace = _.camelCase( repo );
   const imageModuleName = `${pascalCase( repo )}Images`;
@@ -272,7 +292,8 @@ const getImageModule = async ( repo: string, supportedRegionsAndCultures: string
   }
 
   const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeImageModuleFile );
-  return `${copyrightLine}
+  return {
+    content: `${copyrightLine}
 /* eslint-disable */
 /* @formatter:${OFF} */
 /**
@@ -293,7 +314,13 @@ const ${imageModuleName} = {
 ${namespace}.register( '${imageModuleName}', ${imageModuleName} );
 
 export default ${imageModuleName};
-`;
+`,
+    usedRelativeFiles: [
+      `${repo}/${repo}-images.json`,
+      `${repo}/package.json`
+      // We don't actually do anything but error if the files aren't there, so we don't need them here
+    ]
+  };
 };
 
 /**
@@ -302,7 +329,7 @@ export default ${imageModuleName};
  * @param relativePath - the relative path of the image file
  */
 const modulifyImage = async ( repo: string, relativePath: string ) => {
-  const contents = await getModulifiedImage( repo, relativePath );
+  const contents = ( await getModulifiedImage( repo, relativePath ) ).content;
 
   const tsFilename = convertSuffix( relativePath, '.ts' );
   await writeFileAndGitAdd( repo, tsFilename, contents );
@@ -314,7 +341,7 @@ const modulifyImage = async ( repo: string, relativePath: string ) => {
  * @param relativePath - the relative path of the SVG file
  */
 const modulifySVG = async ( repo: string, relativePath: string ) => {
-  const contents = await getModulifiedSVGImage( repo, relativePath );
+  const contents = ( await getModulifiedSVGImage( repo, relativePath ) ).content;
 
   const tsFilename = convertSuffix( relativePath, '.ts' );
   await writeFileAndGitAdd( repo, tsFilename, contents );
@@ -326,7 +353,7 @@ const modulifySVG = async ( repo: string, relativePath: string ) => {
  * @param relativePath - the relative path of the image file
  */
 const modulifyMipmap = async ( repo: string, relativePath: string ) => {
-  const contents = await getModulifiedMipmap( repo, relativePath );
+  const contents = ( await getModulifiedMipmap( repo, relativePath ) ).content;
 
   const tsFilename = convertSuffix( relativePath, '.ts' );
   await writeFileAndGitAdd( repo, tsFilename, contents );
@@ -338,7 +365,7 @@ const modulifyMipmap = async ( repo: string, relativePath: string ) => {
  * @param relativePath - the relative path of the sound file
  */
 const modulifySound = async ( repo: string, relativePath: string ) => {
-  const contents = await getModulifiedSound( repo, relativePath );
+  const contents = ( await getModulifiedSound( repo, relativePath ) ).content;
 
   const jsFilename = convertSuffix( relativePath, '.js' );
   await writeFileAndGitAdd( repo, jsFilename, contents );
@@ -370,7 +397,7 @@ const createImageModule = async ( repo: string, supportedRegionsAndCultures: str
   const imageModuleName = `${pascalCase( repo )}Images`;
   const relativeImageModuleFile = `js/${imageModuleName}.ts`;
 
-  await writeFileAndGitAdd( repo, relativeImageModuleFile, await getImageModule( repo, supportedRegionsAndCultures ) );
+  await writeFileAndGitAdd( repo, relativeImageModuleFile, ( await getImageModule( repo, supportedRegionsAndCultures ) ).content );
 };
 
 /**
@@ -454,7 +481,7 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
  *
  * @param relativePath - the relative path of the modulified file, from the project root, e.g. 'joist/images/foo_png.ts'
  */
-export const getModulifiedFileString = async ( relativePath: string ): Promise<string | null> => {
+export const getModulifiedFileString = async ( relativePath: string ): Promise<ModulifiedFile | null> => {
   const repo = relativePath.split( '/' )[ 0 ];
   const repoRelativePath = path.relative( `${repo}/`, relativePath );
 
@@ -505,18 +532,29 @@ export const getModulifiedFileString = async ( relativePath: string ): Promise<s
     return getModulifiedFluentFile( repo, `strings/${path.basename( relativePath.replace( /Messages\.ts$/, '' ) )}_en.ftl` );
   }
 
-  const getEnglishStringsContents = async ( requestedRepo: string ): Promise<string> => {
+  const getEnglishStringsModulifiedFile = async ( requestedRepo: string ): Promise<ModulifiedFile> => {
+    const usedRelativeFiles: string[] = [
+      `${requestedRepo}/${requestedRepo}-strings_en.yaml`,
+      `${requestedRepo}/${requestedRepo}-strings_en.json`
+    ];
+
     if ( fs.existsSync( `../${requestedRepo}/${requestedRepo}-strings_en.yaml` ) ) {
-      return getJSONFromYamlStrings( requestedRepo );
+      return {
+        content: await getJSONFromYamlStrings( requestedRepo ),
+        usedRelativeFiles: usedRelativeFiles
+      };
     }
     else {
-      return fsPromises.readFile( `../${requestedRepo}/${requestedRepo}-strings_en.json`, 'utf8' );
+      return {
+        content: await fsPromises.readFile( `../${requestedRepo}/${requestedRepo}-strings_en.json`, 'utf8' ),
+        usedRelativeFiles: usedRelativeFiles
+      };
     }
   };
 
   // If we have YAML strings and get a direct request for the JSON, modulify it on the fly.
   if ( relativePath === `${repo}/${repo}-strings_en.json` && fs.existsSync( `../${repo}/${repo}-strings_en.yaml` ) ) {
-    return getEnglishStringsContents( repo );
+    return getEnglishStringsModulifiedFile( repo );
   }
 
   // String module file
@@ -528,7 +566,7 @@ export const getModulifiedFileString = async ( relativePath: string ): Promise<s
   if ( relativePath.startsWith( 'babel/_generated_development_strings/' ) && relativePath.endsWith( '_all.json' ) ) {
     const requestedRepo = path.basename( relativePath ).split( '_' )[ 0 ];
 
-    return getDevelopmentStringsContents( requestedRepo, await getEnglishStringsContents( requestedRepo ) );
+    return getDevelopmentStringsContents( requestedRepo, await getEnglishStringsModulifiedFile( requestedRepo ) );
   }
 
   // Region-and-culture image module file
