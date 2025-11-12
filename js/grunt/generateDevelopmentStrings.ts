@@ -17,6 +17,7 @@ import path from 'path';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import fixEOL from './fixEOL.js';
+import { ModulifiedFile } from './modulify/modulify.js';
 
 // @ts-expect-error - until we have "type": "module" in our package.json
 const __dirname = dirname( import.meta.url );
@@ -67,7 +68,7 @@ export default async ( repo: string ): Promise<void> => {
   // Create a file name for the conglomerate string file.
   const conglomerateStringFileName = `${repo}_all.json`;
 
-  const developmentStringContents = await getDevelopmentStringsContents( repo );
+  const developmentStringContents = ( await getDevelopmentStringsContents( repo ) )?.content ?? null;
 
   // Do not generate a file if no translations were found.
   if ( developmentStringContents ) {
@@ -92,8 +93,10 @@ export default async ( repo: string ): Promise<void> => {
 
 export const getDevelopmentStringsContents = async (
   repo: string,
-  englishStringData?: string
-): Promise<string | null> => {
+  englishStringModulifiedFile?: ModulifiedFile
+): Promise<ModulifiedFile | null> => {
+
+  const usedRelativeFiles: string[] = [];
 
   const rootPath = path.join( __dirname, '..', '..', '..' );
 
@@ -111,6 +114,7 @@ export const getDevelopmentStringsContents = async (
 
   const stringFiles: string[] = [];
   try {
+    usedRelativeFiles.push( `babel/${repo}` );
     const paths: string[] = fs.readdirSync( babelRepoPath );
     stringFiles.push( ...paths.map( p => path.join( babelRepoPath, p ) ) );
   }
@@ -119,10 +123,12 @@ export const getDevelopmentStringsContents = async (
   }
 
   const englishStringPath = path.join( rootPath, repo, `${repo}-strings_en.json` );
+  usedRelativeFiles.push( `${repo}/${repo}-strings_en.json` );
   if ( fs.existsSync( englishStringPath ) ) {
     stringFiles.push( englishStringPath );
   }
 
+  usedRelativeFiles.push( 'babel/localeData.json' );
   const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
   // Do not generate a file if no translations were found.
@@ -143,8 +149,9 @@ export const getDevelopmentStringsContents = async (
       }
 
       // Get the contents of the string file.
-      const overrideEnglish = ( locale === 'en' && englishStringData );
-      const stringFileContents = overrideEnglish ? englishStringData : ( await fsPromises.readFile( stringFile, 'utf8' ) );
+      const overrideEnglish = ( locale === 'en' && englishStringModulifiedFile );
+      const stringFileContents = overrideEnglish ? englishStringModulifiedFile.content : ( await fsPromises.readFile( stringFile, 'utf8' ) );
+      usedRelativeFiles.push( path.relative( rootPath, stringFile ) );
 
       // Parse the string file contents.
       const parsedStringFileContents = JSON.parse( stringFileContents );
@@ -157,7 +164,13 @@ export const getDevelopmentStringsContents = async (
       conglomerateStringObject[ locale ] = objectToAddToLocale;
     }
 
-    return fixEOL( JSON.stringify( conglomerateStringObject, null, 2 ) );
+    return {
+      content: fixEOL( JSON.stringify( conglomerateStringObject, null, 2 ) ),
+      usedRelativeFiles: [
+        ...usedRelativeFiles,
+        ...( englishStringModulifiedFile?.usedRelativeFiles ?? [] )
+      ]
+    };
   }
   else {
     return null;

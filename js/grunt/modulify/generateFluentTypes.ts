@@ -20,6 +20,7 @@ import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContent
 import { safeLoadYaml } from './convertStringsYamlToJson.js';
 import { getFluentParamsFromIndex, NUMBER_LITERAL, ParamInfo, parseFluentToMap } from './getFluentParams.js';
 import convertHoistedSelects from './convertHoistedSelects.js';
+import { ModulifiedFile } from './modulify.js';
 
 type Leaf = { pathArr: string[]; value: string };
 type Obj = Record<string, IntentionalAny>;
@@ -346,7 +347,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
   return lines.join( '\n' );
 }
 
-export const getFluentTypesFileContent = async ( repo: string ): Promise<string> => {
+export const getFluentTypesFileContent = async ( repo: string ): Promise<ModulifiedFile> => {
   const pascalCaseRepo = pascalCase( repo );
   const camelCaseRepo = _.camelCase( repo );
 
@@ -505,7 +506,10 @@ ${camelCaseRepo}.register('${pascalCaseRepo}Fluent', ${pascalCaseRepo}Fluent);
   const importSection = usedImportLines.length > 0 ? `${usedImportLines.join( '\n' )}\n\n` : '';
 
   // template TypeScript file
-  return `${header}${importSection}${body}`;
+  return {
+    content: `${header}${importSection}${body}`,
+    usedRelativeFiles: [ `${repo}/${repo}-strings_en.yaml` ]
+  };
 };
 
 /** Build nested TS literal from YAML, inserting both helpers at leaves. */
@@ -514,7 +518,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   const outPath = `js/${pascalCaseRepo}Fluent.ts`;
 
 // 6 write out
-  await writeFileAndGitAdd( repo, outPath, await getFluentTypesFileContent( repo ) );
+  await writeFileAndGitAdd( repo, outPath, ( await getFluentTypesFileContent( repo ) ).content );
 };
 
 export default generateFluentTypes;

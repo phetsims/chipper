@@ -14,6 +14,7 @@ import path from 'path';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import FluentLibrary, { FluentBundle, FluentResource } from '../../browser-and-node/FluentLibrary.js';
 import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
+import type { ModulifiedFile } from './modulify.js';
 
 const OFF = 'off';
 
@@ -31,10 +32,12 @@ const readFluentFile = ( abspath: string ): string => {
 /**
  * Turn a file into a TS file that loads the fluent messages
  */
-export const getModulifiedFluentFile = async ( repo: string, relativePath: string ): Promise<string> => {
+export const getModulifiedFluentFile = async ( repo: string, relativePath: string ): Promise<ModulifiedFile> => {
   if ( !relativePath.endsWith( '_en.ftl' ) ) {
     throw new Error( 'Only english fluent files can be modulified.' );
   }
+
+  const usedRelativeFiles: string[] = [];
 
   const abspath = path.resolve( `../${repo}`, relativePath );
   const filename = path.basename( abspath );
@@ -43,10 +46,12 @@ export const getModulifiedFluentFile = async ( repo: string, relativePath: strin
 
   const localeToFluentFileContents: Record<string, string> = {};
   localeToFluentFileContents.en = readFluentFile( abspath );
+  usedRelativeFiles.push( relativePath );
 
   const babelPath = `../babel/fluent/${repo}`;
 
   let localBabelFiles: string[] = [];
+  usedRelativeFiles.push( `babel/fluent/${repo}` );
   if ( fs.existsSync( babelPath ) ) {
     localBabelFiles = fs.readdirSync( babelPath );
   }
@@ -59,6 +64,7 @@ export const getModulifiedFluentFile = async ( repo: string, relativePath: strin
         throw new Error( `Could not determine locale from ${babelFile}` );
       }
 
+      usedRelativeFiles.push( `babel/fluent/${repo}/${babelFile}` );
       localeToFluentFileContents[ locale ] = readFluentFile( `${babelPath}/${babelFile}` );
     }
   } );
@@ -86,7 +92,8 @@ export const getModulifiedFluentFile = async ( repo: string, relativePath: strin
   const namespace = _.camelCase( repo );
   const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeModulifiedName );
 
-  return `${copyrightLine}
+  return {
+    content: `${copyrightLine}
     
 /* eslint-disable */
 /* @formatter:${OFF} */
@@ -107,7 +114,9 @@ const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileC
 ${namespace}.register( '${modulifiedName}', ${modulifiedName} );
 
 export default ${modulifiedName};
-`;
+`,
+    usedRelativeFiles: usedRelativeFiles
+  };
 };
 
 /**
@@ -128,7 +137,7 @@ const modulifyFluentFile = async ( repo: string, relativePath: string ): Promise
   const modulifiedName = `${nameWithoutSuffix}Messages`;
   const relativeModulifiedName = `js/strings/${modulifiedName}.ts`;
 
-  const contents = await getModulifiedFluentFile( repo, relativePath );
+  const contents = ( await getModulifiedFluentFile( repo, relativePath ) ).content;
 
   await writeFileAndGitAdd( repo, relativeModulifiedName, contents );
 };
