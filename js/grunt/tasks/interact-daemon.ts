@@ -17,7 +17,7 @@
  *
  * ```bash
  * cd your-sim-repo
- * grunt keyboard-daemon --screens=2
+ * grunt interact-daemon --screens=2
  * ```
  *
  * This will:
@@ -821,10 +821,10 @@ export const keyboardDaemon = ( async () => {
   const targetUrl = buildTargetUrl();
   const daemonPort = Number( getOptionIfProvided( 'daemonPort', `${DEFAULT_DAEMON_PORT}` ) );
 
-  console.log( '[keyboard-daemon]' );
-  console.log( `[keyboard-daemon] Launching ${targetUrl}` );
-  console.log( `[keyboard-daemon] HTTP server will start on port ${daemonPort}` );
-  console.log( '[keyboard-daemon]' );
+  console.log( '[interact-daemon]' );
+  console.log( `[interact-daemon] Launching ${targetUrl}` );
+  console.log( `[interact-daemon] HTTP server will start on port ${daemonPort}` );
+  console.log( '[interact-daemon]' );
 
   const simReadyRef = { current: false };
 
@@ -842,8 +842,8 @@ export const keyboardDaemon = ( async () => {
         const text = msg.text();
         if ( text.includes( TARGET_MESSAGE ) && !simReadyRef.current ) {
           simReadyRef.current = true;
-          console.log( '[keyboard-daemon] ✓ Sim ready' );
-          console.log( '[keyboard-daemon]' );
+          console.log( '[interact-daemon] ✓ Sim ready' );
+          console.log( '[interact-daemon]' );
         }
       } );
 
@@ -874,7 +874,7 @@ export const keyboardDaemon = ( async () => {
         // Reload endpoint
         if ( req.url === '/reload' && req.method === 'POST' ) {
           try {
-            console.log( '[keyboard-daemon] Reloading page...' );
+            console.log( '[interact-daemon] Reloading page...' );
             simReadyRef.current = false;
             await page.reload( { waitUntil: 'load' } );
             await page.waitForTimeout( 1000 );
@@ -925,7 +925,7 @@ export const keyboardDaemon = ( async () => {
 
                 const result = await executeCommand( page, cmd, simReadyRef );
                 results.push( result );
-                console.log( `[keyboard-daemon] ${JSON.stringify( cmd )} → ${result.action || result.error}` );
+                console.log( `[interact-daemon] ${JSON.stringify( cmd )} → ${result.action || result.error}` );
 
                 // Stop on error unless continueOnError is set
                 if ( !result.success && !continueOnError ) {
@@ -950,21 +950,21 @@ export const keyboardDaemon = ( async () => {
       } );
 
       server.listen( daemonPort, () => {
-        console.log( `[keyboard-daemon] ✓ HTTP server listening on http://localhost:${daemonPort}` );
-        console.log( '[keyboard-daemon]' );
-        console.log( '[keyboard-daemon] Available endpoints:' );
-        console.log( '[keyboard-daemon]   GET  /status  - Check daemon status and current focus' );
-        console.log( '[keyboard-daemon]   POST /cmd     - Execute command(s)' );
-        console.log( '[keyboard-daemon]   POST /reload  - Reload the simulation page' );
-        console.log( '[keyboard-daemon]' );
-        console.log( '[keyboard-daemon] Example commands (use -s to suppress progress meter):' );
-        console.log( `[keyboard-daemon]   curl -s http://localhost:${daemonPort}/status | jq` );
-        console.log( `[keyboard-daemon]   curl -s -X POST http://localhost:${daemonPort}/cmd -d '{"commands":[{"tab":5}]}' | jq` );
-        console.log( `[keyboard-daemon]   curl -s -X POST http://localhost:${daemonPort}/cmd -d '{"commands":[{"find":"Values","press":"Space"}]}' | jq` );
-        console.log( `[keyboard-daemon]   curl -s -X POST http://localhost:${daemonPort}/reload | jq` );
-        console.log( '[keyboard-daemon]' );
-        console.log( '[keyboard-daemon] Press Ctrl+C to stop the daemon' );
-        console.log( '[keyboard-daemon]' );
+        console.log( `[interact-daemon] ✓ HTTP server listening on http://localhost:${daemonPort}` );
+        console.log( '[interact-daemon]' );
+        console.log( '[interact-daemon] Available endpoints:' );
+        console.log( '[interact-daemon]   GET  /status  - Check daemon status and current focus' );
+        console.log( '[interact-daemon]   POST /cmd     - Execute command(s)' );
+        console.log( '[interact-daemon]   POST /reload  - Reload the simulation page' );
+        console.log( '[interact-daemon]' );
+        console.log( '[interact-daemon] Example commands (use -s to suppress progress meter):' );
+        console.log( `[interact-daemon]   curl -s http://localhost:${daemonPort}/status | jq` );
+        console.log( `[interact-daemon]   curl -s -X POST http://localhost:${daemonPort}/cmd -d '{"commands":[{"tab":5}]}' | jq` );
+        console.log( `[interact-daemon]   curl -s -X POST http://localhost:${daemonPort}/cmd -d '{"commands":[{"find":"Values","press":"Space"}]}' | jq` );
+        console.log( `[interact-daemon]   curl -s -X POST http://localhost:${daemonPort}/reload | jq` );
+        console.log( '[interact-daemon]' );
+        console.log( '[interact-daemon] Press Ctrl+C to stop the daemon' );
+        console.log( '[interact-daemon]' );
       } );
 
       // Keep daemon running - never resolve
