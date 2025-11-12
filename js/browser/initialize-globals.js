@@ -427,6 +427,11 @@
     'phet-app': { type: 'flag' },
 
     /**
+     * Feature flag that phet-io instruments a11y strings, see https://github.com/phetsims/chipper/issues/1631
+     */
+    phetioInstrumentA11yStrings: { type: 'flag' },
+
+    /**
      * If true, puts the simulation in a special mode where it will wait for manual control of the sim playback.
      */
     playbackMode: {

@@ -201,7 +201,8 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       }
 
       // strings nested under the a11y section are not currently PhET-iO instrumented, see https://github.com/phetsims/chipper/issues/1352
-      if ( tandem.phetioID.includes( '.a11y.' ) ) {
+      // except we do instrument them when requested, see https://github.com/phetsims/chipper/issues/1631
+      if ( tandem.phetioID.includes( '.a11y.' ) && !phet.chipper.queryParameters.phetioInstrumentA11yStrings ) {
         tandem = Tandem.OPT_OUT;
       }
 
