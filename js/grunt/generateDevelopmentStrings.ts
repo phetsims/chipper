@@ -135,8 +135,7 @@ export const getDevelopmentStringsContents = async (
   if ( stringFiles.length > 0 ) {
 
     // For each string file in the repo subdirectory...
-    for ( const stringFile of stringFiles ) {
-
+    await Promise.all( stringFiles.map( async stringFile => {
       // Extract the locale.
       const join = stringFile.split( '\\' ).join( '/' );
       const localeMatches = join.substring( join.lastIndexOf( '/' ) ).match( localeRegex );
@@ -145,7 +144,7 @@ export const getDevelopmentStringsContents = async (
 
       if ( !localeData[ locale ] ) {
         console.log( '[WARNING] Locale not found in localeData.json: ' + locale );
-        continue;
+        return;
       }
 
       // Get the contents of the string file.
@@ -162,7 +161,7 @@ export const getDevelopmentStringsContents = async (
 
       // Add the string values to the locale object of the conglomerate string object.
       conglomerateStringObject[ locale ] = objectToAddToLocale;
-    }
+    } ) );
 
     return {
       content: fixEOL( JSON.stringify( conglomerateStringObject, null, 2 ) ),
