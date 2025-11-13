@@ -1,7 +1,7 @@
 // Copyright 2022-2024, University of Colorado Boulder
 
 /**
- * Creates the namespace for this repository
+ * Creates the namespace for this repository.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
