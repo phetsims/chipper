@@ -771,19 +771,6 @@
     },
 
     /**
-     * Controls whether Core Voicing is enabled. This is a subset of the Voicing feature, the VoicingToolbar,
-     * name responses, and hint responses are all available. Context and Object responses are disabled and cannot
-     * be enabled from the Preferences dialog.
-     *
-     * This feature is enabled by default when supportsCoreVoicing is true in package.json. The query parameter will always
-     * override the package.json entry.
-     */
-    supportsCoreVoicing: {
-      type: 'boolean',
-      defaultValue: !!packageSimFeatures.supportsCoreVoicing
-    },
-
-    /**
      * Switches the Vello rendering of Text to use Swash (with embedded fonts), instead of Canvas.
      *
      * For internal use only. This is currently only used in prototypes.
@@ -1037,11 +1024,6 @@
         window.phet.chipper.queryParameters.fuzzTouch ||
         window.phet.chipper.queryParameters.fuzzBoard
       );
-
-    window.phet.chipper.supportsAnyVoicing = () => {
-      return window.phet.chipper.queryParameters.supportsVoicing ||
-             window.phet.chipper.queryParameters.supportsCoreVoicing;
-    };
 
     // Add a log function that displays messages to the console. Examples:
     // phet.log && phet.log( 'You win!' );
@@ -1344,7 +1326,6 @@
     const simFeaturesSchema = {
       supportsInteractiveDescription: { type: 'boolean' },
       supportsVoicing: { type: 'boolean' },
-      supportsCoreVoicing: { type: 'boolean' },
       supportsInteractiveHighlights: { type: 'boolean' },
       supportsSound: { type: 'boolean' },
       supportsExtraSound: { type: 'boolean' },
