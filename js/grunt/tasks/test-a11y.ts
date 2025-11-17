@@ -16,17 +16,20 @@ const { chromium } = playwright;
 const DEFAULT_HOST = 'http://localhost';
 const DEFAULT_PORT = 80;
 const DEFAULT_BRAND = 'phet-io';
-const AXE_IMPACT_PRIORITY: AxeImpact[] = [ 'minor', 'moderate', 'serious', 'critical' ];
+const AXE_IMPACT_VALUES = [ 'minor', 'moderate', 'serious', 'critical' ] as const;
+type AxeImpact = typeof AXE_IMPACT_VALUES[ number ];
+const AXE_IMPACT_PRIORITY: AxeImpact[] = [ ...AXE_IMPACT_VALUES ];
 const DEFAULT_QUERY_FLAGS = [ 'ea', 'debugger', 'phetioStandalone' ] as const;
 const FALLBACK_SIM = 'circuit-construction-kit-dc';
 const DEFAULT_MIN_IMPACT: AxeImpact = 'critical';
 const SUPPRESSED_VIOLATION_IDS = new Set( [ 'meta-viewport' ] );
 
-type AxeImpact = 'minor' | 'moderate' | 'serious' | 'critical';
-
 const repo = getRepo();
 const sim = repo !== 'chipper' ? repo : FALLBACK_SIM;
 
+/**
+ * Builds the sim URL that will be opened by Playwright, respecting CLI overrides (repo, port, screens).
+ */
 function buildTargetUrl(): string {
   const port = Number( getOptionIfProvided( 'port', DEFAULT_PORT ) );
   if ( !Number.isFinite( port ) || port <= 0 ) {
@@ -45,6 +48,9 @@ function buildTargetUrl(): string {
   return `${DEFAULT_HOST}:${port}/${sim}/${sim}_en.html?${queryParts.join( '&' )}`;
 }
 
+/**
+ * Resolves the minimum violation severity based on CLI input so downstream filtering can reference one value.
+ */
 function getMinimumImpact(): AxeImpact {
   const impactOption = getOptionIfProvided<string>( 'impact', DEFAULT_MIN_IMPACT );
   const normalized = typeof impactOption === 'string' ? impactOption.toLowerCase() : DEFAULT_MIN_IMPACT;
@@ -55,6 +61,9 @@ function getMinimumImpact(): AxeImpact {
   return DEFAULT_MIN_IMPACT;
 }
 
+/**
+ * Determines whether an Axe violation should be reported, using the impact threshold resolved earlier.
+ */
 function includeViolation( impact: unknown, minimumImpact: AxeImpact ): boolean {
   if ( typeof impact !== 'string' ) {
     return true;
@@ -68,6 +77,9 @@ function includeViolation( impact: unknown, minimumImpact: AxeImpact ): boolean 
   return violationIndex >= minimumIndex;
 }
 
+/**
+ * Launches Playwright, runs Axe on the requested URL, filters/suppresses violations, and sets CI exit codes.
+ */
 async function runA11yCheck(): Promise<void> {
   const browser = await chromium.launch();
 
