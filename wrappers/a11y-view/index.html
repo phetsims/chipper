@@ -963,7 +963,8 @@
       const primaryIndex = findMatchingPrimarySiblingIndex( nodes, startIndex + 1, headingLevel, headingGroupKey );
 
       if ( primaryIndex !== null ) {
-        return appendHeadingGroupWithPrimary( nodes, startIndex, primaryIndex, targetParent );
+        const groupEndIndex = extendPrimaryGroupRange( nodes, primaryIndex, headingLevel, headingGroupKey );
+        return appendHeadingGroupWithPrimary( nodes, startIndex, groupEndIndex, targetParent );
       }
 
       return appendDefaultHeadingGroup( nodes, startIndex, headingLevel, targetParent );
@@ -974,12 +975,12 @@
      * key. Only nodes up to and including the matching container are copied to ensure the formatted view highlights the
      * intended logical section without over-nesting unrelated siblings.
      */
-    function appendHeadingGroupWithPrimary( nodes, startIndex, primaryIndex, targetParent ) {
+    function appendHeadingGroupWithPrimary( nodes, startIndex, groupEndIndex, targetParent ) {
       const groupContainer = document.createElement( 'div' );
       groupContainer.className = 'formatted-group';
 
       let index = startIndex;
-      while ( index <= primaryIndex ) {
+      while ( index <= groupEndIndex ) {
         const current = nodes[ index ];
 
         if ( current.nodeType === Node.TEXT_NODE ) {
@@ -1007,7 +1008,7 @@
         targetParent.appendChild( groupContainer );
       }
 
-      return primaryIndex + 1;
+      return groupEndIndex + 1;
     }
 
     /**
@@ -1096,6 +1097,56 @@
       }
 
       return null;
+    }
+
+    /**
+     * Extends the primary group range to include additional siblings that share the same related group key, stopping
+     * when the next heading (same or higher level) or an unrelated element is encountered.
+     *
+     * @param {Node[]} nodes
+     * @param {number} primaryIndex
+     * @param {number} headingLevel
+     * @param {string|null} headingGroupKey
+     * @returns {number}
+     */
+    function extendPrimaryGroupRange( nodes, primaryIndex, headingLevel, headingGroupKey ) {
+      if ( headingGroupKey === null ) {
+        return primaryIndex;
+      }
+
+      let lastIndex = primaryIndex;
+
+      for ( let index = primaryIndex + 1; index < nodes.length; index++ ) {
+        const current = nodes[ index ];
+
+        if ( current.nodeType === Node.TEXT_NODE ) {
+          lastIndex = index;
+          continue;
+        }
+
+        if ( current.nodeType !== Node.ELEMENT_NODE ) {
+          continue;
+        }
+
+        const element = current;
+        if ( shouldSkipFormattedElement( element ) ) {
+          continue;
+        }
+
+        const currentHeadingLevel = getHeadingLevel( element );
+        if ( currentHeadingLevel !== null && currentHeadingLevel <= headingLevel ) {
+          break;
+        }
+
+        const currentGroupKey = getRelatedElementGroupKey( element );
+        if ( currentGroupKey !== headingGroupKey ) {
+          break;
+        }
+
+        lastIndex = index;
+      }
+
+      return lastIndex;
     }
 
     /**
@@ -1323,7 +1374,8 @@
     /**
      * Derives a grouping key for related elements by removing the final descriptor token before the trailing numeric
      * path in an element ID. This keeps label/control/heading/description sets with matching scene-graph paths
-     * visually connected in the formatted view.
+     * visually connected in the formatted view. The resulting key is effectively the element's trail identifier in the
+     * scenery scene graph, so every accessible piece produced by the same Node shares the same key.
      *
      * @param {HTMLElement} element
      * @returns {string|null}
