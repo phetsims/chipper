@@ -967,6 +967,12 @@
         return appendHeadingGroupWithPrimary( nodes, startIndex, groupEndIndex, targetParent );
       }
 
+      // Fall back to structural sections before reverting to the legacy heading range grouping.
+      const sectionIndex = findFollowingSectionSiblingIndex( nodes, startIndex + 1, headingLevel );
+      if ( sectionIndex !== null ) {
+        return appendHeadingGroupWithPrimary( nodes, startIndex, sectionIndex, targetParent );
+      }
+
       return appendDefaultHeadingGroup( nodes, startIndex, headingLevel, targetParent );
     }
 
@@ -1015,6 +1021,12 @@
      * Legacy fallback when no matching primary sibling exists. Continues to collect nodes until the next heading of the
      * same or higher level is encountered, preserving the previous structured output for PDOM fragments that have not
      * migrated to the new naming conventions yet.
+     *
+     * @param {Node[]} nodes
+     * @param {number} startIndex
+     * @param {number} headingLevel
+     * @param {HTMLElement|DocumentFragment} targetParent
+     * @returns {{ nextIndex: number, appended: boolean }}
      */
     function appendDefaultHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
       const groupContainer = document.createElement( 'div' );
@@ -1050,11 +1062,15 @@
         index++;
       }
 
-      if ( groupContainer.childNodes.length > 0 ) {
+      const appended = groupContainer.childNodes.length > 0;
+      if ( appended ) {
         targetParent.appendChild( groupContainer );
       }
 
-      return index;
+      return {
+        nextIndex: index,
+        appended: appended
+      };
     }
 
     /**
@@ -1094,6 +1110,53 @@
         if ( currentGroupKey === headingGroupKey && element.id && element.id.indexOf( 'primary' ) >= 0 ) {
           return index;
         }
+      }
+
+      return null;
+    }
+
+    /**
+     * Looks for the first meaningful <section> sibling directly following the heading before another heading of the
+     * same or higher level appears. Whitespace-only text nodes and skipped elements are ignored so that structural
+     * sections adjacent to the heading can be grouped even if formatting inserts extra nodes.
+     *
+     * @param {Node[]} nodes
+     * @param {number} startIndex
+     * @param {number} headingLevel
+     * @returns {number|null}
+     */
+    function findFollowingSectionSiblingIndex( nodes, startIndex, headingLevel ) {
+      for ( let index = startIndex; index < nodes.length; index++ ) {
+        const current = nodes[ index ];
+
+        if ( current.nodeType === Node.TEXT_NODE ) {
+          if ( current.textContent && current.textContent.trim().length > 0 ) {
+            break;
+          }
+          continue;
+        }
+
+        if ( current.nodeType !== Node.ELEMENT_NODE ) {
+          continue;
+        }
+
+        const element = current;
+        if ( shouldSkipFormattedElement( element ) ) {
+          continue;
+        }
+
+        const currentHeadingLevel = getHeadingLevel( element );
+        if ( currentHeadingLevel !== null && currentHeadingLevel <= headingLevel ) {
+          break;
+        }
+
+        const tagName = element.tagName.toLowerCase();
+        if ( tagName === 'section' ) {
+          return index;
+        }
+
+        // Keep scanning until we either encounter the next peer heading or exhaust the siblings.
+        continue;
       }
 
       return null;
