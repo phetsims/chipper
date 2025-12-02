@@ -958,6 +958,15 @@
      * or higher level.
      */
     function appendHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
+      if ( headingLevel === 1 ) {
+        // Top-level headings always stand alone; they do not own a grouped content block.
+        const headingNode = nodes[ startIndex ];
+        if ( headingNode && headingNode.nodeType === Node.ELEMENT_NODE && !shouldSkipFormattedElement( headingNode ) ) {
+          appendFormattedNode( headingNode, targetParent );
+        }
+        return startIndex + 1;
+      }
+
       const headingElement = nodes[ startIndex ];
       const headingGroupKey = headingElement && headingElement.nodeType === Node.ELEMENT_NODE ? getRelatedElementGroupKey( headingElement ) : null;
       const primaryIndex = findMatchingPrimarySiblingIndex( nodes, startIndex + 1, headingLevel, headingGroupKey );
