@@ -6,7 +6,6 @@ node_modules
 java/src/edu/colorado/phet/buildtools/html/*.class
 *.sublime-project
 *.sublime-workspace
-package-lock.json
 eslint/cache/
 build
 dist
