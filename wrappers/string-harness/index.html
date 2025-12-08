@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PhET String Harness MVP</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      font-family: system-ui, sans-serif;
+    }
+
+    /* Left panel - string editor */
+    .editor-panel {
+      width: 350px;
+      padding: 10px;
+      background: #2d2d2d;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #404040;
+    }
+
+    /* Middle - launch button */
+    .launch-panel {
+      width: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1a1a1a;
+    }
+
+    /* Right side - a11y view iframe */
+    .view-panel {
+      flex: 1;
+      background: #ccc;
+    }
+
+    textarea {
+      width: 100%;
+      flex: 1;
+      resize: none;
+      font-family: monospace;
+      font-size: 11px;
+      padding: 10px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border: 1px solid #404040;
+      border-radius: 4px;
+      line-height: 1.4;
+    }
+
+    button {
+      padding: 15px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      background: #0e639c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+
+    button:hover {
+      background: #1177bb;
+    }
+
+    button:disabled {
+      background: #555;
+      cursor: wait;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .status {
+      color: #888;
+      font-size: 11px;
+      padding: 4px 0;
+    }
+
+    .info {
+      color: #6a9955;
+      font-size: 10px;
+      padding: 2px 0;
+    }
+
+    /* Search box */
+    .search-box {
+      margin-bottom: 8px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 4px 8px;
+      font-size: 11px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border: 1px solid #404040;
+      border-radius: 3px;
+    }
+
+    .search-box button {
+      writing-mode: horizontal-tb;
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+<div class="editor-panel">
+  <div class="status" id="status">Loading...</div>
+  <div class="info" id="info"></div>
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Search strings...">
+    <button id="searchBtn">Find</button>
+  </div>
+  <textarea id="editor" spellcheck="false"></textarea>
+</div>
+
+<div class="launch-panel">
+  <button id="launch" disabled>Launch</button>
+</div>
+
+<div class="view-panel">
+  <iframe id="a11yView"></iframe>
+</div>
+
+<script>
+  const editor = document.getElementById( 'editor' );
+  const launchBtn = document.getElementById( 'launch' );
+  const a11yView = document.getElementById( 'a11yView' );
+  const status = document.getElementById( 'status' );
+  const info = document.getElementById( 'info' );
+  const searchInput = document.getElementById( 'search' );
+  const searchBtn = document.getElementById( 'searchBtn' );
+
+  let bundleContent = null;
+  let a11yViewContent = null;
+  let stringsStartIdx = -1;
+  let stringsEndIdx = -1;
+
+  const START_MARKER = 'window.phet.chipper.strings = {\n  "en": {';
+  const END_MARKER = '},\n  "ak": {';
+
+  // Search functionality
+  searchBtn.addEventListener( 'click', doSearch );
+  searchInput.addEventListener( 'keypress', e => { if ( e.key === 'Enter' ) {doSearch();} } );
+
+  function doSearch() {
+    const term = searchInput.value.toLowerCase();
+    if ( !term ) {return;}
+
+    const text = editor.value.toLowerCase();
+    const idx = text.indexOf( term, editor.selectionEnd );
+    const foundIdx = idx !== -1 ? idx : text.indexOf( term );
+
+    if ( foundIdx !== -1 ) {
+      editor.focus();
+      editor.setSelectionRange( foundIdx, foundIdx + term.length );
+      const lines = editor.value.substring( 0, foundIdx ).split( '\n' );
+      editor.scrollTop = Math.max( 0, ( lines.length - 5 ) * 16 );
+    }
+  }
+
+  async function loadResources() {
+    try {
+      status.textContent = 'Loading sim bundle...';
+
+      // Load sim bundle
+      const bundleResponse = await fetch( '/circuit-construction-kit-dc/build/phet/circuit-construction-kit-dc_all_phet_debug.html' );
+      bundleContent = await bundleResponse.text();
+
+      // Load a11y view
+      status.textContent = 'Loading a11y view...';
+      const a11yResponse = await fetch( '/circuit-construction-kit-dc/build/phet/circuit-construction-kit-dc_a11y_view.html' );
+      a11yViewContent = await a11yResponse.text();
+
+      const sizeMB = ( bundleContent.length / 1024 / 1024 ).toFixed( 1 );
+      status.textContent = `Loaded: ${sizeMB} MB bundle + a11y view`;
+
+      // Find string markers
+      const startMarkerIdx = bundleContent.indexOf( START_MARKER );
+      if ( startMarkerIdx === -1 ) {
+        status.textContent = 'Error: Could not find strings start marker';
+        return;
+      }
+
+      stringsStartIdx = startMarkerIdx + START_MARKER.length;
+      stringsEndIdx = bundleContent.indexOf( END_MARKER, stringsStartIdx );
+
+      if ( stringsEndIdx === -1 ) {
+        status.textContent = 'Error: Could not find strings end marker';
+        return;
+      }
+
+      // Extract and display English strings
+      const englishStrings = bundleContent.substring( stringsStartIdx, stringsEndIdx );
+      editor.value = englishStrings;
+
+      const stringCount = ( englishStrings.match( /": "/g ) || [] ).length;
+      info.textContent = `${stringCount} strings extracted`;
+
+      launchBtn.disabled = false;
+    }
+    catch( e ) {
+      status.textContent = `Error: ${e.message}`;
+      console.error( e );
+    }
+  }
+
+  launchBtn.addEventListener( 'click', () => {
+    if ( !bundleContent || !a11yViewContent || stringsStartIdx === -1 ) {return;}
+
+    status.textContent = 'Patching and launching...';
+
+    // Patch the sim bundle with edited strings
+    const patchedBundle =
+      bundleContent.substring( 0, stringsStartIdx ) +
+      editor.value +
+      bundleContent.substring( stringsEndIdx );
+
+    // Directly patch the query parameter checks in the bundle
+    // This is more reliable than trying to inject values before parsing
+    const patchedBundleWithParams = patchedBundle
+      // Force postMessageOnLoad check to be true
+      .replace(
+        'if (phet.chipper.queryParameters.postMessageOnLoad) {',
+        'if (true /* HARNESS: postMessageOnLoad forced */) {'
+      )
+      // Force supportsInteractiveDescription to be true
+      .replace(
+        /phet\.chipper\.queryParameters\.supportsInteractiveDescription(?!\s*=)/g,
+        'true /* HARNESS: supportsInteractiveDescription forced */'
+      );
+
+    // Modify the a11y view to receive sim content via postMessage instead of loading from URL
+    const modifiedA11yView = a11yViewContent.replace(
+      'function initializeSimulationFrame() {',
+      `function initializeSimulationFrame() {
+          // HARNESS OVERRIDE: Wait for sim content from parent frame
+          window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'loadPatchedSim') {
+              const simHtml = event.data.simHtml;
+              const blob = new Blob([simHtml], {type: 'text/html'});
+              const blobUrl = URL.createObjectURL(blob);
+              const iframe = document.getElementById('iframe');
+              iframe.setAttribute('src', blobUrl);
+            }
+          });
+          // Signal ready to receive
+          window.parent.postMessage({type: 'a11yViewReady'}, '*');
+          return; // Skip original initialization
+        }
+        function originalInitializeSimulationFrame() {`
+    );
+
+    // Create blob URL for modified a11y view
+    const a11yBlob = new Blob( [ modifiedA11yView ], { type: 'text/html' } );
+    const a11yUrl = URL.createObjectURL( a11yBlob );
+
+    // Load the modified a11y view
+    a11yView.src = a11yUrl;
+
+    // When a11y view signals ready, send the patched sim
+    const handleMessage = event => {
+      if ( event.data && event.data.type === 'a11yViewReady' ) {
+        window.removeEventListener( 'message', handleMessage );
+        // Send the patched sim content (with query params injected)
+        a11yView.contentWindow.postMessage( {
+          type: 'loadPatchedSim',
+          simHtml: patchedBundleWithParams
+        }, '*' );
+        status.textContent = 'Sim launched in a11y view';
+      }
+    };
+    window.addEventListener( 'message', handleMessage );
+  } );
+
+  loadResources();
+</script>
+</body>
+</html>
