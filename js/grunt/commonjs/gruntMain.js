@@ -95,6 +95,7 @@ module.exports = function( grunt ) {
     'check', // TODO: See https://github.com/phetsims/perennial/issues/420
     'type-check',
     'lint',
-    'lint-everything'
+    'lint-everything',
+    'test-a11y'
   ].forEach( task => forwardToRepo( 'perennial-alias', task ) );
 };
