@@ -72,7 +72,19 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
       if ( requireJSNamespace !== simRequireJSNamespace && !actualKey.startsWith( 'a11y' ) ) {
         const mainMap = getFromCache( requireJSNamespace );
         if ( !mainMap.hasOwnProperty( actualKey ) ) {
-          populateProblem( stringKey, releaseBranch );
+          // handle dot nesting, see https://github.com/phetsims/chipper/issues/1640
+          const nestingParts = actualKey.split( '.' );
+          let nestedObject: IntentionalAny = mainMap;
+
+          for ( const part of nestingParts ) {
+            if ( nestedObject ) {
+              nestedObject = nestedObject[ part ];
+            }
+          }
+
+          if ( !nestedObject ) {
+            populateProblem( stringKey, releaseBranch );
+          }
         }
       }
     }
