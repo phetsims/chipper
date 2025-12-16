@@ -29,10 +29,6 @@
       padding: 0;
     }
 
-    .alert_copy_container ul {
-      -webkit-padding-start: 1.1em
-    }
-
     .left {
       width: 47%;
       position: -webkit-sticky;
@@ -79,12 +75,121 @@
       opacity: 0.6;
     }
 
+    /* Card styling for the activity log container */
     div.alert_copy_container {
-      background: #e5c45b;
+      background: #fffdf2;
+      border: 2px solid #e5c45b;
       border-radius: 1em;
-      padding: .25em .75em 1em;
+      padding: .35em .75em 1em;
       height: 10em;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    /* Scroll wrapper that keeps the alert log within the card height */
+    #polite-element-container {
+      max-height: calc(12em - 1.35em);
       overflow-y: auto;
+      padding-right: 0.35em;
+      margin-right: -0.35em;
+    }
+
+    /* Base list reset and layout for alert log entries */
+    ul.alert_copy {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4em;
+    }
+
+    /* Base styling for each alert log entry */
+    .alert-log-item {
+      display: flex;
+      gap: 0.5em;
+      align-items: flex-start;
+      padding: 0.55em 0.7em;
+      border-radius: 0.65em;
+      background: #fbf7f2;
+      border: 1px solid #e4dcd1;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    /* Highlight for object response entries */
+    .alert-log-item--object {
+      border-left: 4px solid #f7d408;
+      background: #fff8cc;
+    }
+
+    /* Highlight for context response entries */
+    .alert-log-item--context {
+      border-left: 4px solid #f2644c;
+      background: #ffe3dd;
+    }
+
+    /* Highlight for help response entries */
+    .alert-log-item--help {
+      border-left: 4px solid #4a9a4c;
+      background: #eef7ec;
+    }
+
+    /* Highlight for other/uncategorized response entries */
+    .alert-log-item--other {
+      border-left: 4px solid #666;
+      background: #f6f6f6;
+    }
+
+    /* Pill badge for the response type label */
+    .alert-log-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.8em;
+      padding: 0.15em 0.45em;
+      border-radius: 999px;
+      font-size: 0.8em;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #3d3020;
+      background: #f3ede4;
+      border: 1px solid rgba(61, 48, 32, 0.12);
+    }
+
+    /* Object response badge colors */
+    .alert-log-item--object .alert-log-badge {
+      color: #4a3a00;
+      background: #fee96a;
+      border-color: #d1b200;
+    }
+
+    /* Context response badge colors */
+    .alert-log-item--context .alert-log-badge {
+      color: #5a2016;
+      background: #f7b7ab;
+      border-color: #d54f3c;
+    }
+
+    /* Help response badge colors */
+    .alert-log-item--help .alert-log-badge {
+      color: #2f6a2f;
+      background: #d6efd3;
+      border-color: rgba(74, 154, 76, 0.28);
+    }
+
+    /* Other response badge colors */
+    .alert-log-item--other .alert-log-badge {
+      color: #2d2d2d;
+      background: #ededed;
+      border-color: rgba(102, 102, 102, 0.25);
+    }
+
+    /* Message container so text fills remaining row space */
+    .alert-log-message {
+      flex: 1;
     }
 
     p.alert_copy {
@@ -382,11 +487,12 @@
         </div>
         <details>
           <summary>About Responsive Descriptions</summary>
-          Responsive Descriptions are a combination of object responses, descriptions of changes made directly to
-          interactive objects, and context responses, descriptions of changes to the surrounding context. Together, they
-          are designed to deliver relevant changes in real time as they happen. The object and context responses powered
-          by ARIA Live appear in the activity log below. The object responses for slider interactions are powered by the
-          aria-valuetext attribute, and are found in grey text under slider interactions in the blue box.
+          Responsive Descriptions are a combination of object responses (OBJ), descriptions of changes made directly to
+          interactive objects, and context responses (CTX), descriptions of changes to the surrounding context.
+          Together, they are designed to deliver relevant changes in real time as they happen. The object and context
+          responses powered by ARIA Live appear in the activity log below. The object responses for slider interactions
+          are powered by the aria-valuetext attribute, and are found in grey text under slider interactions in the blue
+          box.
         </details>
         <div id='alert-copy-container' class='alert_copy_container' role='presentation'>
           <div id='polite-element-container'>
@@ -679,6 +785,15 @@
       childList: true,
       characterData: true,
       subtree: true
+    };
+
+    // Maps the identified response category to its class name for CSS styling and abbreviated
+    // badge contents for representation.
+    const RESPONSE_TYPE_STYLES = {
+      object: { className: 'alert-log-item--object', badge: 'OBJ' },
+      context: { className: 'alert-log-item--context', badge: 'CTX' },
+      help: { className: 'alert-log-item--help', badge: 'HLP' },
+      other: { className: 'alert-log-item--other', badge: 'OTH' }
     };
 
     initializeViewModeControls( domReferences.viewModeControls, viewContainers );
@@ -2226,13 +2341,24 @@
           // the removal.
           if ( mutation.addedNodes.length > 0 ) {
             const alertText = mutation.target.textContent;
+            const responseCategory = mutation.target.dataset && mutation.target.dataset.responseCategory ?
+                                 mutation.target.dataset.responseCategory.toLowerCase() : 'other';
+            const responseStyle = RESPONSE_TYPE_STYLES[ responseCategory ] || RESPONSE_TYPE_STYLES.other;
 
             // update the text content of the copied element to match the element in the iframe document
             // create a list item to add to the alert list
             if ( alertText.length > 0 ) {
               const listItem = document.createElement( 'li' );
               listItem.style.opacity = 1.0;
-              listItem.textContent = alertText;
+              listItem.classList.add( 'alert-log-item', responseStyle.className );
+              const badge = document.createElement( 'span' );
+              badge.classList.add( 'alert-log-badge' );
+              badge.textContent = responseStyle.badge;
+              const message = document.createElement( 'span' );
+              message.classList.add( 'alert-log-message' );
+              message.textContent = alertText;
+              listItem.appendChild( badge );
+              listItem.appendChild( message );
               if ( mutation.target.id.includes( 'assertive' ) ) {
                 listItem.classList.add( 'assertive' );
               }
@@ -2415,7 +2541,7 @@
       return {
         iframe: document.getElementById( 'iframe' ),
         alertList: document.getElementById( 'alert-list' ),
-        alertContainer: document.getElementById( 'alert-copy-container' ),
+        alertContainer: document.getElementById( 'polite-element-container' ),
         clearActivityLogButton: document.getElementById( 'clear-activity-log-button' ),
         viewModeControls: document.getElementById( 'view-mode-controls' ),
         domCopyContainer: document.getElementById( 'dom-copy-container' )
