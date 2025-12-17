@@ -329,6 +329,13 @@
       margin-top: 0.65em;
     }
 
+    /* Headings are sometimes containers for buttons. For those cases, style the button content like its
+    so that it is rendered visually like a heading. */
+    :is(h1, h2, h3, h4, h5, h6) button {
+      font: inherit;
+      line-height: inherit;
+    }
+
     .formatted-group {
       border: 1px solid #cbd6e4;
       border-left: 4px solid #7ba5d9;
@@ -1686,11 +1693,11 @@
      */
     function shouldCountGroupNode( node, groupKey ) {
       return !!( node &&
-        groupKey &&
-        node.nodeType === Node.ELEMENT_NODE &&
-        node.dataset &&
-        node.dataset.relatedGroupKey === groupKey &&
-        !( node instanceof HTMLElement && node.classList.contains( 'formatted-aria' ) ) );
+                 groupKey &&
+                 node.nodeType === Node.ELEMENT_NODE &&
+                 node.dataset &&
+                 node.dataset.relatedGroupKey === groupKey &&
+                 !( node instanceof HTMLElement && node.classList.contains( 'formatted-aria' ) ) );
     }
 
     /**
@@ -2458,7 +2465,7 @@
           if ( mutation.addedNodes.length > 0 ) {
             const alertText = mutation.target.textContent;
             const responseCategory = mutation.target.dataset && mutation.target.dataset.responseCategory ?
-                                 mutation.target.dataset.responseCategory.toLowerCase() : 'other';
+                                     mutation.target.dataset.responseCategory.toLowerCase() : 'other';
             const responseStyle = RESPONSE_TYPE_STYLES[ responseCategory ] || RESPONSE_TYPE_STYLES.other;
 
             // update the text content of the copied element to match the element in the iframe document
