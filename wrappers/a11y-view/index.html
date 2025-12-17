@@ -370,6 +370,44 @@
       margin-top: 0.4em;
     }
 
+    /* Group wrapper around related elements in the formatted view; JS adds this to keep labels/controls together. */
+    .formatted-related-group {
+      position: relative;
+    }
+
+    /* The pseudo-element draws the vertical marker that appears when a group has multiple related elements or when
+     * there are ARIA chips to show. The JS toggles the --multi class and the formatted-aria-block class to control
+     * when the line is visible. */
+    .formatted-related-group::before {
+      content: '';
+      position: absolute;
+      left: 0.35em;
+      top: 0.35em;
+      bottom: 0.35em;
+      width: 2px;
+      border-radius: 999px;
+      background: rgba(123, 165, 217, 0.38);
+      display: none;
+    }
+
+    .formatted-related-group.formatted-related-group--multi,
+    .formatted-related-group.formatted-aria-block {
+      padding-left: 0.9em;
+    }
+
+    /* Keep list markers inside the content area so they don't overlap the related-group marker line. */
+    .formatted-related-group ol,
+    .formatted-related-group ul {
+      list-style-position: inside;
+      padding-left: 0.35em;
+      margin-left: 0.35em;
+    }
+
+    .formatted-related-group.formatted-related-group--multi::before,
+    .formatted-related-group.formatted-aria-block::before {
+      display: block;
+    }
+
     .aria-chip {
       background: #eef4fc;
       border: 1px solid #b9cdea;
@@ -1354,7 +1392,14 @@
         clone.dataset.relatedGroupKey = groupKey;
       }
       targetParent.appendChild( clone );
-      attachCloneToExistingGroup( clone, groupKey );
+
+      if ( groupKey ) {
+        const groupInfo = ensureGroupWrapperForClone( clone, groupKey );
+        if ( !groupInfo ) {
+          attachCloneToExistingGroup( clone, groupKey );
+        }
+      }
+
       appendFormattedContent( sourceElement, clone );
       appendFormattedAriaDetails( sourceElement, clone, groupKey );
       finalizeFormattedElement( sourceElement, clone );
@@ -1469,6 +1514,7 @@
           ariaBody.appendChild( chip );
           groupInfo.attributeCount += 1;
         } );
+        updateGroupWrapperDecoration( groupInfo );
         return;
       }
 
@@ -1558,6 +1604,8 @@
       return DECORATOR_TAGS.has( element.tagName );
     }
 
+    // --- Related group helpers
+
     /**
      * Derives a grouping key for related elements by removing the final descriptor token before the trailing numeric
      * path in an element ID. This keeps label/control/heading/description sets with matching scene-graph paths
@@ -1602,6 +1650,50 @@
     }
 
     /**
+     * Updates styling for a related group wrapper based on its member count.
+     *
+     * @param {{ wrapper: HTMLElement, elementCount: number }} groupInfo
+     */
+    function updateGroupWrapperState( groupInfo ) {
+      if ( !groupInfo || !groupInfo.wrapper ) {
+        return;
+      }
+      const hasMultiple = ( groupInfo.elementCount || 0 ) > 1;
+      groupInfo.wrapper.classList.toggle( 'formatted-related-group--multi', hasMultiple );
+    }
+
+    /**
+     * Toggles visual decoration (dashed borders) for a group wrapper based on whether it is grouping multiple elements
+     * or carrying ARIA metadata.
+     *
+     * @param {{ wrapper: HTMLElement, elementCount: number, attributeCount: number }} groupInfo
+     */
+    function updateGroupWrapperDecoration( groupInfo ) {
+      if ( !groupInfo || !groupInfo.wrapper ) {
+        return;
+      }
+      // Only show the dashed boundary when we actually have multiple related nodes or ARIA chips to display.
+      const hasGroupingDecoration = ( groupInfo.elementCount || 0 ) > 1 || ( groupInfo.attributeCount || 0 ) > 0;
+      groupInfo.wrapper.classList.toggle( 'formatted-aria-block', hasGroupingDecoration );
+    }
+
+    /**
+     * Returns whether the node should be counted as part of a related group for visual decoration.
+     *
+     * @param {Node} node
+     * @param {string|null} groupKey
+     * @returns {boolean}
+     */
+    function shouldCountGroupNode( node, groupKey ) {
+      return !!( node &&
+        groupKey &&
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.dataset &&
+        node.dataset.relatedGroupKey === groupKey &&
+        !( node instanceof HTMLElement && node.classList.contains( 'formatted-aria' ) ) );
+    }
+
+    /**
      * Appends a node to the appropriate location in a related group wrapper, ensuring ARIA details remain last.
      *
      * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null }} groupInfo
@@ -1616,7 +1708,14 @@
         return;
       }
 
+      const memberCount = shouldCountGroupNode( node, groupInfo.groupKey ) ? 1 : 0;
+
       if ( wrapper.contains( node ) ) {
+        if ( memberCount > 0 ) {
+          groupInfo.elementCount += memberCount;
+          updateGroupWrapperState( groupInfo );
+          updateGroupWrapperDecoration( groupInfo );
+        }
         return;
       }
 
@@ -1636,6 +1735,12 @@
       }
       else {
         wrapper.appendChild( node );
+      }
+
+      if ( memberCount > 0 ) {
+        groupInfo.elementCount += memberCount;
+        updateGroupWrapperState( groupInfo );
+        updateGroupWrapperDecoration( groupInfo );
       }
     }
 
@@ -1662,7 +1767,7 @@
      *
      * @param {HTMLElement} clone
      * @param {string|null} groupKey
-     * @returns {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }|null}
+     * @returns {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number, elementCount: number, groupKey: string|null }|null}
      */
     function ensureGroupWrapperForClone( clone, groupKey ) {
       if ( !clone || !groupKey || !relatedGroupWrappers ) {
@@ -1671,6 +1776,9 @@
 
       let groupInfo = relatedGroupWrappers.get( groupKey );
       if ( groupInfo ) {
+        if ( !groupInfo.groupKey ) {
+          groupInfo.groupKey = groupKey;
+        }
         addNodeToGroupWrapper( groupInfo, clone );
         return groupInfo;
       }
@@ -1681,9 +1789,10 @@
       }
 
       const wrapper = document.createElement( 'div' );
-      wrapper.className = 'formatted-aria-block formatted-related-group';
+      wrapper.className = 'formatted-related-group';
       parent.insertBefore( wrapper, clone );
 
+      let elementCount = 0;
       const siblings = Array.from( parent.childNodes );
       siblings.forEach( node => {
         if ( node === wrapper ) {
@@ -1693,6 +1802,9 @@
              node.dataset &&
              node.dataset.relatedGroupKey === groupKey ) {
           wrapper.appendChild( node );
+          if ( shouldCountGroupNode( node, groupKey ) ) {
+            elementCount += 1;
+          }
         }
       } );
 
@@ -1700,16 +1812,20 @@
         wrapper: wrapper,
         ariaContainer: null,
         ariaBody: null,
-        attributeCount: 0
+        attributeCount: 0,
+        elementCount: elementCount,
+        groupKey: groupKey
       };
       relatedGroupWrappers.set( groupKey, groupInfo );
+      updateGroupWrapperState( groupInfo );
+      updateGroupWrapperDecoration( groupInfo );
       return groupInfo;
     }
 
     /**
      * Ensures the ARIA details container exists for a related group, creating it on demand.
      *
-     * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }} groupInfo
+     * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number, elementCount: number, groupKey: string|null }} groupInfo
      * @returns {HTMLElement|null}
      */
     function ensureGroupAriaContainer( groupInfo ) {
