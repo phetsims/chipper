@@ -25,6 +25,19 @@ import { Visitor } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/vis
 class FluentLibrary {
 
   /**
+   * Indent all lines after the first so multiline strings are valid FTL.
+   */
+  public static formatMultilineForFtl( value: string ): string {
+    const parts = value.split( '\n' );
+    if ( parts.length <= 1 ) {
+      return value;
+    }
+    const first = parts[ 0 ];
+    const rest = parts.slice( 1 ).map( line => ` ${line}` );
+    return [ first, ...rest ].join( '\n' );
+  }
+
+  /**
    * Gets all message keys (excluding terms) from a Fluent file string. This exists in
    * FluentLibrary (instead of FluentUtils) because it needs to be used outside of simulation
    * code.

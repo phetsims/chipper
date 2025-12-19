@@ -406,7 +406,7 @@ export const getFluentTypesFileContent = async ( repo: string ): Promise<Modulif
   // and verify the syntax.
   const ftlContent = filteredLeaves.map( leaf => {
     const id = createFluentKey( leaf.pathArr );
-    return `${id} = ${leaf.value}`;
+    return `${id} = ${FluentLibrary.formatMultilineForFtl( leaf.value )}`;
   } ).join( '\n' );
 
   // verify the fluent file to report syntax errors in the english content.
@@ -457,6 +457,10 @@ export const getFluentTypesFileContent = async ( repo: string ): Promise<Modulif
       identifiers: [ 'FluentComment' ]
     },
     {
+      line: 'import FluentLibrary from \'../../chipper/js/browser-and-node/FluentLibrary.js\';',
+      identifiers: [ 'FluentLibrary' ]
+    },
+    {
       line: `import ${camelCaseRepo} from './${camelCaseRepo}.js';`,
       identifiers: [ `${camelCaseRepo}.register` ]
     },
@@ -485,7 +489,7 @@ ${fluentKeyMapLines}
 const createFluentFile = (): string => {
   let ftl = '';
   for (const [key, stringProperty] of fluentKeyToStringPropertyMap.entries()) {
-    ftl += \`\${key} = \${stringProperty.value.replace('\\n','\\n ')}\\n\`;
+    ftl += \`\${key} = \${FluentLibrary.formatMultilineForFtl( stringProperty.value )}\\n\`;
   }
   return ftl;
 };
