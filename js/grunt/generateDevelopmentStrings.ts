@@ -163,10 +163,16 @@ export const getDevelopmentStringsContents = async (
       conglomerateStringObject[ locale ] = objectToAddToLocale;
     } ) );
 
+    // Sort locale keys for deterministic output (Promise.all completion order is non-deterministic)
+    const sortedConglomerateStringObject: Record<string, object> = {};
+    for ( const locale of Object.keys( conglomerateStringObject ).sort() ) {
+      sortedConglomerateStringObject[ locale ] = conglomerateStringObject[ locale ];
+    }
+
     return {
-      content: fixEOL( JSON.stringify( conglomerateStringObject, null, 2 ) ),
+      content: fixEOL( JSON.stringify( sortedConglomerateStringObject, null, 2 ) ),
       usedRelativeFiles: [
-        ...usedRelativeFiles,
+        ...usedRelativeFiles.sort(),
         ...( englishStringModulifiedFile?.usedRelativeFiles ?? [] )
       ]
     };
