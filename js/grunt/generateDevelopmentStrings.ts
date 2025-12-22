@@ -169,6 +169,8 @@ export const getDevelopmentStringsContents = async (
       sortedConglomerateStringObject[ locale ] = conglomerateStringObject[ locale ];
     }
 
+    delete sortedConglomerateStringObject.en; // Remove English locale, as it is not needed for development since those strings are loaded directly from the json
+
     return {
       content: fixEOL( JSON.stringify( sortedConglomerateStringObject, null, 2 ) ),
       usedRelativeFiles: [
