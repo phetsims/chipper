@@ -11,15 +11,13 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import { Pattern } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/ast.js';
 import { FluentBundle } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/bundle.js';
 import { FluentResource } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/resource.js';
-import { Message } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
+import { Entry, Message, Pattern as SyntaxPattern, Resource } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
 import { FluentParser } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/parser.js';
-import { Entry } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
-import { Pattern as SyntaxPattern } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
-import { Resource } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
 import { Visitor } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/visitor.js';
 
 class FluentLibrary {
@@ -28,6 +26,17 @@ class FluentLibrary {
    * Indent all lines after the first so multiline strings are valid FTL.
    */
   public static formatMultilineForFtl( value: string ): string {
+    const val1 = FluentLibrary.formatMultilineForFtlLegacy( value );
+    const val2 = value.replace( /\n/g, '\n ' );
+
+    affirm( val1 === val2, 'formatMultilineForFtlLegacy and new implementation should match' );
+    return val2;
+  }
+
+  /**
+   * Indent all lines after the first so multiline strings are valid FTL.
+   */
+  public static formatMultilineForFtlLegacy( value: string ): string {
     const parts = value.split( '\n' );
     if ( parts.length <= 1 ) {
       return value;
