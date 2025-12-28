@@ -11,7 +11,6 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import { Pattern } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/ast.js';
 import { FluentBundle } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/bundle.js';
@@ -26,24 +25,7 @@ class FluentLibrary {
    * Indent all lines after the first so multiline strings are valid FTL.
    */
   public static formatMultilineForFtl( value: string ): string {
-    const val1 = FluentLibrary.formatMultilineForFtlLegacy( value );
-    const val2 = value.replace( /\n/g, '\n ' );
-
-    affirm( val1 === val2, 'formatMultilineForFtlLegacy and new implementation should match' );
-    return val2;
-  }
-
-  /**
-   * Indent all lines after the first so multiline strings are valid FTL.
-   */
-  public static formatMultilineForFtlLegacy( value: string ): string {
-    const parts = value.split( '\n' );
-    if ( parts.length <= 1 ) {
-      return value;
-    }
-    const first = parts[ 0 ];
-    const rest = parts.slice( 1 ).map( line => ` ${line}` );
-    return [ first, ...rest ].join( '\n' );
+    return value.replace( /\n/g, '\n ' );
   }
 
   /**
