@@ -431,6 +431,8 @@ export const getFluentTypesFileContent = async ( repo: string ): Promise<Modulif
 
 `;
 
+  // NOTE! The order here should match the order of imports for PhET's code style.
+  // See https://github.com/phetsims/chipper/issues/1659.
   const importStatements: { line: string; identifiers: string[] }[] = [
     {
       line: 'import { TReadOnlyProperty } from \'../../axon/js/TReadOnlyProperty.js\';',
