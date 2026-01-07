@@ -17,9 +17,9 @@ import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
 import ChipperStringUtils from '../../common/ChipperStringUtils.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
+import convertHoistedSelects from './convertHoistedSelects.js';
 import { safeLoadYaml } from './convertStringsYamlToJson.js';
 import { getFluentParamsFromIndex, NUMBER_LITERAL, ParamInfo, parseFluentToMap } from './getFluentParams.js';
-import convertHoistedSelects from './convertHoistedSelects.js';
 import { ModulifiedFile } from './modulify.js';
 
 type Leaf = { pathArr: string[]; value: string };
@@ -437,12 +437,12 @@ export const getFluentTypesFileContent = async ( repo: string ): Promise<Modulif
       identifiers: [ 'TReadOnlyProperty' ]
     },
     {
-      line: 'import type { FluentVariable } from \'../../chipper/js/browser/FluentPattern.js\';',
-      identifiers: [ 'FluentVariable' ]
+      line: 'import FluentLibrary from \'../../chipper/js/browser-and-node/FluentLibrary.js\';',
+      identifiers: [ 'FluentLibrary' ]
     },
     {
-      line: 'import FluentPattern from \'../../chipper/js/browser/FluentPattern.js\';',
-      identifiers: [ 'FluentPattern' ]
+      line: 'import FluentComment from \'../../chipper/js/browser/FluentComment.js\';',
+      identifiers: [ 'FluentComment' ]
     },
     {
       line: 'import FluentConstant from \'../../chipper/js/browser/FluentConstant.js\';',
@@ -453,12 +453,12 @@ export const getFluentTypesFileContent = async ( repo: string ): Promise<Modulif
       identifiers: [ 'FluentContainer' ]
     },
     {
-      line: 'import FluentComment from \'../../chipper/js/browser/FluentComment.js\';',
-      identifiers: [ 'FluentComment' ]
+      line: 'import type {FluentVariable} from \'../../chipper/js/browser/FluentPattern.js\';',
+      identifiers: [ 'FluentVariable' ]
     },
     {
-      line: 'import FluentLibrary from \'../../chipper/js/browser-and-node/FluentLibrary.js\';',
-      identifiers: [ 'FluentLibrary' ]
+      line: 'import FluentPattern from \'../../chipper/js/browser/FluentPattern.js\';',
+      identifiers: [ 'FluentPattern' ]
     },
     {
       line: `import ${camelCaseRepo} from './${camelCaseRepo}.js';`,
