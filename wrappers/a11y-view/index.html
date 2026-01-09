@@ -677,6 +677,42 @@
     const DISPLAY_WHEN_NOT_FALSE = value => value !== 'false';
     const DISPLAY_WHEN_PRESENT = value => value && value.trim().length > 0;
     const RELATIONSHIP_PLACEHOLDER = '...';
+    let RELATIONSHIP_LOOKUP_ROOT = null;
+
+    /**
+     * Formats IDREF-based relationship attributes by showing readable content for simple elements. If the referenced
+     * element is a heading or paragraph, return its text as-is; otherwise fall back to the standard placeholder.
+     * Missing references are called out so broken relationships are visible in the viewer.
+     *
+     * @param {string} value
+     * @param {HTMLElement} element
+     * @returns {string}
+     */
+    function formatRelationshipValue( value, element ) {
+
+      // Prefer the live PDOM root when available so we can resolve IDs even after sanitization in the development view.
+      const doc = RELATIONSHIP_LOOKUP_ROOT || ( element ? element.ownerDocument : document );
+
+      return value.split( /\s+/ ).map( idref => {
+        if ( !idref ) {
+          return RELATIONSHIP_PLACEHOLDER;
+        }
+
+        const target = doc.getElementById( idref );
+        if ( !target ) {
+          return 'Missing!';
+        }
+
+        const tag = target.tagName.toLowerCase();
+        if ( tag === 'p' || /^h[1-6]$/.test( tag ) ) {
+          const text = target.textContent || '';
+          const tagLabel = `(${tag}) `;
+          return text ? `${tagLabel}${text}` : `${tagLabel}${idref} (empty)`;
+        }
+
+        return RELATIONSHIP_PLACEHOLDER;
+      } ).join( ' ' );
+    }
 
     /**
      * Formats the value for an ARIA attribute using optional value formatting metadata.
@@ -702,14 +738,14 @@
       { name: 'aria-roledescription', shouldDisplay: DISPLAY_WHEN_PRESENT },
 
       // Relationships and labelling
-      { name: 'aria-labelledby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-      { name: 'aria-describedby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-      { name: 'aria-controls', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-      { name: 'aria-owns', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+      { name: 'aria-labelledby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: formatRelationshipValue },
+      { name: 'aria-describedby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: formatRelationshipValue },
+      { name: 'aria-controls', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: formatRelationshipValue },
+      { name: 'aria-owns', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: formatRelationshipValue },
       {
         name: 'aria-activedescendant',
         shouldDisplay: DISPLAY_WHEN_PRESENT,
-        formatValue: () => RELATIONSHIP_PLACEHOLDER
+        formatValue: formatRelationshipValue
       },
 
       // Visibility and modality
@@ -2111,7 +2147,9 @@
 
         if ( name.startsWith( 'aria-' ) || DEVELOPMENT_ALLOWED_ATTRIBUTES.has( name ) ) {
           if ( ( name === 'aria-describedby' || name === 'aria-labelledby' || name === 'aria-controls' || name === 'aria-owns' || name === 'aria-activedescendant' || name === 'for' ) && value ) {
-            element.setAttribute( name, '...' );
+
+            // Show readable relationship targets in the development view too; fall back to placeholder for non-text nodes.
+            element.setAttribute( name, formatRelationshipValue( value, element ) );
           }
           return;
         }
@@ -2302,19 +2340,26 @@
         return;
       }
 
-      const formattedRenderer = renderers[ VIEW_MODES.FORMATTED ];
-      if ( typeof formattedRenderer === 'function' ) {
-        formattedRenderer( pdomRoot, viewContainers[ VIEW_MODES.FORMATTED ] );
-      }
+      // Make the live PDOM root available to relationship formatters while we render all views.
+      RELATIONSHIP_LOOKUP_ROOT = pdomRoot ? pdomRoot.ownerDocument : null;
+      try {
+        const formattedRenderer = renderers[ VIEW_MODES.FORMATTED ];
+        if ( typeof formattedRenderer === 'function' ) {
+          formattedRenderer( pdomRoot, viewContainers[ VIEW_MODES.FORMATTED ] );
+        }
 
-      const developmentRenderer = renderers[ VIEW_MODES.DEVELOPMENT ];
-      if ( typeof developmentRenderer === 'function' ) {
-        developmentRenderer( pdomRoot, viewContainers[ VIEW_MODES.DEVELOPMENT ] );
-      }
+        const developmentRenderer = renderers[ VIEW_MODES.DEVELOPMENT ];
+        if ( typeof developmentRenderer === 'function' ) {
+          developmentRenderer( pdomRoot, viewContainers[ VIEW_MODES.DEVELOPMENT ] );
+        }
 
-      const legacyRenderer = renderers[ VIEW_MODES.LEGACY ];
-      if ( typeof legacyRenderer === 'function' ) {
-        legacyRenderer( pdomRoot, viewContainers[ VIEW_MODES.LEGACY ] );
+        const legacyRenderer = renderers[ VIEW_MODES.LEGACY ];
+        if ( typeof legacyRenderer === 'function' ) {
+          legacyRenderer( pdomRoot, viewContainers[ VIEW_MODES.LEGACY ] );
+        }
+      }
+      finally {
+        RELATIONSHIP_LOOKUP_ROOT = null;
       }
     }
 
