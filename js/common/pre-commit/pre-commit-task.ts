@@ -111,7 +111,7 @@ const repo = getArg( 'repo' );
 
           const result = await withServer( async port => {
             return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
-          } );
+          } ) as { ok: boolean };
 
           await browser.close();
 
