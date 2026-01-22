@@ -1,4 +1,4 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2017, University of Colorado Boulder
 
 /**
  * This (asynchronous) grunt task builds and minifies an individual wrapper.

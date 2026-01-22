@@ -1,4 +1,4 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 
 /**
  * Brand is now not included in the version. Used to handle https://github.com/phetsims/chipper/issues/507

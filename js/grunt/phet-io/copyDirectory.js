@@ -1,4 +1,4 @@
-// Copyright 2014-2015, University of Colorado Boulder
+// Copyright 2016-2018, University of Colorado Boulder
 
 /**
  * Copy a directory and all of its contents recursively

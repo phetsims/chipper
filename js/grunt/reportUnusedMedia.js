@@ -1,4 +1,4 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2015-2017, University of Colorado Boulder
 
 /**
  * Report which media files (such as images and audio) from a sim were not used in the simulation with a require statement.
