@@ -346,6 +346,9 @@ type CommandResult = {
 
   /** Error message if command failed */
   error?: string;
+
+  /** Page errors that occurred since last command */
+  pageErrors?: string[];
 };
 
 /**
@@ -531,7 +534,7 @@ async function getFocusInfo( page: playwright.Page, withID = false ): Promise<Fo
 /**
  * Execute a single command in the simulation.
  */
-async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef: { current: boolean } ): Promise<CommandResult> {
+async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef: { current: boolean }, pageErrorsRef: { current: string[] } ): Promise<CommandResult> {
   const tabDelay = Number( getOptionIfProvided( 'tabDelay', `${TAB_DELAY_MS}` ) );
 
   try {
@@ -763,6 +766,7 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
       const url = cmd.navigate;
       try {
         simReadyRef.current = false;
+        pageErrorsRef.current = []; // Clear errors when navigating to new page
         await page.goto( url, { waitUntil: 'load' } );
 
         // Wait for sim to be ready (up to 30 seconds)
@@ -840,6 +844,7 @@ export const keyboardDaemon = ( async () => {
   console.log( '[interact-daemon]' );
 
   const simReadyRef = { current: false };
+  const pageErrorsRef = { current: [] as string[] };
 
   await playwrightLoad( targetUrl, {
     testingBrowserCreator: playwright.chromium,
@@ -848,6 +853,8 @@ export const keyboardDaemon = ( async () => {
     waitAfterLoad: 0,
     allowedTimeToLoad: 60000,
     gotoTimeout: 45000,
+    rejectPageErrors: false, // Don't crash on page errors - we capture and report them
+    rejectErrors: false, // Don't crash on browser errors
     onLoadTimeout: ( resolve: () => void, reject: ( error: Error ) => void ) => reject( new Error( `Timed out waiting for ${TARGET_MESSAGE}` ) ),
     onPageCreation: async ( page: playwright.Page, resolve: ( value: unknown ) => void ) => {
 
@@ -858,6 +865,13 @@ export const keyboardDaemon = ( async () => {
           console.log( '[interact-daemon] ✓ Sim ready' );
           console.log( '[interact-daemon]' );
         }
+      } );
+
+      // Capture page errors instead of crashing
+      page.on( 'pageerror', ( error: Error ) => {
+        const errorMsg = error.message || String( error );
+        console.log( `[interact-daemon] Page error: ${errorMsg}` );
+        pageErrorsRef.current.push( errorMsg );
       } );
 
       // Start HTTP server
@@ -879,7 +893,8 @@ export const keyboardDaemon = ( async () => {
           res.end( JSON.stringify( {
             ready: simReadyRef.current,
             url: page.url(),
-            focus: simReadyRef.current ? await getFocusInfo( page ) : null
+            focus: simReadyRef.current ? await getFocusInfo( page ) : null,
+            pageErrors: pageErrorsRef.current.length > 0 ? pageErrorsRef.current : undefined
           }, null, 2 ) );
           return;
         }
@@ -889,6 +904,7 @@ export const keyboardDaemon = ( async () => {
           try {
             console.log( '[interact-daemon] Reloading page...' );
             simReadyRef.current = false;
+            pageErrorsRef.current = []; // Clear errors on reload
             await page.reload( { waitUntil: 'load' } );
             await page.waitForTimeout( 1000 );
             res.writeHead( 200 );
@@ -936,7 +952,14 @@ export const keyboardDaemon = ( async () => {
                   continue;
                 }
 
-                const result = await executeCommand( page, cmd, simReadyRef );
+                const result = await executeCommand( page, cmd, simReadyRef, pageErrorsRef );
+
+                // Include any page errors that occurred during command execution
+                if ( pageErrorsRef.current.length > 0 ) {
+                  result.pageErrors = [ ...pageErrorsRef.current ];
+                  pageErrorsRef.current = []; // Clear after reporting
+                }
+
                 results.push( result );
                 console.log( `[interact-daemon] ${JSON.stringify( cmd )} → ${result.action || result.error}` );
 
