@@ -984,7 +984,11 @@ export const keyboardDaemon = ( async () => {
       // User will Ctrl+C to stop
     },
     launchOptions: {
-      headless: false
+      headless: false,
+      args: [
+        '--enable-webgl',
+        '--use-gl=angle'
+      ]
     }
   } );
 } )();
