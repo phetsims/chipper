@@ -232,8 +232,16 @@ function parseCommands( args: string[], getOptionFn: ( name: string, defaultValu
         commands.push( { navigate: url } );
         break;
 
+      case 'screenshot':
+        if ( parts.length < 2 ) {
+          throw new Error( 'screenshot command requires a file path: interact screenshot /tmp/screen.png' );
+        }
+        const screenshotPath = parts.slice( 1 ).join( ' ' ).replace( /^["']|["']$/g, '' );
+        commands.push( { screenshot: screenshotPath } );
+        break;
+
       default:
-        throw new Error( `Unknown command: ${cmdType}. Valid commands: look, peek, getFocus, tab, shiftTab, press, wait, navigate` );
+        throw new Error( `Unknown command: ${cmdType}. Valid commands: look, peek, getFocus, tab, shiftTab, press, wait, navigate, screenshot` );
     }
   }
 
@@ -479,6 +487,7 @@ export const interact = ( async () => {
     console.error( '  press <key>              - Press key on focused element (Space, Enter, ArrowDown, etc.)' );
     console.error( '  wait <ms>                - Wait milliseconds' );
     console.error( '  navigate "<url>"         - Navigate to URL' );
+    console.error( '  screenshot <path>        - Capture screenshot to file' );
     console.error( '\nChain commands with +: interact tab "Reset All" + press Space + look' );
     console.error( '\nOptions:' );
     console.error( '  --daemonPort=3001        - Daemon port (default: 3001)' );

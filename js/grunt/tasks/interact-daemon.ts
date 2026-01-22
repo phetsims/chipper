@@ -361,7 +361,8 @@ type Command =
   | { peek: true }
   | { getFocus: true }
   | { wait: number }
-  | { navigate: string };
+  | { navigate: string }
+  | { screenshot: string };
 
 /**
  * Wait for and capture ARIA live region announcements.
@@ -797,6 +798,18 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
           error: ( error as Error ).message
         };
       }
+    }
+
+    // Screenshot
+    if ( 'screenshot' in cmd ) {
+      const filePath = cmd.screenshot;
+      await page.screenshot( { path: filePath, fullPage: false } );
+      return {
+        success: true,
+        command: cmd,
+        action: `Screenshot saved to ${filePath}`,
+        focus: await getFocusInfo( page )
+      };
     }
 
     // Unknown command
