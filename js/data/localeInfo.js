@@ -1991,7 +1991,7 @@ module.exports = {
   ps: {
     name: 'Pashto',
     localizedName: 'پښتو',
-    direction: 'ltr'
+    direction: 'rtl'
   },
   pt: {
     name: 'Portuguese',
