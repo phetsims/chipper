@@ -7,7 +7,7 @@
  * Returns a map such that map["locale"]["REPO/stringKey"] will be the string value (with fallbacks to English where needed).
  * Loads each string file only once, and only loads the repository/locale combinations necessary.
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import assert from 'assert';

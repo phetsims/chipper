@@ -10,7 +10,7 @@
  * grunt --locales=* --brands=phet --profileFileSize
  * sage run ../chipper/js/scripts/profile-file-size.ts
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 /**

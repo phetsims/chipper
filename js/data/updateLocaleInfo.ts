@@ -6,7 +6,7 @@
  * NOTE: Run with CWD of chipper/js/data
  *
  * @author Matt Pennington (PhET Interactive Simulations)
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import child_process from 'child_process';
@@ -22,7 +22,7 @@ import { LocaleData } from '../grunt/getStringMap.js';
  * - chipper/js/data/localeInfo.js - CommonJS legacy module
  * - chipper/js/data/localeInfo.json - JSON legacy
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 // Load our ground source of truth

@@ -3,7 +3,7 @@
 /**
  * Prints out a comma-separated list of repos that this repository depends on (used by things like CT)
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import assert from 'assert';

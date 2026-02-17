@@ -3,7 +3,7 @@
 /**
  * Combines all parts of a runnable's built file into an XHTML structure (with separate files)
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 // modules

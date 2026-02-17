@@ -6,7 +6,7 @@
  * @param repo - name of the repository to get locales from
  *
  * @author Chris Malley (PixelZoom, Inc.)
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import assert from 'assert';

@@ -10,7 +10,7 @@
  *
  * NOTE: This file likely belongs in joist/js/i18n/, but should stay here to make maintenance-release maintainability easier.
  *
- * @author Jonathan Olson <jonathan.olson>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import { TReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';

@@ -3,7 +3,7 @@
 /**
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import assert from 'assert';

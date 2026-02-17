@@ -30,7 +30,7 @@
  *
  * We also record the last-used locale, so that if we only have one translation, we can omit the SWITCH_LOCALE.
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 import _ from 'lodash';
 import { StringFileMap } from './ChipperStringUtils.js';

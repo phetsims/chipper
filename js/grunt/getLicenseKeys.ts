@@ -4,7 +4,7 @@
  * Gets the license keys for sherpa (third-party) libs that are used.
  *
  * @author Chris Malley (PixelZoom, Inc.)
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import { readFileSync } from 'fs';

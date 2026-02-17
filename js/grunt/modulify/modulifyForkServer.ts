@@ -15,7 +15,7 @@
  *
  * It will in-memory modulify a single file, or essentially no-op if it doesn't need modulification.
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import { getModulifiedFileString } from './modulify.js';

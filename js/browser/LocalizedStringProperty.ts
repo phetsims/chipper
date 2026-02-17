@@ -3,7 +3,7 @@
 /**
  * The main Property for a translated string (subtyped so we can get the stringKey, or other things in the future).
  *
- * @author Jonathan Olson <jonathan.olson>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import DynamicProperty from '../../../axon/js/DynamicProperty.js';

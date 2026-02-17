@@ -2,7 +2,7 @@
 
 /**
  * Reports a (delayed) page load (or error) to the parent frame for Aqua continuous testing.
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 

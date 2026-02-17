@@ -6,7 +6,7 @@
  *
  * This is done for efficiency (so we don't need to launch multiple scripts)
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import assert from 'assert';

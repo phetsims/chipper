@@ -5,7 +5,7 @@
  * then returns a copyright statement with the current year.
  *
  * @author Sam Reid (PhET Interactive Simulations)
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import execute from '../../../perennial-alias/js/common/execute.js';

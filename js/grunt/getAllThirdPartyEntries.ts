@@ -1,7 +1,7 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
 /**
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';

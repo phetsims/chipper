@@ -3,7 +3,7 @@
 /**
  * More space-efficient alternative to JSON.stringify for strings, that will escape only the necessary characters.
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 const toLessEscapedString = ( string: string ): string => {

@@ -7,7 +7,7 @@
  * Given structured documentation output from extractDocumentation (and associated other metadata), this outputs both
  * HTML meant for a collapsible documentation index and HTML content for all of the documentation.
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 let typeURLs = {

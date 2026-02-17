@@ -3,7 +3,7 @@
 /**
  * Grunt configuration file for unit tests
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import _ from 'lodash';

@@ -4,7 +4,7 @@
  * Determines a list of all dependent repositories (for dependencies.json or other creation)
  *
  * @author Chris Malley (PixelZoom, Inc.)
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import { readFileSync } from 'fs';

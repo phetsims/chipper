@@ -6,7 +6,7 @@
  * grunt task registration. If a module is used in multiple tasks, it is best to lazily require in each
  * task.
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Sam Reid (PhET Interactive Simulations)
  */

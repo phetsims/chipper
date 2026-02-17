@@ -21,7 +21,7 @@ type MipMap = {
  * @param createData - function( width, height ), creates an array-accessible data container, Buffer
  *                                for Node.js, or presumably a typed array otherwise, with 4*width*height components
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 function mipmapDownscale( mipmap: MipMap, createData: ( width: number, height: number ) => Buffer ): { data: Buffer; width: number; height: number } {
   // array index constants for the channels

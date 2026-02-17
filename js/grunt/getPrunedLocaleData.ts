@@ -3,7 +3,7 @@
 /**
  * Computes the subset of localeData that should be shipped with a built simulation.
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import fs from 'fs';

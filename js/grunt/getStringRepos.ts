@@ -4,7 +4,7 @@
  * For a given repository, it returns the JSON object content that should go in phet.chipper.stringRepos for a
  * compilation-free simulation run.
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import fs from 'fs';

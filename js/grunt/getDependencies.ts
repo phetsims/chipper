@@ -4,7 +4,7 @@
  * Creates an object that stores information about all dependencies (including their SHAs and current branches)
  *
  * @author Chris Malley (PixelZoom, Inc.)
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import assert from 'assert';

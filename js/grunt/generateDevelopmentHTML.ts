@@ -6,7 +6,7 @@
  *
  * See https://github.com/phetsims/chipper/issues/63
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import { readFileSync } from 'fs';

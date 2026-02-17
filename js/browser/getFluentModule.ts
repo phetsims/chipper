@@ -9,7 +9,7 @@
  *
  * This is used in generated files from modulify.
  *
- * @author Jonathan Olson <jonathan.olson>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 

@@ -3,7 +3,7 @@
 /**
  * Returns the string key for the title of a runnable.
  *
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import { readFileSync } from 'fs';

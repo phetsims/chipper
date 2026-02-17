@@ -3,7 +3,7 @@
 /**
  * Sets up a system of Properties to handle translation fallback and phet-io support for a single translated string.
  *
- * @author Jonathan Olson <jonathan.olson>
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 import TinyProperty from '../../../axon/js/TinyProperty.js';
