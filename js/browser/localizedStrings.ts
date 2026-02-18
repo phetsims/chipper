@@ -1,4 +1,4 @@
-// Copyright 2025, University of Colorado Boulder
+// Copyright 2025-2026, University of Colorado Boulder
 
 /**
  * Holds all of our localizedStrings, so that we can save our phet-io string change state, and update manually during stringTest=dynamic

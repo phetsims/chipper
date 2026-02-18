@@ -1,4 +1,4 @@
-// Copyright 2023-2024, University of Colorado Boulder
+// Copyright 2023-2026, University of Colorado Boulder
 
 /**
  * More space-efficient alternative to JSON.stringify for strings, that will escape only the necessary characters.

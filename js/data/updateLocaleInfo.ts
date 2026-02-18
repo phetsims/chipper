@@ -1,4 +1,4 @@
-// Copyright 2024-2025, University of Colorado Boulder
+// Copyright 2024-2026, University of Colorado Boulder
 
 /**
  * WARNING: This will commit/push the changes. Those changes likely be propagated immediately to the website and rosetta.

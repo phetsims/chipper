@@ -1,4 +1,4 @@
-// Copyright 2022-2024, University of Colorado Boulder
+// Copyright 2022-2026, University of Colorado Boulder
 
 /**
  * Reports a (delayed) page load (or error) to the parent frame for Aqua continuous testing.

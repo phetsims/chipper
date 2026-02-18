@@ -1,4 +1,4 @@
-// Copyright 2015-2024, University of Colorado Boulder
+// Copyright 2015-2026, University of Colorado Boulder
 
 /* eslint-disable phet/bad-typescript-text */
 /* eslint-disable phet/explicit-method-return-type */

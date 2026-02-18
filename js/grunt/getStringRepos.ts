@@ -1,4 +1,4 @@
-// Copyright 2020-2024, University of Colorado Boulder
+// Copyright 2020-2026, University of Colorado Boulder
 
 /**
  * For a given repository, it returns the JSON object content that should go in phet.chipper.stringRepos for a
