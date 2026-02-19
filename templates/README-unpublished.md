@@ -14,6 +14,10 @@ Development Overview</a> is the most complete guide to PhET Simulation Developme
 simulation code and its dependencies, notes about architecture & design, how to test and build the sims, as well as
 other important information.
 
+### Get Involved
+
+Join us at the <a href="https://scenerystack.org/community/join/" target="_blank">SceneryStack Community</a>
+
 ### License
 
 See the <a href="https://github.com/phetsims/{{REPOSITORY}}/blob/main/LICENSE" target="_blank">LICENSE</a>
