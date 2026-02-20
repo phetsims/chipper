@@ -341,6 +341,9 @@ type CommandResult = {
   /** Full PDOM tree with focused element marked (only present for look commands) */
   pdom?: string;
 
+  /** Full PDOM HTML (only present for peekHtml commands) */
+  pdomHtml?: string;
+
   /** Tab order showing all focusable elements with current focus marked (only present for look commands) */
   focusOrder?: string[];
 
@@ -362,6 +365,7 @@ type Command =
   | { find: string; press?: string; pressAfter?: boolean }
   | { look: true }
   | { peek: true }
+  | { peekHtml: true }
   | { getFocus: true }
   | { wait: number }
   | { navigate: string }
@@ -687,6 +691,27 @@ async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef:
         action: 'Peeked at PDOM (no focus disruption)',
         focus: await getFocusInfo( page ),
         pdom: pdom
+      };
+    }
+
+    // Peek at full PDOM HTML without disrupting focus
+    if ( 'peekHtml' in cmd ) {
+      const pdomHtml = await page.evaluate( () => {
+        // @ts-expect-error
+        const pdomRoot = ( window.phet as IntentionalAny )?.joist?.sim?.display?.pdomRootElement;
+        if ( !pdomRoot ) {
+          return 'PDOM not available';
+        }
+
+        return pdomRoot.outerHTML;
+      } );
+
+      return {
+        success: true,
+        command: cmd,
+        action: 'Peeked at PDOM HTML (no focus disruption)',
+        focus: await getFocusInfo( page ),
+        pdomHtml: pdomHtml
       };
     }
 

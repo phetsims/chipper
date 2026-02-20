@@ -32,6 +32,7 @@
  * ```bash
  * interact look                    # Survey the simulation (PDOM + focus order)
  * interact peek                    # Show PDOM without disrupting focus
+ * interact peekHtml                # Show PDOM HTML without disrupting focus
  * interact status                  # Check daemon status
  * interact tab 5                   # Tab forward 5 times
  * interact tab "Reset All"         # Tab to named element (doesn't press)
@@ -80,6 +81,9 @@
  *
  * # Quick peek at PDOM (doesn't change focus)
  * interact peek
+ *
+ * # Peek at full PDOM HTML (includes tag names)
+ * interact peekHtml
  *
  * # Open keyboard help
  * interact tab "Keyboard Shortcuts" + press Space
@@ -171,6 +175,10 @@ function parseCommands( args: string[], getOptionFn: ( name: string, defaultValu
       case 'pdom':
         commands.push( { peek: true } );
         break;
+      case 'peekhtml':
+      case 'pdomhtml':
+        commands.push( { peekHtml: true } );
+        break;
 
       case 'getfocus':
       case 'focus':
@@ -241,7 +249,7 @@ function parseCommands( args: string[], getOptionFn: ( name: string, defaultValu
         break;
 
       default:
-        throw new Error( `Unknown command: ${cmdType}. Valid commands: look, peek, getFocus, tab, shiftTab, press, wait, navigate, screenshot` );
+        throw new Error( `Unknown command: ${cmdType}. Valid commands: look, peek, peekHtml, getFocus, tab, shiftTab, press, wait, navigate, screenshot` );
     }
   }
 
@@ -344,10 +352,16 @@ function formatResults( results: IntentionalAny[] ): string {
       }
     }
 
-    // PDOM (for look commands)
+    // PDOM (for look/peek commands)
     if ( result.pdom ) {
       lines.push( '\n📄 PDOM (>>> marks focused element):' );
       lines.push( result.pdom );
+    }
+
+    // PDOM HTML (for peekHtml commands)
+    if ( result.pdomHtml ) {
+      lines.push( '\n📄 PDOM HTML:' );
+      lines.push( result.pdomHtml );
     }
 
     // Focus order (for look commands)
@@ -480,6 +494,7 @@ export const interact = ( async () => {
     console.error( '  reload                   - Reload the simulation' );
     console.error( '  look                     - Survey simulation (PDOM + focus order, may hide popups)' );
     console.error( '  peek                     - Show PDOM without disrupting focus' );
+    console.error( '  peekHtml                 - Show PDOM HTML without disrupting focus' );
     console.error( '  getFocus                 - Get current focus' );
     console.error( '  tab <count>              - Tab forward N times' );
     console.error( '  tab "<name>"             - Tab to named element (doesn\'t press)' );
