@@ -45,6 +45,7 @@
       "jama-1.0.2",
       "pegjs-0.7.0.js",
       "fluent-bundle-0.18.0",
+      "lit-core-3.3.1",
       "big-6.2.1.mjs"
     ]
   },
