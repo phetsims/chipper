@@ -1682,11 +1682,6 @@
         return null;
       }
 
-      // "template" IDs are structural wrappers and should not participate in related grouping.
-      if ( tokens[ descriptorIndex ].toLowerCase() === 'template' ) {
-        return null;
-      }
-
       const baseTokens = tokens.slice( 0, descriptorIndex );
       if ( baseTokens.length === 0 ) {
         return null;
