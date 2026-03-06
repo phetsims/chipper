@@ -15,6 +15,7 @@ const assert = require( 'assert' );
 require( '../../../../perennial-alias/js/grunt/commonjs/checkNodeVersion' );
 const registerTasks = require( '../../../../perennial-alias/js/grunt/commonjs/registerTasks' );
 const gruntSpawn = require( '../../../../perennial-alias/js/grunt/commonjs/gruntSpawn' );
+const isTotality = require( '../../../../perennial-alias/js/common/isTotality' );
 const _ = require( 'lodash' );
 const { readFileSync } = require( 'fs' );
 
@@ -87,7 +88,11 @@ module.exports = function( grunt ) {
     'generate-data',
     'release-branch-list',
     'sync'
-  ].forEach( task => forwardToRepo( 'perennial', task ) );
+  ].forEach( task => {
+
+    // In totality/ forward to perennial-alias
+    forwardToRepo( isTotality ? 'perennial-alias' : 'perennial', task );
+  } );
 
   // Forward these to perennial-alias because they are used for building sims, and should version with sims (like chipper
   // does).
