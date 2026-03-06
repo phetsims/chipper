@@ -29,7 +29,7 @@
  * 2. Run your normal development server for sims.
  * 3. Start the daemon: `grunt interact-daemon --port`.
  * 4. Make sure the daemon's sim port matches your dev server (use --port).
- * 5. Then run `grunt pdom-snapshots`.
+ * 5. Then run `grunt pdom-snapshots --run=run-1`.
  *
  * Options:
  *   --sims=sim-a,sim-b                  Comma-separated list of sims (overrides sim list file)
