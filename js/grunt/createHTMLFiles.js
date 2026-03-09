@@ -59,31 +59,36 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   var htmlHeader = null;
   if ( buildConfig.brand === 'phet-io' ) {
 
-    // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
     htmlHeader = simTitle + ' ' + buildConfig.version + '\n' +
-                 'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
                  'PhET Interactive Simulations, University of Colorado Boulder\n' +
+                 'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ' Regents of the University of Colorado\n' +
                  '\n' +
-                 'This Interoperable PhET Simulation file requires a license.\n' +
+                 'Use of this PhET-iO interoperable simulation file requires a license from the University of Colorado Boulder.\n' +
+                 '\n' +
                  'USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
-                 'Contact phethelp@colorado.edu regarding licensing.\n' +
-                 'https://phet.colorado.edu/en/licensing';
+                 'For information on commercial licensing, see https://phet.colorado.edu/en/licensing\n' +
+                 '\n' +
+                 'The PhET name, PhET logo, PhET-iO name, and PhET-iO logos are trademarks of The Regents of the University of Colorado, a body corporate. Use of the PhET and/or PhET-iO name and/or logo for any purpose, including but not limited to promotional, marketing, or advertising purposes, requires a separate license agreement from the University of Colorado Boulder.\n' +
+                 'For information on brand use, see https://phet.colorado.edu/en/licensing\n' +
+                 '\n' +
+                 'For licenses for third-party software used by this simulation, see below\n';
   }
   else {
+    // CC BY-NC License from https://github.com/phetsims/special-ops/issues/318
     htmlHeader = simTitle + ' ' + buildConfig.version + '\n' +
-                 'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
                  'PhET Interactive Simulations, University of Colorado Boulder\n' +
+                 'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ' Regents of the University of Colorado\n' +
                  '\n' +
-                 'This file is licensed under Creative Commons Attribution 4.0\n' +
-                 'For alternate source code licensing, see https://github.com/phetsims\n' +
-                 'For licenses for third-party software used by this simulation, see below\n' +
-                 'For more information, see https://phet.colorado.edu/en/licensing/html\n' +
+                 'This file is licensed under Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0). https://creativecommons.org/licenses/by-nc/4.0/\n' +
+                 'Attribution is required near point of use, recommended attribution is: Simulation by PhET Interactive Simulations, University of Colorado Boulder, licensed under CC BY-NC 4.0 (https://phet.colorado.edu).\n' +
                  '\n' +
-                 'The PhET name and PhET logo are registered trademarks of The Regents of the\n' +
-                 'University of Colorado. Permission is granted to use the PhET name and PhET logo\n' +
-                 'only for attribution purposes. Use of the PhET name and/or PhET logo for promotional,\n' +
-                 'marketing, or advertising purposes requires a separate license agreement from the\n' +
-                 'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
+                 'COMMERCIAL USE REQUIRES A COMMERCIAL LICENSE AGREEMENT FROM THE UNIVERSITY OF COLORADO BOULDER.\n' +
+                 'For information on commercial licensing, see https://phet.colorado.edu/en/licensing\n' +
+                 '\n' +
+                 'The PhET name and PhET logo are registered trademarks of The Regents of the University of Colorado. Use of the PhET name and/or PhET logo for any purpose, including but not limited to promotional, marketing, or advertising purposes, requires a separate license agreement from the University of Colorado Boulder.\n' +
+                 'For information on brand use, see https://phet.colorado.edu/en/licensing\n' +
+                 '\n' +
+                 'For licenses for third-party software used by this simulation, see below';
   }
 
   // All html files share the same build timestamp
