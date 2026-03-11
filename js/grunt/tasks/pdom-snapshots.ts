@@ -16,8 +16,8 @@
  * 1. `grunt pdom-snapshots --run=run-1`
  * 2. Make your change.
  * 3. `grunt pdom-snapshots --run=run-2`
- * 4. Diff `chipper/pdom-snapshots/run-1` vs `chipper/pdom-snapshots/run-2`:
- *    `diff -ru pdom-snapshots/run-1 pdom-snapshots/run-2 >> output.diff`
+ * 4. Diff `../pdom-snapshots/run-1` vs `../pdom-snapshots/run-2`:
+ *    `diff -ru ../pdom-snapshots/run-1 ../pdom-snapshots/run-2 >> output.diff`
  *
  *    You can then review output.diff in webstorm to get nice comparisons for each file.
  *
@@ -34,7 +34,7 @@
  * Options:
  *   --sims=sim-a,sim-b                  Comma-separated list of sims (overrides sim list file)
  *   --simList=interactive-description   Perennial-alias data list name (default: interactive-description)
- *   --run=run-1                         Output folder name under chipper/pdom-snapshots (required)
+ *   --run=run-1                         Output folder name under ../pdom-snapshots (required)
  *   --simRoot=..                        Root that contains sim repos (default: ../ relative to chipper)
  *   --perennialRoot=../perennial-alias  Root that contains perennial-alias (default: ../perennial-alias relative to chipper)
  *   --daemonHost=localhost              Daemon host (default: localhost)
@@ -199,7 +199,9 @@ export const pdomSnapshotsPromise = ( async () => {
   const simRoot = getOptionIfProvided<string>( 'simRoot', path.resolve( chipperRoot, '..' ) );
   const perennialRoot = getOptionIfProvided<string>( 'perennialRoot', path.resolve( chipperRoot, '..', 'perennial-alias' ) );
   const simListName = getOptionIfProvided<string>( 'simList', 'interactive-description' );
-  const outDir = path.join( chipperRoot, 'pdom-snapshots', runLabel );
+
+  // Saved outside of chipper so it doesn't get tracked by git.
+  const outDir = path.join( chipperRoot, '..', 'pdom-snapshots', runLabel );
 
   const simsArg = getOptionIfProvided<string>( 'sims', '' );
   // Prefer explicit --sims, otherwise fall back to perennial data list.
