@@ -1231,7 +1231,7 @@
      * @param {number} startIndex
      * @param {number} headingLevel
      * @param {HTMLElement|DocumentFragment} targetParent
-     * @returns {{ nextIndex: number, appended: boolean }}
+     * @returns {number} Index of the next node to process in the caller's loop.
      */
     function appendDefaultHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
       const groupContainer = document.createElement( 'div' );
@@ -1267,15 +1267,11 @@
         index++;
       }
 
-      const appended = groupContainer.childNodes.length > 0;
-      if ( appended ) {
+      if ( groupContainer.childNodes.length > 0 ) {
         targetParent.appendChild( groupContainer );
       }
 
-      return {
-        nextIndex: index,
-        appended: appended
-      };
+      return index;
     }
 
     /**
