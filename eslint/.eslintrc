@@ -198,6 +198,8 @@
     "Buffer": false,
     // For KaTeX
     "katex": false,
+    // For RichText
+    "himalaya": false,
     // For qunit
     "equal": false,
     "test": false
