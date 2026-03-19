@@ -22,7 +22,7 @@
     "@babel/preset-typescript": "~7.21.4",
     "@stylistic/eslint-plugin": "~2.8.0",
     "@swc/cli": "~0.4.0",
-    "@swc/core": "^1.7.26",
+    "@swc/core": "1.7.42",
     "@types/grunt": "~0.4.31",
     "@types/jquery": "~3.5.13",
     "@types/lodash": "~4.14.172",
@@ -68,5 +68,17 @@
     "webpack": "~5.76.3",
     "webpack-cli": "~5.0.0",
     "webpack-dev-server": "~4.11.1"
+  },
+  "optionalDependencies": {
+    "@swc/core-linux-x64-gnu": "1.7.42",
+    "@swc/core-linux-x64-musl": "1.7.42",
+    "@swc/core-darwin-x64": "1.7.42",
+    "@swc/core-darwin-arm64": "1.7.42",
+    "@swc/core-linux-arm64-gnu": "1.7.42",
+    "@swc/core-linux-arm64-musl": "1.7.42",
+    "@swc/core-win32-x64-msvc": "1.7.42",
+    "@swc/core-linux-arm-gnueabihf": "1.7.42",
+    "@swc/core-win32-ia32-msvc": "1.7.42",
+    "@swc/core-win32-arm64-msvc": "1.7.42"
   }
 }
