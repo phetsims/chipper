@@ -8,7 +8,6 @@
  */
 
 import asyncLoader from '../../../phet-core/js/asyncLoader.js';
-import chipper from './chipper.js';
 
 export default class MipmapElement {
   public readonly width: number;
@@ -38,5 +37,3 @@ export default class MipmapElement {
     };
   }
 }
-
-chipper.register( 'MipmapElement', MipmapElement );

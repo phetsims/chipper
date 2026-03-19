@@ -12,7 +12,6 @@ import localeProperty, { Locale } from '../../../joist/js/i18n/localeProperty.js
 import arrayRemove from '../../../phet-core/js/arrayRemove.js';
 import { PhetioID } from '../../../tandem/js/phet-io-types.js';
 import Tandem from '../../../tandem/js/Tandem.js';
-import chipper from './chipper.js';
 import LocalizedStringProperty from './LocalizedStringProperty.js';
 import localizedStrings from './localizedStrings.js';
 
@@ -388,7 +387,5 @@ class LocalizedString {
     return result;
   }
 }
-
-chipper.register( 'LocalizedString', LocalizedString );
 
 export default LocalizedString;

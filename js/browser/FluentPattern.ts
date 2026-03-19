@@ -15,7 +15,6 @@ import { FluentBundle } from '../../../chipper/js/browser-and-node/FluentLibrary
 import EnumerationValue from '../../../phet-core/js/EnumerationValue.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import PhetioObject from '../../../tandem/js/PhetioObject.js';
-import chipper from './chipper.js';
 import FluentUtils from './FluentUtils.js';
 
 // A type for simple variables that can be used in Fluent messages. While strings and numbers are handled natively,
@@ -105,5 +104,3 @@ export class FluentPatternDerivedProperty extends DerivedStringProperty<string,
     super( dependencies, args );
   }
 }
-
-chipper.register( 'FluentPattern', FluentPattern );

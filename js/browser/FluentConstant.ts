@@ -15,7 +15,6 @@ import { FluentBundle } from '../../../chipper/js/browser-and-node/FluentLibrary
 import { Locale } from '../../../joist/js/i18n/localeProperty.js';
 import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import PhetioObject from '../../../tandem/js/PhetioObject.js';
-import chipper from './chipper.js';
 import LocalizedStringProperty from './LocalizedStringProperty.js';
 
 const NO_STRING = '';
@@ -74,5 +73,3 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
     return this.targetProperty.getTranslatedStringProperty( locale );
   }
 }
-
-chipper.register( 'FluentConstant', FluentConstant );

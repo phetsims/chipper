@@ -7,8 +7,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import chipper from './chipper.js';
-
 export type FluentCommentData = {
   // The comment text (without the leading # character)
   comment: string;
@@ -34,5 +32,3 @@ export default class FluentComment {
     return this.comment;
   }
 }
-
-chipper.register( 'FluentComment', FluentComment );

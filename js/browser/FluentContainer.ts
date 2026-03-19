@@ -15,7 +15,6 @@ import Property from '../../../axon/js/Property.js';
 import ReadOnlyProperty from '../../../axon/js/ReadOnlyProperty.js';
 import localeProperty from '../../../joist/js/i18n/localeProperty.js';
 import { FluentBundle, FluentResource } from '../browser-and-node/FluentLibrary.js';
-import chipper from './chipper.js';
 
 export default class FluentContainer {
 
@@ -61,5 +60,3 @@ export default class FluentContainer {
     } );
   }
 }
-
-chipper.register( 'FluentContainer', FluentContainer );

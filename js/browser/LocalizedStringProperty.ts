@@ -11,7 +11,6 @@ import localeProperty, { Locale } from '../../../joist/js/i18n/localeProperty.js
 import Tandem from '../../../tandem/js/Tandem.js';
 import TandemConstants from '../../../tandem/js/TandemConstants.js';
 import StringIO from '../../../tandem/js/types/StringIO.js';
-import chipper from './chipper.js';
 import type LocalizedString from './LocalizedString.js';
 import TProperty from '../../../axon/js/TProperty.js';
 
@@ -60,7 +59,5 @@ class LocalizedStringProperty extends DynamicProperty<string, string, Locale> {
     return this.localizedString.getLocaleSpecificProperty( locale );
   }
 }
-
-chipper.register( 'LocalizedStringProperty', LocalizedStringProperty );
 
 export default LocalizedStringProperty;

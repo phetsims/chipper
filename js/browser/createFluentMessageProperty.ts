@@ -12,7 +12,6 @@ import { TReadOnlyProperty, isTReadOnlyProperty } from '../../../axon/js/TReadOn
 import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import { FluentBundle } from '../browser-and-node/FluentLibrary.js';
-import chipper from './chipper.js';
 import FluentUtils from './FluentUtils.js';
 
 export default function createFluentMessageProperty(
@@ -38,5 +37,3 @@ export default function createFluentMessageProperty(
     return FluentUtils.formatMessageWithBundle( message.value, bundle, values );
   } );
 }
-
-chipper.register( 'createFluentMessageProperty', createFluentMessageProperty );

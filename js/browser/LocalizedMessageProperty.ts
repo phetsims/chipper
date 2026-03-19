@@ -13,7 +13,6 @@
 import { DerivedProperty1 } from '../../../axon/js/DerivedProperty.js';
 import { TReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import { FluentBundle, FluentBundlePattern } from '../browser-and-node/FluentLibrary.js';
-import chipper from './chipper.js';
 
 export default class LocalizedMessageProperty extends DerivedProperty1<FluentBundlePattern, FluentBundle> {
   public constructor(
@@ -23,5 +22,3 @@ export default class LocalizedMessageProperty extends DerivedProperty1<FluentBun
     super( [ bundleProperty ], derivation );
   }
 }
-
-chipper.register( 'LocalizedMessageProperty', LocalizedMessageProperty );
