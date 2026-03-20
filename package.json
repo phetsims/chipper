@@ -68,17 +68,5 @@
     "webpack": "~5.76.3",
     "webpack-cli": "~5.0.0",
     "webpack-dev-server": "~4.11.1"
-  },
-  "optionalDependencies": {
-    "@swc/core-linux-x64-gnu": "1.7.42",
-    "@swc/core-linux-x64-musl": "1.7.42",
-    "@swc/core-darwin-x64": "1.7.42",
-    "@swc/core-darwin-arm64": "1.7.42",
-    "@swc/core-linux-arm64-gnu": "1.7.42",
-    "@swc/core-linux-arm64-musl": "1.7.42",
-    "@swc/core-win32-x64-msvc": "1.7.42",
-    "@swc/core-linux-arm-gnueabihf": "1.7.42",
-    "@swc/core-win32-ia32-msvc": "1.7.42",
-    "@swc/core-win32-arm64-msvc": "1.7.42"
   }
 }
