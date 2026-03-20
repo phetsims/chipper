@@ -1,4 +1,4 @@
-// Copyright 2025, University of Colorado Boulder
+// Copyright 2025-2026, University of Colorado Boulder
 
 /**
  * An entry point for the Fluent library. In the browser-and-node directory, it lets Fluent be used by

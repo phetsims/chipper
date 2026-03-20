@@ -1,4 +1,4 @@
-// Copyright 2025, University of Colorado Boulder
+// Copyright 2025-2026, University of Colorado Boulder
 
 /**
  * A Property whose value is a message from a Fluent bundle with arguments. Each argument can be a Property,
