@@ -6,6 +6,8 @@
  * This script will load each screen of each sim in the data list interactive-description, grab the PDOM
  * HTML and save it to a text file.
  *
+ * This requires private code in turing to run.
+ *
  * Purpose and intended use:
  * This task supports automated regression checks for the Parallel DOM (PDOM).
  * Run it once before a change to create a baseline, then run it again after the change
@@ -13,28 +15,27 @@
  * PDOM text placement changes (regressions or intentional shifts).
  *
  * Typical workflow:
- * 1. `grunt pdom-snapshots --run=run-1`
+ * 1. `grunt pdom-snapshots --run=before`
  * 2. Make your change.
- * 3. `grunt pdom-snapshots --run=run-2`
- * 4. Diff `../pdom-snapshots/run-1` vs `../pdom-snapshots/run-2`:
- *    `diff -ru ../pdom-snapshots/run-1 ../pdom-snapshots/run-2 >> output.diff`
+ * 3. `grunt pdom-snapshots --run=after`
+ * 4. Diff `../pdom-snapshots/before` vs `../pdom-snapshots/after`:
+ *    `diff -ru ../pdom-snapshots/before ../pdom-snapshots/after >> output.diff`
  *
  *    You can then review output.diff in webstorm to get nice comparisons for each file.
  *
  * Example:
- *   grunt pdom-snapshots --run=run-1
+ *   grunt pdom-snapshots --run=before
  *
  * Prerequisites:
  * 1. Run `npx playwright install` in chipper.
  * 2. Run your normal development server for sims.
- * 3. Start the daemon: `grunt interact-daemon --port`.
- * 4. Make sure the daemon's sim port matches your dev server (use --port).
- * 5. Then run `grunt pdom-snapshots --run=run-1`.
+ * 3. Start the daemon: `node turing/js/interact-daemon.ts`.
+ * 5. Then run `grunt pdom-snapshots --run=before`.
  *
  * Options:
  *   --sims=sim-a,sim-b                  Comma-separated list of sims (overrides sim list file)
  *   --simList=interactive-description   Perennial-alias data list name (default: interactive-description)
- *   --run=run-1                         Output folder name under ../pdom-snapshots (required)
+ *   --run=before                        Output folder name under ../pdom-snapshots (required)
  *   --simRoot=..                        Root that contains sim repos (default: ../ relative to chipper)
  *   --perennialRoot=../perennial-alias  Root that contains perennial-alias (default: ../perennial-alias relative to chipper)
  *   --daemonHost=localhost              Daemon host (default: localhost)
