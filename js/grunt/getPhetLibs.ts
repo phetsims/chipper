@@ -7,6 +7,7 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
+import assert from 'assert';
 import { readFileSync } from 'fs';
 import _ from 'lodash';
 import ChipperConstants from '../common/ChipperConstants.js';
@@ -43,8 +44,10 @@ export default function getPhetLibs( repo: string, brand?: string | string[] ): 
                    packageObject.phet.phetLibs ?
                    packageObject.phet.phetLibs : [];
 
-    // add the repo that's being built
-    phetLibs.push( packageObject.name );
+    // add the repo that's being built. Use repo (directory name) rather than packageObject.name since they can differ
+    // (e.g., perennial-alias has packageObject.name === 'perennial').
+    assert( repo === 'perennial-alias' || packageObject.name === repo, `Unexpected mismatch: repo=${repo}, packageObject.name=${packageObject.name}` );
+    phetLibs.push( repo );
 
     // add common and brand-specific entries from build.json
     [ 'common', brand ].forEach( id => {
