@@ -101,6 +101,6 @@ module.exports = function( grunt ) {
     'type-check',
     'lint',
     'lint-everything',
-    'test-a11y'
+    'test-a11y-audit'
   ].forEach( task => forwardToRepo( 'perennial-alias', task ) );
 };
