@@ -64,7 +64,7 @@ else {
 
           packageObject.phet[ 'phet-io' ] = packageObject.phet[ 'phet-io' ] || {};
           packageObject.phet[ 'phet-io' ].wrappers = _.uniq( simSpecificWrappers.concat( packageObject.phet[ 'phet-io' ].wrappers || [] ) );
-          grunt.file.write( 'package.json', JSON.stringify( packageObject, null, 2 ) );
+          grunt.file.write( `../${repo}/package.json`, JSON.stringify( packageObject, null, 2 ) );
         }
       }
       catch( e: unknown ) {
