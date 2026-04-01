@@ -129,7 +129,10 @@ type Augmentable = Record<string, {
       }
     };
 
-    const request = https.request( requestOptions, res => resolve( res ) );
+    const request = https.request( requestOptions, res => {
+      res.resume(); // Drain the response so Node can close the socket
+      resolve( res );
+    } );
     request.on( 'error', e => {
       grunt.log.writeln( `There was a problem uploading the data to the website: ${e.message}` );
       reject( e );
