@@ -1,7 +1,7 @@
 // Copyright 2013-2025, University of Colorado Boulder
 
 /**
- * Update the copyright dates in JS source files based on Github dates
+ * Update the copyright dates in JS source files based on GitHub dates
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
