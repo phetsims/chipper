@@ -9,7 +9,7 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import _ from 'lodash';
 import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
@@ -30,6 +30,11 @@ export default async function( repo: string, options?: IntentionalAny ): Promise
     mainFile = `../chipper/dist/js/${repo}/js/${repo}-main.js`,
     forSim = true // is this html used for a sim, or something else like tests.
   } = options || {};
+
+  if ( !existsSync( `../${repo}/package.json` ) ) {
+    grunt.log.warn( `WARNING404: Skipping generateDevelopmentHTML for ${repo} (package.json not found)` );
+    return;
+  }
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
