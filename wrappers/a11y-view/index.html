@@ -29,10 +29,6 @@
       padding: 0;
     }
 
-    .alert_copy_container ul {
-      -webkit-padding-start: 1.1em
-    }
-
     .left {
       width: 47%;
       position: -webkit-sticky;
@@ -79,12 +75,52 @@
       opacity: 0.6;
     }
 
+    /* Card styling for the activity log container */
     div.alert_copy_container {
-      background: #e5c45b;
+      background: #fffdf2;
+      border: 2px solid #e5c45b;
       border-radius: 1em;
-      padding: .25em .75em 1em;
+      padding: .35em .75em 1em;
       height: 10em;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    /* Scroll wrapper that keeps the alert log within the card height */
+    #polite-element-container {
+      max-height: calc(12em - 1.35em);
       overflow-y: auto;
+      padding-right: 0.35em;
+      margin-right: -0.35em;
+    }
+
+    /* Base list reset and layout for alert log entries */
+    ul.alert_copy {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4em;
+    }
+
+    /* Base styling for each alert log entry */
+    .alert-log-item {
+      display: flex;
+      gap: 0.5em;
+      align-items: flex-start;
+      padding: 0.55em 0.7em;
+      border-radius: 0.65em;
+      background: #fbf7f2;
+      border: 1px solid #e4dcd1;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    /* Message container so text fills remaining row space */
+    .alert-log-message {
+      flex: 1;
     }
 
     p.alert_copy {
@@ -224,6 +260,13 @@
       margin-top: 0.65em;
     }
 
+    /* Headings are sometimes containers for buttons. For those cases, style the button content like its
+    so that it is rendered visually like a heading. */
+    :is(h1, h2, h3, h4, h5, h6) button {
+      font: inherit;
+      line-height: inherit;
+    }
+
     .formatted-group {
       border: 1px solid #cbd6e4;
       border-left: 4px solid #7ba5d9;
@@ -263,6 +306,44 @@
 
     .formatted-related-group > *:not(.formatted-aria) + *:not(.formatted-aria) {
       margin-top: 0.4em;
+    }
+
+    /* Group wrapper around related elements in the formatted view; JS adds this to keep labels/controls together. */
+    .formatted-related-group {
+      position: relative;
+    }
+
+    /* The pseudo-element draws the vertical marker that appears when a group has multiple related elements or when
+     * there are ARIA chips to show. The JS toggles the --multi class and the formatted-aria-block class to control
+     * when the line is visible. */
+    .formatted-related-group::before {
+      content: '';
+      position: absolute;
+      left: 0.35em;
+      top: 0.35em;
+      bottom: 0.35em;
+      width: 2px;
+      border-radius: 999px;
+      background: rgba(123, 165, 217, 0.38);
+      display: none;
+    }
+
+    .formatted-related-group.formatted-related-group--multi,
+    .formatted-related-group.formatted-aria-block {
+      padding-left: 0.9em;
+    }
+
+    /* Keep list markers inside the content area so they don't overlap the related-group marker line. */
+    .formatted-related-group ol,
+    .formatted-related-group ul {
+      list-style-position: inside;
+      padding-left: 0.35em;
+      margin-left: 0.35em;
+    }
+
+    .formatted-related-group.formatted-related-group--multi::before,
+    .formatted-related-group.formatted-aria-block::before {
+      display: block;
     }
 
     .aria-chip {
@@ -382,11 +463,12 @@
         </div>
         <details>
           <summary>About Responsive Descriptions</summary>
-          Responsive Descriptions are a combination of object responses, descriptions of changes made directly to
-          interactive objects, and context responses, descriptions of changes to the surrounding context. Together, they
-          are designed to deliver relevant changes in real time as they happen. The object and context responses powered
-          by ARIA Live appear in the activity log below. The object responses for slider interactions are powered by the
-          aria-valuetext attribute, and are found in grey text under slider interactions in the blue box.
+          Responsive Descriptions are a combination of object responses (OBJ), descriptions of changes made directly to
+          interactive objects, and context responses (CTX), descriptions of changes to the surrounding context.
+          Together, they are designed to deliver relevant changes in real time as they happen. The object and context
+          responses powered by ARIA Live appear in the activity log below. The object responses for slider interactions
+          are powered by the aria-valuetext attribute, and are found in grey text under slider interactions in the blue
+          box.
         </details>
         <div id='alert-copy-container' class='alert_copy_container' role='presentation'>
           <div id='polite-element-container'>
@@ -526,6 +608,42 @@
     const DISPLAY_WHEN_NOT_FALSE = value => value !== 'false';
     const DISPLAY_WHEN_PRESENT = value => value && value.trim().length > 0;
     const RELATIONSHIP_PLACEHOLDER = '...';
+    let RELATIONSHIP_LOOKUP_ROOT = null;
+
+    /**
+     * Formats IDREF-based relationship attributes by showing readable content for simple elements. If the referenced
+     * element is a heading or paragraph, return its text as-is; otherwise fall back to the standard placeholder.
+     * Missing references are called out so broken relationships are visible in the viewer.
+     *
+     * @param {string} value
+     * @param {HTMLElement} element
+     * @returns {string}
+     */
+    function formatRelationshipValue( value, element ) {
+
+      // Prefer the live PDOM root when available so we can resolve IDs even after sanitization in the development view.
+      const doc = RELATIONSHIP_LOOKUP_ROOT || ( element ? element.ownerDocument : document );
+
+      return value.split( /\s+/ ).map( idref => {
+        if ( !idref ) {
+          return RELATIONSHIP_PLACEHOLDER;
+        }
+
+        const target = doc.getElementById( idref );
+        if ( !target ) {
+          return 'Missing!';
+        }
+
+        const tag = target.tagName.toLowerCase();
+        if ( tag === 'p' || /^h[1-6]$/.test( tag ) ) {
+          const text = target.textContent || '';
+          const tagLabel = `(${tag}) `;
+          return text ? `${tagLabel}${text}` : `${tagLabel}${idref} (empty)`;
+        }
+
+        return RELATIONSHIP_PLACEHOLDER;
+      } ).join( ' ' );
+    }
 
     /**
      * Formats the value for an ARIA attribute using optional value formatting metadata.
@@ -551,14 +669,15 @@
       { name: 'aria-roledescription', shouldDisplay: DISPLAY_WHEN_PRESENT },
 
       // Relationships and labelling
-      { name: 'aria-labelledby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-      { name: 'aria-describedby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-      { name: 'aria-controls', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-      { name: 'aria-owns', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+      { name: 'aria-label', shouldDisplay: DISPLAY_WHEN_PRESENT },
+      { name: 'aria-labelledby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: formatRelationshipValue },
+      { name: 'aria-describedby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: formatRelationshipValue },
+      { name: 'aria-controls', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: formatRelationshipValue },
+      { name: 'aria-owns', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: formatRelationshipValue },
       {
         name: 'aria-activedescendant',
         shouldDisplay: DISPLAY_WHEN_PRESENT,
-        formatValue: () => RELATIONSHIP_PLACEHOLDER
+        formatValue: formatRelationshipValue
       },
 
       // Visibility and modality
@@ -1035,7 +1154,7 @@
      * @param {number} startIndex
      * @param {number} headingLevel
      * @param {HTMLElement|DocumentFragment} targetParent
-     * @returns {{ nextIndex: number, appended: boolean }}
+     * @returns {number} Index of the next node to process in the caller's loop.
      */
     function appendDefaultHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
       const groupContainer = document.createElement( 'div' );
@@ -1071,15 +1190,11 @@
         index++;
       }
 
-      const appended = groupContainer.childNodes.length > 0;
-      if ( appended ) {
+      if ( groupContainer.childNodes.length > 0 ) {
         targetParent.appendChild( groupContainer );
       }
 
-      return {
-        nextIndex: index,
-        appended: appended
-      };
+      return index;
     }
 
     /**
@@ -1239,7 +1354,14 @@
         clone.dataset.relatedGroupKey = groupKey;
       }
       targetParent.appendChild( clone );
-      attachCloneToExistingGroup( clone, groupKey );
+
+      if ( groupKey ) {
+        const groupInfo = ensureGroupWrapperForClone( clone, groupKey );
+        if ( !groupInfo ) {
+          attachCloneToExistingGroup( clone, groupKey );
+        }
+      }
+
       appendFormattedContent( sourceElement, clone );
       appendFormattedAriaDetails( sourceElement, clone, groupKey );
       finalizeFormattedElement( sourceElement, clone );
@@ -1354,6 +1476,7 @@
           ariaBody.appendChild( chip );
           groupInfo.attributeCount += 1;
         } );
+        updateGroupWrapperDecoration( groupInfo );
         return;
       }
 
@@ -1443,6 +1566,8 @@
       return DECORATOR_TAGS.has( element.tagName );
     }
 
+    // --- Related group helpers
+
     /**
      * Derives a grouping key for related elements by removing the final descriptor token before the trailing numeric
      * path in an element ID. This keeps label/control/heading/description sets with matching scene-graph paths
@@ -1487,6 +1612,50 @@
     }
 
     /**
+     * Updates styling for a related group wrapper based on its member count.
+     *
+     * @param {{ wrapper: HTMLElement, elementCount: number }} groupInfo
+     */
+    function updateGroupWrapperState( groupInfo ) {
+      if ( !groupInfo || !groupInfo.wrapper ) {
+        return;
+      }
+      const hasMultiple = ( groupInfo.elementCount || 0 ) > 1;
+      groupInfo.wrapper.classList.toggle( 'formatted-related-group--multi', hasMultiple );
+    }
+
+    /**
+     * Toggles visual decoration (dashed borders) for a group wrapper based on whether it is grouping multiple elements
+     * or carrying ARIA metadata.
+     *
+     * @param {{ wrapper: HTMLElement, elementCount: number, attributeCount: number }} groupInfo
+     */
+    function updateGroupWrapperDecoration( groupInfo ) {
+      if ( !groupInfo || !groupInfo.wrapper ) {
+        return;
+      }
+      // Only show the dashed boundary when we actually have multiple related nodes or ARIA chips to display.
+      const hasGroupingDecoration = ( groupInfo.elementCount || 0 ) > 1 || ( groupInfo.attributeCount || 0 ) > 0;
+      groupInfo.wrapper.classList.toggle( 'formatted-aria-block', hasGroupingDecoration );
+    }
+
+    /**
+     * Returns whether the node should be counted as part of a related group for visual decoration.
+     *
+     * @param {Node} node
+     * @param {string|null} groupKey
+     * @returns {boolean}
+     */
+    function shouldCountGroupNode( node, groupKey ) {
+      return !!( node &&
+                 groupKey &&
+                 node.nodeType === Node.ELEMENT_NODE &&
+                 node.dataset &&
+                 node.dataset.relatedGroupKey === groupKey &&
+                 !( node instanceof HTMLElement && node.classList.contains( 'formatted-aria' ) ) );
+    }
+
+    /**
      * Appends a node to the appropriate location in a related group wrapper, ensuring ARIA details remain last.
      *
      * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null }} groupInfo
@@ -1501,7 +1670,14 @@
         return;
       }
 
+      const memberCount = shouldCountGroupNode( node, groupInfo.groupKey ) ? 1 : 0;
+
       if ( wrapper.contains( node ) ) {
+        if ( memberCount > 0 ) {
+          groupInfo.elementCount += memberCount;
+          updateGroupWrapperState( groupInfo );
+          updateGroupWrapperDecoration( groupInfo );
+        }
         return;
       }
 
@@ -1521,6 +1697,12 @@
       }
       else {
         wrapper.appendChild( node );
+      }
+
+      if ( memberCount > 0 ) {
+        groupInfo.elementCount += memberCount;
+        updateGroupWrapperState( groupInfo );
+        updateGroupWrapperDecoration( groupInfo );
       }
     }
 
@@ -1547,7 +1729,7 @@
      *
      * @param {HTMLElement} clone
      * @param {string|null} groupKey
-     * @returns {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }|null}
+     * @returns {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number, elementCount: number, groupKey: string|null }|null}
      */
     function ensureGroupWrapperForClone( clone, groupKey ) {
       if ( !clone || !groupKey || !relatedGroupWrappers ) {
@@ -1556,6 +1738,9 @@
 
       let groupInfo = relatedGroupWrappers.get( groupKey );
       if ( groupInfo ) {
+        if ( !groupInfo.groupKey ) {
+          groupInfo.groupKey = groupKey;
+        }
         addNodeToGroupWrapper( groupInfo, clone );
         return groupInfo;
       }
@@ -1566,9 +1751,10 @@
       }
 
       const wrapper = document.createElement( 'div' );
-      wrapper.className = 'formatted-aria-block formatted-related-group';
+      wrapper.className = 'formatted-related-group';
       parent.insertBefore( wrapper, clone );
 
+      let elementCount = 0;
       const siblings = Array.from( parent.childNodes );
       siblings.forEach( node => {
         if ( node === wrapper ) {
@@ -1578,6 +1764,9 @@
              node.dataset &&
              node.dataset.relatedGroupKey === groupKey ) {
           wrapper.appendChild( node );
+          if ( shouldCountGroupNode( node, groupKey ) ) {
+            elementCount += 1;
+          }
         }
       } );
 
@@ -1585,16 +1774,20 @@
         wrapper: wrapper,
         ariaContainer: null,
         ariaBody: null,
-        attributeCount: 0
+        attributeCount: 0,
+        elementCount: elementCount,
+        groupKey: groupKey
       };
       relatedGroupWrappers.set( groupKey, groupInfo );
+      updateGroupWrapperState( groupInfo );
+      updateGroupWrapperDecoration( groupInfo );
       return groupInfo;
     }
 
     /**
      * Ensures the ARIA details container exists for a related group, creating it on demand.
      *
-     * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }} groupInfo
+     * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number, elementCount: number, groupKey: string|null }} groupInfo
      * @returns {HTMLElement|null}
      */
     function ensureGroupAriaContainer( groupInfo ) {
@@ -1873,7 +2066,9 @@
 
         if ( name.startsWith( 'aria-' ) || DEVELOPMENT_ALLOWED_ATTRIBUTES.has( name ) ) {
           if ( ( name === 'aria-describedby' || name === 'aria-labelledby' || name === 'aria-controls' || name === 'aria-owns' || name === 'aria-activedescendant' || name === 'for' ) && value ) {
-            element.setAttribute( name, '...' );
+
+            // Show readable relationship targets in the development view too; fall back to placeholder for non-text nodes.
+            element.setAttribute( name, formatRelationshipValue( value, element ) );
           }
           return;
         }
@@ -2064,19 +2259,26 @@
         return;
       }
 
-      const formattedRenderer = renderers[ VIEW_MODES.FORMATTED ];
-      if ( typeof formattedRenderer === 'function' ) {
-        formattedRenderer( pdomRoot, viewContainers[ VIEW_MODES.FORMATTED ] );
-      }
+      // Make the live PDOM root available to relationship formatters while we render all views.
+      RELATIONSHIP_LOOKUP_ROOT = pdomRoot ? pdomRoot.ownerDocument : null;
+      try {
+        const formattedRenderer = renderers[ VIEW_MODES.FORMATTED ];
+        if ( typeof formattedRenderer === 'function' ) {
+          formattedRenderer( pdomRoot, viewContainers[ VIEW_MODES.FORMATTED ] );
+        }
 
-      const developmentRenderer = renderers[ VIEW_MODES.DEVELOPMENT ];
-      if ( typeof developmentRenderer === 'function' ) {
-        developmentRenderer( pdomRoot, viewContainers[ VIEW_MODES.DEVELOPMENT ] );
-      }
+        const developmentRenderer = renderers[ VIEW_MODES.DEVELOPMENT ];
+        if ( typeof developmentRenderer === 'function' ) {
+          developmentRenderer( pdomRoot, viewContainers[ VIEW_MODES.DEVELOPMENT ] );
+        }
 
-      const legacyRenderer = renderers[ VIEW_MODES.LEGACY ];
-      if ( typeof legacyRenderer === 'function' ) {
-        legacyRenderer( pdomRoot, viewContainers[ VIEW_MODES.LEGACY ] );
+        const legacyRenderer = renderers[ VIEW_MODES.LEGACY ];
+        if ( typeof legacyRenderer === 'function' ) {
+          legacyRenderer( pdomRoot, viewContainers[ VIEW_MODES.LEGACY ] );
+        }
+      }
+      finally {
+        RELATIONSHIP_LOOKUP_ROOT = null;
       }
     }
 
@@ -2226,13 +2428,16 @@
           // the removal.
           if ( mutation.addedNodes.length > 0 ) {
             const alertText = mutation.target.textContent;
-
             // update the text content of the copied element to match the element in the iframe document
             // create a list item to add to the alert list
             if ( alertText.length > 0 ) {
               const listItem = document.createElement( 'li' );
               listItem.style.opacity = 1.0;
-              listItem.textContent = alertText;
+              listItem.classList.add( 'alert-log-item' );
+              const message = document.createElement( 'span' );
+              message.classList.add( 'alert-log-message' );
+              message.textContent = alertText;
+              listItem.appendChild( message );
               if ( mutation.target.id.includes( 'assertive' ) ) {
                 listItem.classList.add( 'assertive' );
               }
@@ -2329,11 +2534,9 @@
         }
 
         const ariaLiveElementsContainer = phetNamespace.joist.sim.display.descriptionUtteranceQueue.announcer.ariaLiveContainer;
-        const globalContainer = phetNamespace.scenery.globalDescriptionQueue.announcer.ariaLiveContainer;
 
         const simDisplayElements = Array.prototype.slice.call( ariaLiveElementsContainer.children );
-        const globalElements = Array.prototype.slice.call( globalContainer.children );
-        const allSourceAriaLiveElements = [ ...simDisplayElements, ...globalElements ];
+        const allSourceAriaLiveElements = [ ...simDisplayElements ];
 
         const invalidateView = addPDOMObserver( PDOMRoot, viewContainers, mutationConfig, renderers );
 
@@ -2415,7 +2618,7 @@
       return {
         iframe: document.getElementById( 'iframe' ),
         alertList: document.getElementById( 'alert-list' ),
-        alertContainer: document.getElementById( 'alert-copy-container' ),
+        alertContainer: document.getElementById( 'polite-element-container' ),
         clearActivityLogButton: document.getElementById( 'clear-activity-log-button' ),
         viewModeControls: document.getElementById( 'view-mode-controls' ),
         domCopyContainer: document.getElementById( 'dom-copy-container' )
