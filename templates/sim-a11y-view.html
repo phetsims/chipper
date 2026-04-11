@@ -617,7 +617,8 @@
       noAccessibility && ( simulationQueryString += 'supportsInteractiveDescription=true' );
 
       const repoLocale = '{{PHET_REPOSITORY}}_en';
-      const filenameEnding = IS_BUILT ? '_phet.html' : '.html';
+      // Use unbranded HTML on phet.colorado.edu and when unbuilt.
+      const filenameEnding = ( window.location.hostname === 'phet.colorado.edu' || !IS_BUILT ) ? '.html' : '_phet.html';
       const simURL = repoLocale + filenameEnding + simulationQueryString;
 
       const iframe = document.getElementById( 'iframe' );
