@@ -611,10 +611,10 @@
       }
 
       const noPostMessage = simulationQueryString.indexOf( 'postMessageOnLoad&postMessageOnError' ) === -1;
-      const noAccessibility = simulationQueryString.indexOf( 'supportsInteractiveDescription' ) === -1;
+      const noAccessibility = simulationQueryString.indexOf( 'accessibility' ) === -1;
 
       noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
-      noAccessibility && ( simulationQueryString += 'supportsInteractiveDescription=true' );
+      noAccessibility && ( simulationQueryString += 'accessibility' );
 
       const repoLocale = '{{PHET_REPOSITORY}}_en';
       // Use unbranded HTML on phet.colorado.edu and when unbuilt.
