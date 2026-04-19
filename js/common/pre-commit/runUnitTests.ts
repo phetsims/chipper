@@ -9,13 +9,63 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
+import { spawn } from 'child_process';
 import fs from 'fs';
+import net from 'net';
 import path from 'path';
 import execute from '../../../../perennial-alias/js/common/execute.js';
 import npmCommand from '../../../../perennial-alias/js/common/npmCommand.js';
-import withServer from '../../../../perennial-alias/js/common/withServer.js';
 import puppeteer from '../../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import puppeteerQUnit from '../../../../perennial-alias/js/test/puppeteerQUnit.js';
+
+// Ask the OS for a free ephemeral port by letting it bind :0, reading the port back, then closing.
+// Race window before the caller binds is small and acceptable here.
+function getFreePort(): Promise<number> {
+  return new Promise( ( resolve, reject ) => {
+    const s = net.createServer();
+    s.unref();
+    s.on( 'error', reject );
+    s.listen( 0, () => {
+      const port = ( s.address() as net.AddressInfo ).port;
+      s.close( () => resolve( port ) );
+    } );
+  } );
+}
+
+/**
+ * Spawn the chipper dev-server (which transpiles/bundles on-the-fly) on a free port and
+ * resolve once it's listening. Returns the child process and the port.
+ */
+async function startDevServer( monorepoRoot: string ): Promise<{ child: ReturnType<typeof spawn>; port: number }> {
+  const port = await getFreePort();
+  const sageBin = path.join( monorepoRoot, 'perennial-alias', 'bin', 'sage' );
+  const devServerScript = path.join( monorepoRoot, 'chipper', 'js', 'grunt', 'tasks', 'dev-server.ts' );
+
+  const child = spawn( sageBin, [ 'run', devServerScript, `--port=${port}` ], {
+    cwd: path.join( monorepoRoot, 'chipper' ),
+    stdio: [ 'ignore', 'pipe', 'pipe' ]
+  } );
+
+  await new Promise<void>( ( resolve, reject ) => {
+    let settled = false;
+    const onData = ( chunk: Buffer ) => {
+      if ( !settled && chunk.toString().includes( 'listening' ) ) {
+        settled = true;
+        resolve();
+      }
+    };
+    child.stdout.on( 'data', onData );
+    child.stderr.on( 'data', onData ); // some builds route the listening message to stderr
+    child.on( 'exit', code => {
+      if ( !settled ) {
+        settled = true;
+        reject( new Error( `dev-server exited before becoming ready (code ${code})` ) );
+      }
+    } );
+  } );
+
+  return { child: child, port: port };
+}
 
 export default async function runUnitTests(
   repo: string,
@@ -39,24 +89,23 @@ export default async function runUnitTests(
       return true;
     }
 
-    outputToConsole && console.log( 'unit-test: testing browser QUnit' );
+    outputToConsole && console.log( 'unit-test: testing browser QUnit via dev-server' );
+
+    // Launch the chipper dev-server so the browser gets freshly-bundled test code from source,
+    // instead of reading stale chipper/dist/js/ from a previous build.
+    const { child: devServer, port } = await startDevServer( monorepoRoot );
+
     const browser = await puppeteer.launch( {
       args: [ '--disable-gpu' ]
     } );
 
-    // withServer reads process.cwd() and serves ${cwd}/${options.path}. Temporarily chdir to
-    // monorepoRoot so the server serves from the monorepo root, regardless of caller CWD.
-    const originalCwd = process.cwd();
-    process.chdir( monorepoRoot );
     let result: { ok: boolean };
     try {
-      result = await withServer( async port => {
-        return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
-      }, { path: './' } ) as { ok: boolean };
+      result = await puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` ) as { ok: boolean };
     }
     finally {
-      process.chdir( originalCwd );
       await browser.close();
+      devServer.kill();
     }
 
     outputToConsole && console.log( `unit-test: ${JSON.stringify( result, null, 2 )}` );
