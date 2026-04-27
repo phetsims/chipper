@@ -18,6 +18,32 @@ import npmCommand from '../../../../perennial-alias/js/common/npmCommand.js';
 import puppeteer from '../../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import puppeteerQUnit from '../../../../perennial-alias/js/test/puppeteerQUnit.js';
 
+export type QUnitCounts = {
+  total: number;
+  passed: number;
+  failed: number;
+  skipped: number;
+  todo: number;
+};
+
+export type QUnitAssertions = {
+  total: number;
+  passed: number;
+  failed: number;
+};
+
+export type QUnitResult = {
+  ok: boolean;
+  time?: number;
+  totalTests?: number;
+  passed?: number;
+  failed?: number;
+  status?: string;
+  tests?: QUnitCounts | null;
+  assertions?: QUnitAssertions;
+  errors?: string[];
+};
+
 // Ask the OS for a free ephemeral port by letting it bind :0, reading the port back, then closing.
 // Race window before the caller binds is small and acceptable here.
 function getFreePort(): Promise<number> {
@@ -76,7 +102,7 @@ async function startDevServer( monorepoRoot: string ): Promise<{ child: ReturnTy
 export default async function runUnitTests(
   repo: string,
   monorepoRoot: string,
-  options?: { outputToConsole?: boolean }
+  options?: { outputToConsole?: boolean; onQUnitResult?: ( result: QUnitResult ) => void }
 ): Promise<boolean> {
   const outputToConsole = !!options?.outputToConsole;
 
@@ -105,15 +131,16 @@ export default async function runUnitTests(
       args: [ '--disable-gpu' ]
     } );
 
-    let result: { ok: boolean };
+    let result: QUnitResult;
     try {
-      result = await puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` ) as { ok: boolean };
+      result = await puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` ) as QUnitResult;
     }
     finally {
       await browser.close();
       devServer.kill();
     }
 
+    options?.onQUnitResult?.( result );
     outputToConsole && console.log( `unit-test: ${JSON.stringify( result, null, 2 )}` );
     if ( !result.ok ) {
       console.error( `unit tests failed in ${repo}`, result );
