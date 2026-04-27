@@ -8,20 +8,12 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import fs from 'fs';
-import execute from '../../../../perennial-alias/js/common/execute.js';
-import getRepoList from '../../../../perennial-alias/js/common/getRepoList.js';
-import npmCommand from '../../../../perennial-alias/js/common/npmCommand.js';
-import withServer from '../../../../perennial-alias/js/common/withServer.js';
+import path from 'path';
 import lint from '../../../../perennial-alias/js/eslint/lint.js';
 import typeCheck from '../../../../perennial-alias/js/grunt/typeCheck.js';
-import puppeteer from '../../../../perennial-alias/js/npm-dependencies/puppeteer.js';
-import puppeteerQUnit from '../../../../perennial-alias/js/test/puppeteerQUnit.js';
-import getPhetLibs from '../../grunt/getPhetLibs.js';
 import reportMedia from '../../grunt/reportMedia.js';
-import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
-import phetioCompareAPISets from '../../phet-io/phetioCompareAPISets.js';
-import transpile from '../transpile.js';
+import runPhetioApiCompare from './runPhetioApiCompare.js';
+import runUnitTests from './runUnitTests.js';
 
 
 const commandLineArguments = process.argv.slice( 2 );
@@ -94,122 +86,17 @@ const repo = getArg( 'repo' );
 
   else if ( command === 'unit-test' ) {
 
-    // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
-    const qUnitOKPromise = ( async () => {
-
-      if ( repo !== 'scenery' && repo !== 'phet-io-wrappers' ) { // scenery unit tests take too long, so skip those
-        const testFilePath = `${repo}/${repo}-tests.html`;
-        const exists = fs.existsSync( `../${testFilePath}` );
-        if ( exists ) {
-
-          outputToConsole && console.log( 'unit-test: testing browser QUnit' );
-          const browser = await puppeteer.launch( {
-            args: [
-              '--disable-gpu'
-            ]
-          } );
-
-          const result = await withServer( async port => {
-            return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
-          } ) as { ok: boolean };
-
-          await browser.close();
-
-          outputToConsole && console.log( `unit-test: ${JSON.stringify( result, null, 2 )}` );
-          if ( !result.ok ) {
-            console.error( `unit tests failed in ${repo}`, result );
-            return false;
-          }
-          else {
-            return true;
-          }
-        }
-        else {
-          outputToConsole && console.log( 'unit-test: no browser unit tests detected' );
-        }
-
-        return true;
-      }
-      return true;
-    } )();
-
-    const npmRunTestOkPromise = ( async () => {
-
-      // Detect the presence of npm run test by looking in package.json's scripts.test
-      let hasNpmRunTest = false;
-      try {
-        const packageString = fs.readFileSync( `../${repo}/package.json`, 'utf8' );
-        const packageJSON = JSON.parse( packageString );
-        if ( packageJSON.scripts?.hasOwnProperty( 'test' ) ) {
-          hasNpmRunTest = true;
-        }
-      }
-      catch( e ) {
-        // no package.json or not parseable
-      }
-
-      if ( hasNpmRunTest ) {
-        outputToConsole && console.log( 'unit-test: testing "npm run test" task' );
-        const output = await execute( npmCommand, [ 'run', 'test' ], `../${repo}`, { errors: 'resolve' } );
-        const testPassed = output.code === 0;
-
-        ( outputToConsole || !testPassed ) && output.stdout.length > 0 && console.log( output.stdout );
-        ( outputToConsole || !testPassed ) && output.stderr.length > 0 && console.log( output.stderr );
-
-        return testPassed;
-      }
-      else {
-        return true;
-      }
-    } )();
-
-    const results = await Promise.all( [ qUnitOKPromise, npmRunTestOkPromise ] );
-    const qUnitOK = results[ 0 ];
-    const npmRunTestOk = results[ 1 ];
-    outputToConsole && console.log( `unit-test: QUnit browser success: ${qUnitOK}` );
-    outputToConsole && console.log( `unit-test: npm run test success: ${npmRunTestOk}` );
-
-    process.exit( ( qUnitOK && npmRunTestOk ) ? 0 : 1 );
+    // Legacy pre-commit invokes this task from inside a sim directory, so process.cwd()/.. is
+    // the monorepo root.
+    const monorepoRoot = path.resolve( '..' );
+    const ok = await runUnitTests( repo, monorepoRoot, { outputToConsole: outputToConsole } );
+    process.exit( ok ? 0 : 1 );
   }
 
   else if ( command === 'phet-io-api' ) {
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Compare PhET-iO APIs for this repo and anything that has it as a dependency
-    //
-    const phetioAPIOK = await ( async () => {
-
-      // If running git hooks in phet-io-sim-specific, it isn't worth regenerating the API for every single stable sim.
-      // Instead, rely on the hooks from the repos where the api changes come from.
-      if ( repo === 'phet-io-sim-specific' ) {
-        return true;
-      }
-
-      // Test this repo and all phet-io sims that have it as a dependency.  For instance, changing sun would test
-      // every phet-io stable sim.
-      const phetioAPIStable = getRepoList( 'phet-io-api-stable' );
-      const reposToTest = phetioAPIStable.filter( phetioSimRepo => getPhetLibs( phetioSimRepo ).includes( repo ) );
-
-      if ( reposToTest.length > 0 ) {
-        const repos = new Set<string>();
-        reposToTest.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
-        await transpile( {
-          repos: Array.from( repos ),
-          silent: true
-        } );
-
-        const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {
-          showProgressBar: reposToTest.length > 1,
-          showMessagesFromSim: false
-        } );
-
-        return phetioCompareAPISets( reposToTest, proposedAPIs );
-      }
-      else {
-        return true;
-      }
-    } )();
-
-    process.exit( phetioAPIOK ? 0 : 1 );
+    const monorepoRoot = path.resolve( '..' );
+    const ok = await runPhetioApiCompare( repo, monorepoRoot );
+    process.exit( ok ? 0 : 1 );
   }
 } )();
