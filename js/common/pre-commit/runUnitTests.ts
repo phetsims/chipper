@@ -44,6 +44,16 @@ export type QUnitResult = {
   errors?: string[];
 };
 
+export type RunUnitTestsResult = {
+  ok: boolean;
+
+  // True iff browser QUnit (puppeteer) actually ran.
+  ranBrowserQUnit: boolean;
+
+  // True iff `npm run test` actually ran.
+  ranNpmTest: boolean;
+};
+
 // Ask the OS for a free ephemeral port by letting it bind :0, reading the port back, then closing.
 // Race window before the caller binds is small and acceptable here.
 function getFreePort(): Promise<number> {
@@ -103,7 +113,7 @@ export default async function runUnitTests(
   repo: string,
   monorepoRoot: string,
   options?: { outputToConsole?: boolean; onQUnitResult?: ( result: QUnitResult ) => void }
-): Promise<boolean> {
+): Promise<RunUnitTestsResult> {
   const outputToConsole = !!options?.outputToConsole;
 
   // scenery and phet-io-wrappers browser tests are too slow for pre-commit.
@@ -112,13 +122,13 @@ export default async function runUnitTests(
 
   const qUnitOKPromise = ( async () => {
     if ( !runQUnit ) {
-      return true;
+      return { ok: true, ran: false };
     }
     const testFilePath = `${repo}/${repo}-tests.html`;
     const exists = fs.existsSync( path.join( monorepoRoot, testFilePath ) );
     if ( !exists ) {
       outputToConsole && console.log( 'unit-test: no browser unit tests detected' );
-      return true;
+      return { ok: true, ran: false };
     }
 
     outputToConsole && console.log( 'unit-test: testing browser QUnit via dev-server' );
@@ -144,9 +154,9 @@ export default async function runUnitTests(
     outputToConsole && console.log( `unit-test: ${JSON.stringify( result, null, 2 )}` );
     if ( !result.ok ) {
       console.error( `unit tests failed in ${repo}`, result );
-      return false;
+      return { ok: false, ran: true };
     }
-    return true;
+    return { ok: true, ran: true };
   } )();
 
   const npmRunTestOkPromise = ( async () => {
@@ -162,7 +172,7 @@ export default async function runUnitTests(
       // no package.json or not parseable
     }
     if ( !hasNpmRunTest ) {
-      return true;
+      return { ok: true, ran: false };
     }
 
     outputToConsole && console.log( 'unit-test: testing "npm run test" task' );
@@ -171,11 +181,15 @@ export default async function runUnitTests(
 
     ( outputToConsole || !testPassed ) && output.stdout.length > 0 && console.log( output.stdout );
     ( outputToConsole || !testPassed ) && output.stderr.length > 0 && console.log( output.stderr );
-    return testPassed;
+    return { ok: testPassed, ran: true };
   } )();
 
-  const [ qUnitOK, npmRunTestOk ] = await Promise.all( [ qUnitOKPromise, npmRunTestOkPromise ] );
-  outputToConsole && console.log( `unit-test: QUnit browser success: ${qUnitOK}` );
-  outputToConsole && console.log( `unit-test: npm run test success: ${npmRunTestOk}` );
-  return qUnitOK && npmRunTestOk;
+  const [ qUnitOutcome, npmOutcome ] = await Promise.all( [ qUnitOKPromise, npmRunTestOkPromise ] );
+  outputToConsole && console.log( `unit-test: QUnit browser success: ${qUnitOutcome.ok}` );
+  outputToConsole && console.log( `unit-test: npm run test success: ${npmOutcome.ok}` );
+  return {
+    ok: qUnitOutcome.ok && npmOutcome.ok,
+    ranBrowserQUnit: qUnitOutcome.ran,
+    ranNpmTest: npmOutcome.ran
+  };
 }

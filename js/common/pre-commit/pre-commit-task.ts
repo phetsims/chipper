@@ -89,8 +89,8 @@ const repo = getArg( 'repo' );
     // Legacy pre-commit invokes this task from inside a sim directory, so process.cwd()/.. is
     // the monorepo root.
     const monorepoRoot = path.resolve( '..' );
-    const ok = await runUnitTests( repo, monorepoRoot, { outputToConsole: outputToConsole } );
-    process.exit( ok ? 0 : 1 );
+    const result = await runUnitTests( repo, monorepoRoot, { outputToConsole: outputToConsole } );
+    process.exit( result.ok ? 0 : 1 );
   }
 
   else if ( command === 'phet-io-api' ) {
