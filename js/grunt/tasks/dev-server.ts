@@ -33,12 +33,16 @@ import http from 'node:http';
 import path from 'path';
 import serveIndex from 'serve-index';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
-import getOption, { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getOption, { getOptionIfProvided, isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+
+const DEFAULT_PORT = 80;
+const FALLBACK_PORT = 8080;
 
 const options = {
-  port: getOptionIfProvided( 'port', 80 ),
+  port: getOptionIfProvided( 'port', DEFAULT_PORT ),
   logLevel: getOptionIfProvided( 'logLevel', 'info' ) // or 'verbose'
 };
+const PORT_PROVIDED = isOptionKeyProvided( 'port' );
 
 const VERBOSE = options.logLevel === 'verbose'; // Lots of console.logs
 const SAVE_TO_DIST = getOption( 'saveToDist' ); // Write files to disk for inspection
@@ -332,22 +336,34 @@ app.use( ( error: Error, req: express.Request, res: express.Response, next: expr
   res.status( 500 ).type( 'text/plain' ).send( 'Internal Server Error' );
 } );
 
-// --- Start Server ---
-const server = http.createServer( app ); // Create HTTP server with express app
+function listen( port: number ): void {
+  const server = http.createServer( app ); // Create HTTP server with express app
 
-// Handle server errors (e.g., port already in use)
-server.on( 'error', ( err: Error ) => {
-  if ( err.message.includes( 'EADDRINUSE' ) ) {
-    console.error( `Error: Port ${options.port} is already in use. Try specifying a different port with --port=NUMBER` );
-  }
-  else {
-    console.error( 'Server startup error:', err );
-  }
-  process.exit( 1 );
-} );
+  // Handle server errors (e.g., port already in use)
+  server.on( 'error', ( err: Error & { code?: string } ) => {
+    if ( !PORT_PROVIDED && port === DEFAULT_PORT && ( err.code === 'EACCES' || err.code === 'EADDRINUSE' ) ) {
+      console.log( `Port ${DEFAULT_PORT} is unavailable (${err.code}), trying ${FALLBACK_PORT}.` );
+      listen( FALLBACK_PORT );
+    }
+    else if ( err.code === 'EADDRINUSE' ) {
+      console.error( `Error: Port ${port} is already in use. Try specifying a different port with --port=NUMBER` );
+      process.exit( 1 );
+    }
+    else if ( err.code === 'EACCES' ) {
+      console.error( `Error: Permission denied for port ${port}. Try specifying a different port with --port=NUMBER` );
+      process.exit( 1 );
+    }
+    else {
+      console.error( 'Server startup error:', err );
+      process.exit( 1 );
+    }
+  } );
 
-server.listen( options.port, () => {
-  console.log( `PhET Development Server listening at http://localhost:${options.port}/` );
-  console.log( `Serving files from: ${STATIC_ROOT}` );
-  SAVE_TO_DIST && console.log( `Will save generated files to: ${DIST_DEV_SERVER_DIR}` );
-} );
+  server.listen( port, () => {
+    console.log( `PhET Development Server listening at http://localhost:${port}/` );
+    console.log( `Serving files from: ${STATIC_ROOT}` );
+    SAVE_TO_DIST && console.log( `Will save generated files to: ${DIST_DEV_SERVER_DIR}` );
+  } );
+}
+
+listen( options.port );
