@@ -1,4 +1,4 @@
-// Copyright 2025-2026, University of Colorado Boulder
+// Copyright 2025, University of Colorado Boulder
 
 /**
  * Utility functions for working with Fluent strings.
@@ -7,11 +7,8 @@
  */
 
 import { isTReadOnlyProperty, TReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
-import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import { FluentBundle, FluentBundlePattern } from '../browser-and-node/FluentLibrary.js';
-import type FluentPattern from './FluentPattern.js';
-import type { FluentVariable } from './FluentPattern.js';
 import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 
 const FluentUtils = {
@@ -57,20 +54,6 @@ const FluentUtils = {
     assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
 
     return value;
-  },
-
-  /**
-   * Applies a two-argument `{ first, second }` pattern to a list by reducing pairs from first to second. This supports
-   * localized separator patterns such as `{ $first }, { $second }` and `{ $first } plus { $second }`, where whitespace
-   * must live inside the pattern instead of in a standalone separator string.
-   */
-  joinFirstAndSecond: ( pattern: FluentPattern<{ first: FluentVariable; second: FluentVariable }>, items: string[] ): string => {
-    affirm( items.length > 0, 'joinFirstAndSecond requires at least one item' );
-
-    return items.reduce( ( first, second ) => pattern.format( {
-      first: first,
-      second: second
-    } ) );
   },
 
   /**
