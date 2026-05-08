@@ -78,9 +78,25 @@ export const safeLoadYaml = ( yamlContents: string ): IntentionalAny => {
  * @param input - The parsed YAML data (can be an object, array, string, or other primitive).
  * @returns The transformed JavaScript structure.
  */
-export function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
+// Formats the path to a YAML value for error messages. Object keys are separated with dots, while array indices are
+// stored as bracketed segments and appended directly so paths read like `parent.items[0].label` instead of
+// `parent.items.[0].label`.
+const formatYAMLKeyPath = ( path: string[] ): string => {
+  if ( path.length === 0 ) {
+    return '<root>';
+  }
+
+  return path.reduce( ( result, segment ) => {
+    return segment.startsWith( '[' ) ? `${result}${segment}` : `${result}.${segment}`;
+  } );
+};
+
+export function nestJSONStringValues( input: IntentionalAny, path: string[] = [] ): IntentionalAny {
   // Base case 1: Input is a string
   if ( typeof input === 'string' ) {
+    if ( input !== input.trim() ) {
+      throw new Error( `English YAML string must not have leading or trailing whitespace at ${formatYAMLKeyPath( path )}: ${JSON.stringify( input )}` );
+    }
 
     // This allows developers to reference messages with dot notation, which is not valid in Fluent.
     // We replace dots with underscores so it matches the Fluent key format.
@@ -90,7 +106,7 @@ export function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
   // Base case 2: Input is an array
   else if ( Array.isArray( input ) ) {
     // Recursively process each element of the array
-    return input.map( item => nestJSONStringValues( item ) );
+    return input.map( ( item, index ) => nestJSONStringValues( item, [ ...path, `[${index}]` ] ) );
   }
   // Recursive step: Input is an object (but not null)
   else if ( input !== null && typeof input === 'object' ) {
@@ -129,7 +145,7 @@ export function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
       }
 
       // Recursively process the value for the current key
-      let processedValue = nestJSONStringValues( input[ key ] );
+      let processedValue = nestJSONStringValues( input[ key ], [ ...path, key ] );
 
       // Check for corresponding __simMetadata for this key
       const metadataKey = `${key}__simMetadata`;
