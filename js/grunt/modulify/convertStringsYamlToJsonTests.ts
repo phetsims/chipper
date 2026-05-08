@@ -6,12 +6,11 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import qunit from '../../../../perennial-alias/js/npm-dependencies/qunit.js';
 import { nestJSONStringValues } from './convertStringsYamlToJson.js';
 
-qunit.module( 'convertStringsYamlToJson' );
+QUnit.module( 'convertStringsYamlToJson' );
 
-qunit.test( 'nestJSONStringValues accepts normal strings and interior spaces', assert => {
+QUnit.test( 'nestJSONStringValues accepts normal strings and interior spaces', assert => {
   assert.deepEqual( nestJSONStringValues( {
     a: 'normal string',
     b: {
@@ -25,7 +24,7 @@ qunit.test( 'nestJSONStringValues accepts normal strings and interior spaces', a
   } );
 } );
 
-qunit.test( 'nestJSONStringValues rejects leading whitespace', assert => {
+QUnit.test( 'nestJSONStringValues rejects leading whitespace', assert => {
   assert.throws( () => nestJSONStringValues( {
     a: {
       b: ' leading whitespace'
@@ -33,7 +32,7 @@ qunit.test( 'nestJSONStringValues rejects leading whitespace', assert => {
   } ), /a\.b.*" leading whitespace"/ );
 } );
 
-qunit.test( 'nestJSONStringValues rejects trailing whitespace', assert => {
+QUnit.test( 'nestJSONStringValues rejects trailing whitespace', assert => {
   assert.throws( () => nestJSONStringValues( {
     a: {
       b: 'trailing whitespace '
@@ -41,7 +40,7 @@ qunit.test( 'nestJSONStringValues rejects trailing whitespace', assert => {
   } ), /a\.b.*"trailing whitespace "/ );
 } );
 
-qunit.test( 'nestJSONStringValues reports full nested key path', assert => {
+QUnit.test( 'nestJSONStringValues reports full nested key path', assert => {
   assert.throws( () => nestJSONStringValues( {
     a: {
       b: {

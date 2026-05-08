@@ -5,12 +5,11 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
 import ChipperStringUtils, { StringFileMap } from './ChipperStringUtils.js';
 
-qunit.module( 'ChipperStringUtils' );
+QUnit.module( 'ChipperStringUtils' );
 
-qunit.test( 'forEachString', assert => {
+QUnit.test( 'forEachString', assert => {
   const map1: StringFileMap = {
     x: { value: 'x' },
     y: {
