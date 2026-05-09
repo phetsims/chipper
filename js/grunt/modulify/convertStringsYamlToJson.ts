@@ -1,4 +1,4 @@
-// Copyright 2025, University of Colorado Boulder
+// Copyright 2025-2026, University of Colorado Boulder
 
 /**
  * Converts a YAML file to JSON, nesting each leaf value under a "value" key, and writes the result to a JSON file.
