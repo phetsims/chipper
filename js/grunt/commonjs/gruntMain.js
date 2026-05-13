@@ -88,7 +88,6 @@ module.exports = function( grunt ) {
     'generate-data',
     'release-branch-list',
     'sync',
-    'create-release-monorepo'
   ].forEach( task => {
 
     // In totality/ forward to perennial-alias
