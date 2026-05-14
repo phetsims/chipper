@@ -13,9 +13,10 @@
 
 import assert from 'assert';
 import fs from 'fs';
-import ReleaseBranch from '../../../perennial-alias/js/common/ReleaseBranch.js';
+import { ReleaseBranch } from '../../../perennial-alias/js/common/ReleaseBranch.js';
 import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import { Checkout } from '../../../perennial-alias/js/common/Checkout.js';
 
 ( async () => {
 
@@ -29,7 +30,7 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
   const getPackage = async ( releaseBranch: ReleaseBranch ): Promise<Record<string, IntentionalAny>> => {
     return getJSON( `https://raw.githubusercontent.com/phetsims/${releaseBranch.repo}/refs/heads/${releaseBranch.branch}/package.json` );
   };
-  const releaseBranches = await ReleaseBranch.getAllMaintenanceBranches( false );
+  const releaseBranches = await Checkout.getMaintainedReleaseBranches();
 
   // Record<fullStringKey, releaseBranchesEffected[]>
   const problemStrings: Record<string, string[]> = {};

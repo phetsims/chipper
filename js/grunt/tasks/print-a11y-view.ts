@@ -10,7 +10,7 @@
  */
 
 import assert from 'assert';
-import playwrightLoad from '../../../../perennial-alias/js/common/playwrightLoad.js';
+import { playwrightLoad } from '../../../../perennial-alias/js/common/playwrightLoad.js';
 import getOption, { getOptionIfProvided, isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import playwright from '../../../../perennial-alias/js/npm-dependencies/playwright.js';

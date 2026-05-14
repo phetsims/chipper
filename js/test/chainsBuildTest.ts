@@ -7,7 +7,7 @@
  */
 
 import execute from '../../../perennial-alias/js/common/execute.js';
-import gruntCommand from '../../../perennial-alias/js/common/gruntCommand.js';
+import { gruntCommand } from '../../../perennial-alias/js/common/gruntCommand.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
 
