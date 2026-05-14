@@ -107,7 +107,7 @@ export const printA11yViewPromise = ( async () => {
     allowedTimeToLoad: allowedTimeToLoad,
     gotoTimeout: gotoTimeout,
     resolveFromLoad: false,
-    onLoadTimeout: ( resolve: () => void, reject: ( error: Error ) => void ) => reject( new Error( `Timed out waiting for ${DEVELOPMENT_VIEW_LOG_PREFIX}` ) ),
+    onLoadTimeout: ( resolve, reject ) => reject( new Error( `Timed out waiting for ${DEVELOPMENT_VIEW_LOG_PREFIX}` ) ),
     onPageCreation: async ( page: playwright.Page, resolve: ( value: unknown ) => void ) => {
 
       let resolved = false;
