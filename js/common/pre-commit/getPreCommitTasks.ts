@@ -7,7 +7,7 @@
  *
  */
 
-import buildLocal from '../../../../perennial-alias/js/common/buildLocal.js';
+import { buildLocal } from '../../../../perennial-alias/js/common/buildLocal.js';
 import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 
 const SUPPORTED_TASKS = [ 'lint', 'report-media', 'type-check', 'unit-test', 'phet-io-api' ];

@@ -8,7 +8,7 @@
  */
 
 import { readFileSync } from 'fs';
-import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import { writeFileAndGitAdd } from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import getPhetLibs from './getPhetLibs.js';
@@ -47,5 +47,5 @@ export default async function( repo: string, published: boolean ): Promise<void>
   readme = ChipperStringUtils.replaceAll( readme, '{{CLONE_COMMANDS}}', cloneCommands );
 
   // Write to the repository's root directory.
-  await writeFileAndGitAdd( repo, 'README.md', readme );
+  await writeFileAndGitAdd( `${repo}/README.md`, readme );
 }

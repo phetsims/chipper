@@ -12,7 +12,7 @@ import fs from 'fs';
 import fsPromises from 'fs/promises';
 import _ from 'lodash';
 import path from 'path';
-import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import { writeFileAndGitAdd } from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import { asyncLoadFileAsDataURI } from '../../common/loadFileAsDataURI.js';
 import pascalCase from '../../common/pascalCase.js';
@@ -332,7 +332,7 @@ const modulifyImage = async ( repo: string, relativePath: string ) => {
   const contents = ( await getModulifiedImage( repo, relativePath ) ).content;
 
   const tsFilename = convertSuffix( relativePath, '.ts' );
-  await writeFileAndGitAdd( repo, tsFilename, contents );
+  await writeFileAndGitAdd( `${repo}/${tsFilename}`, contents );
 };
 
 /**
@@ -344,7 +344,7 @@ const modulifySVG = async ( repo: string, relativePath: string ) => {
   const contents = ( await getModulifiedSVGImage( repo, relativePath ) ).content;
 
   const tsFilename = convertSuffix( relativePath, '.ts' );
-  await writeFileAndGitAdd( repo, tsFilename, contents );
+  await writeFileAndGitAdd( `${repo}/${tsFilename}`, contents );
 };
 
 /**
@@ -356,7 +356,7 @@ const modulifyMipmap = async ( repo: string, relativePath: string ) => {
   const contents = ( await getModulifiedMipmap( repo, relativePath ) ).content;
 
   const tsFilename = convertSuffix( relativePath, '.ts' );
-  await writeFileAndGitAdd( repo, tsFilename, contents );
+  await writeFileAndGitAdd( `${repo}/${tsFilename}`, contents );
 };
 
 /**
@@ -368,7 +368,7 @@ const modulifySound = async ( repo: string, relativePath: string ) => {
   const contents = ( await getModulifiedSound( repo, relativePath ) ).content;
 
   const jsFilename = convertSuffix( relativePath, '.js' );
-  await writeFileAndGitAdd( repo, jsFilename, contents );
+  await writeFileAndGitAdd( `${repo}/${jsFilename}`, contents );
 };
 
 /**
@@ -397,7 +397,7 @@ const createImageModule = async ( repo: string, supportedRegionsAndCultures: str
   const imageModuleName = `${pascalCase( repo )}Images`;
   const relativeImageModuleFile = `js/${imageModuleName}.ts`;
 
-  await writeFileAndGitAdd( repo, relativeImageModuleFile, ( await getImageModule( repo, supportedRegionsAndCultures ) ).content );
+  await writeFileAndGitAdd( `${repo}/${relativeImageModuleFile}`, ( await getImageModule( repo, supportedRegionsAndCultures ) ).content );
 };
 
 /**

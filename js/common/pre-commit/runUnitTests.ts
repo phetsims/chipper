@@ -14,7 +14,7 @@ import fs from 'fs';
 import net from 'net';
 import path from 'path';
 import execute from '../../../../perennial-alias/js/common/execute.js';
-import npmCommand from '../../../../perennial-alias/js/common/npmCommand.js';
+import { npmCommand } from '../../../../perennial-alias/js/common/npmCommand.js';
 import puppeteer from '../../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import puppeteerQUnit from '../../../../perennial-alias/js/test/puppeteerQUnit.js';
 

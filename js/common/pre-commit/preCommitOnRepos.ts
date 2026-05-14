@@ -10,7 +10,7 @@ import path from 'path';
 import { Repo } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../../perennial-alias/js/common/execute.js';
-import tsxCommand from '../../../../perennial-alias/js/common/tsxCommand.js';
+import { tsxCommand } from '../../../../perennial-alias/js/common/tsxCommand.js';
 
 export default async function preCommitOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<boolean> {
   const startTime = Date.now();

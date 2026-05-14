@@ -10,7 +10,7 @@
 import assert from 'assert';
 import fs, { readFileSync } from 'fs';
 import _ from 'lodash';
-import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import { writeFileAndGitAdd } from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
@@ -22,7 +22,7 @@ export default async ( repo: string ): Promise<void> => {
   const stringModuleName = `${pascalCase( repo )}Strings`;
   const relativeStringModuleFile = `js/${stringModuleName}.ts`;
 
-  await writeFileAndGitAdd( repo, relativeStringModuleFile, ( await getStringModuleContents( repo ) ).content );
+  await writeFileAndGitAdd( `${repo}/${relativeStringModuleFile}`, ( await getStringModuleContents( repo ) ).content );
 };
 
 export const getStringModuleContents = async ( repo: string ): Promise<ModulifiedFile> => {

@@ -11,7 +11,7 @@ import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
-import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import { writeFileAndGitAdd } from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
 import ChipperStringUtils from '../../common/ChipperStringUtils.js';
@@ -524,7 +524,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   const outPath = `js/${pascalCaseRepo}Fluent.ts`;
 
 // 6 write out
-  await writeFileAndGitAdd( repo, outPath, ( await getFluentTypesFileContent( repo ) ).content );
+  await writeFileAndGitAdd( `${repo}/${outPath}`, ( await getFluentTypesFileContent( repo ) ).content );
 };
 
 export default generateFluentTypes;

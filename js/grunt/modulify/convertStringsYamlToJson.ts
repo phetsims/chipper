@@ -12,7 +12,7 @@
 // eslint-disable-next-line phet/default-import-match-filename
 import fsPromises from 'fs/promises';
 import yaml from 'js-yaml';
-import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import { writeFileAndGitAdd } from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import ChipperStringUtils from '../../common/ChipperStringUtils.js';
 import convertHoistedSelects from './convertHoistedSelects.js';
@@ -25,7 +25,7 @@ export default async ( repo: string ): Promise<void> => {
   const jsonContents = await getJSONFromYamlStrings( repo );
   const jsonFilename = `${repo}-strings_en.json`;
 
-  await writeFileAndGitAdd( repo, jsonFilename, jsonContents );
+  await writeFileAndGitAdd( `${repo}/${jsonFilename}`, jsonContents );
 };
 
 /**

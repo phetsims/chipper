@@ -14,7 +14,7 @@
 
 import fs, { readFileSync } from 'fs';
 import _ from 'lodash';
-import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import { writeFileAndGitAdd } from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import generateDevelopmentHTML from '../generateDevelopmentHTML.js';
@@ -51,7 +51,7 @@ else {
       if ( !fs.existsSync( `../${repo}/${overridesFile}` ) ) {
 
         const overridesContent = '/* eslint-disable */\nwindow.phet.preloads.phetio.phetioElementsOverrides = {};';
-        await writeFileAndGitAdd( repo, overridesFile, overridesContent );
+        await writeFileAndGitAdd( `${repo}/${overridesFile}`, overridesContent );
       }
 
       let simSpecificWrappers;

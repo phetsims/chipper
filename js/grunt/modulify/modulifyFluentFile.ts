@@ -11,7 +11,7 @@
 import fs, { readFileSync } from 'fs';
 import _ from 'lodash';
 import path from 'path';
-import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import { writeFileAndGitAdd } from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import FluentLibrary, { FluentBundle, FluentResource } from '../../browser-and-node/FluentLibrary.js';
 import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
 import type { ModulifiedFile } from './modulify.js';
@@ -139,7 +139,7 @@ const modulifyFluentFile = async ( repo: string, relativePath: string ): Promise
 
   const contents = ( await getModulifiedFluentFile( repo, relativePath ) ).content;
 
-  await writeFileAndGitAdd( repo, relativeModulifiedName, contents );
+  await writeFileAndGitAdd( `${repo}/${relativeModulifiedName}`, contents );
 };
 
 export default modulifyFluentFile;

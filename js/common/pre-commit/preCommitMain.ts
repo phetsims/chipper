@@ -10,7 +10,7 @@
 import assert from 'assert';
 import execute from '../../../../perennial-alias/js/common/execute.js';
 import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
-import tsxCommand from '../../../../perennial-alias/js/common/tsxCommand.js';
+import { tsxCommand } from '../../../../perennial-alias/js/common/tsxCommand.js';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getPreCommitTasks from './getPreCommitTasks.js';
 

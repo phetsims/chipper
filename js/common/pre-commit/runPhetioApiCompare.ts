@@ -10,7 +10,7 @@
  */
 
 import path from 'path';
-import getRepoList from '../../../../perennial-alias/js/common/getRepoList.js';
+import { getRepoList } from '../../../../perennial-alias/js/common/getRepoList.js';
 import getPhetLibs from '../../grunt/getPhetLibs.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
 import phetioCompareAPISets from '../../phet-io/phetioCompareAPISets.js';

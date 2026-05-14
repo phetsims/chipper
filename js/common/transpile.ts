@@ -14,7 +14,7 @@ import path from 'path';
 import { Repo } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
-import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
+import { getActiveRepos } from '../../../perennial-alias/js/common/getActiveRepos.js';
 import getOption, { isOptionKeyProvided } from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import optionize from '../../../phet-core/js/optionize.js';
@@ -66,7 +66,7 @@ export default async function transpile( providedOptions?: TranspileOptions ): P
 
   !options.silent && console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
 
-  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, options.live, options.silent ) ) );
+  await Promise.all( chunks.map( ( chunkedRepos: string[] ) => spawnTranspile( chunkedRepos, options.live, options.silent ) ) );
 
   !options.silent && console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
   !options.silent && options.live && console.log( 'Watching...' );

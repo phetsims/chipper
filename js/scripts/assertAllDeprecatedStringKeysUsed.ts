@@ -16,9 +16,10 @@
 
 import assert from 'assert';
 import fs from 'fs';
-import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
-import loadJSON from '../../../perennial-alias/js/common/loadJSON.js';
-import ReleaseBranch from '../../../perennial-alias/js/common/ReleaseBranch.js';
+import { getActiveRepos } from '../../../perennial-alias/js/common/getActiveRepos.js';
+import { loadJSON } from '../../../perennial-alias/js/common/loadJSON.js';
+import { ReleaseBranch } from '../../../perennial-alias/js/common/ReleaseBranch.js';
+import { Checkout } from '../../../perennial-alias/js/common/Checkout.js';
 
 ( async () => {
 
@@ -50,7 +51,7 @@ import ReleaseBranch from '../../../perennial-alias/js/common/ReleaseBranch.js';
     return false;
   };
 
-  const releaseBranches = await ReleaseBranch.getAllMaintenanceBranches( false );
+  const releaseBranches = await Checkout.getMaintainedReleaseBranches();
   for ( const releaseBranch of releaseBranches ) {
     if ( releaseBranch.brands.includes( 'phet' ) ) {
       publishedMap.push( await getPublishedStringMap( releaseBranch ) );
