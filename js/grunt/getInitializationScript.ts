@@ -30,6 +30,7 @@ export default function getInitializationScript( config: IntentionalAny ): strin
     stringMetadata, // {Object}, map[ stringKey ] => {Object}
     version, // {string}
     dependencies, // {Object} - From getDependencies
+    buildInfo, // {BuildInfoJSON} - from getBuildInfoJSON
     timestamp, // {string}
     locale, // {string}
     includeAllLocales, // {boolean}
@@ -41,6 +42,7 @@ export default function getInitializationScript( config: IntentionalAny ): strin
   } = config;
   assert( stringMap, 'Requires stringMap' );
   assert( dependencies, 'Requires dependencies' );
+  assert( buildInfo, 'Requires buildInfo' );
 
   // Load localeData
   const fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
@@ -70,7 +72,8 @@ export default function getInitializationScript( config: IntentionalAny ): strin
     PHET_BRAND: brand,
     PHET_LOCALE: locale,
     PHET_LOCALE_DATA: JSON.stringify( localeData ),
-    PHET_DEPENDENCIES: JSON.stringify( dependencies, null, 2 ),
+    PHET_DEPENDENCIES: JSON.stringify( dependencies ),
+    PHET_BUILD_INFO: JSON.stringify( buildInfo ),
     // If it's a debug build, don't encode the strings, so that they are easier to inspect
     PHET_STRINGS: ( isDebugBuild || !encodeStringMap ) ? JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ) : stringEncoding.encodeStringMapToJS( phetStrings ),
     PHET_BEFORE_STRINGS: profileFileSize ? 'console.log("START_STRINGS");' : '',

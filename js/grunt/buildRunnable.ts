@@ -24,7 +24,6 @@ import generateThumbnails from './generateThumbnails.js';
 import generateTwitterCard from './generateTwitterCard.js';
 import getA11yViewHTML from './getA11yViewHTML.js';
 import getAllThirdPartyEntries, { LicenseEntries } from './getAllThirdPartyEntries.js';
-import getDependencies from './getDependencies.js';
 import getInitializationScript from './getInitializationScript.js';
 import getLocalesFromRepository from './getLocalesFromRepository.js';
 import getPhetLibs from './getPhetLibs.js';
@@ -39,6 +38,8 @@ import packageXHTML from './packageXHTML.js';
 import reportUnusedMedia from './reportUnusedMedia.js';
 import reportUnusedStrings from './reportUnusedStrings.js';
 import webpackBuild from './webpackBuild.js';
+import { getCompatibleDependenciesJSON } from './getCompatibleDependenciesJSON.js';
+import { getBuildInfoJSON } from './getBuildInfoJSON.js';
 
 const nodeHtmlEncoder = require( 'node-html-encoder' );
 
@@ -121,8 +122,9 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
-  const dependencies = await getDependencies( repo );
-  const dependencyReps = Object.keys( dependencies );
+  const dependenciesJSONWithBabel = await getCompatibleDependenciesJSON( repo, true );
+  const dependenciesJSONWithoutBabel = await getCompatibleDependenciesJSON( repo, false );
+  const buildInfoJSON = await getBuildInfoJSON( repo );
 
   // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
 
@@ -132,12 +134,12 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     const pathSeparatorIndex = moduleDependency.indexOf( '/' );
     const moduleRepo = pathSeparatorIndex >= 0 ? moduleDependency.slice( 0, pathSeparatorIndex ) :
                        repo;
-    assert && assert( dependencyReps.includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
+    assert && assert( phetLibs.includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
 
     // Also check if the module was coming from chipper dist
     if ( moduleDependency.includes( 'chipper/dist/js/' ) ) {
       const distRepo = moduleDependency.split( 'chipper/dist/js/' )[ 1 ]?.split( '/' )[ 0 ];
-      distRepo && assert && assert( dependencyReps.includes( distRepo ), `repo ${distRepo} missing from package.json's phetLibs for ${moduleDependency}` );
+      distRepo && assert && assert( phetLibs.includes( distRepo ), `repo ${distRepo} missing from package.json's phetLibs for ${moduleDependency}` );
     }
   } );
 
@@ -245,7 +247,8 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     localeData: getPrunedLocaleData( allLocales ),
     stringMap: stringMap,
     stringMetadata: stringMetadata,
-    dependencies: dependencies,
+    dependencies: dependenciesJSONWithBabel,
+    buildInfo: buildInfoJSON,
     timestamp: timestamp,
     version: version,
     packageObject: packageObject,
@@ -348,8 +351,11 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     scripts: productionScripts
   } );
 
-  // dependencies.json
-  grunt.file.write( `${buildDir}/dependencies.json`, JSON.stringify( dependencies, null, 2 ) );
+  // buildInfo.json
+  grunt.file.write( `${buildDir}/buildInfo.json`, JSON.stringify( buildInfoJSON, null, 2 ) );
+
+  // dependencies.json (backward-compatibility)
+  grunt.file.write( `${buildDir}/dependencies.json`, JSON.stringify( dependenciesJSONWithoutBabel, null, 2 ) );
 
   // string-map.json and english-string-map.json, for things like Rosetta that need to know what strings are used
   grunt.file.write( `${buildDir}/string-map.json`, JSON.stringify( stringMap, null, 2 ) );

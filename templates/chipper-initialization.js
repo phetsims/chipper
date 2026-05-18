@@ -5,6 +5,7 @@ window.phet.chipper.brand = '{{PHET_BRAND}}';
 window.phet.chipper.locale = '{{PHET_LOCALE}}';
 window.phet.chipper.localeData = {{PHET_LOCALE_DATA}};
 window.phet.chipper.dependencies = {{PHET_DEPENDENCIES}};
+window.phet.chipper.buildInfo = {{PHET_BUILD_INFO}};
 {{PHET_BEFORE_STRINGS}}window.phet.chipper.strings = {{PHET_STRINGS}};{{PHET_AFTER_STRINGS}}
 window.phet.chipper.stringMetadata = {{PHET_STRING_METADATA}};
 window.phet.chipper.isDebugBuild = {{PHET_IS_DEBUG_BUILD}};
