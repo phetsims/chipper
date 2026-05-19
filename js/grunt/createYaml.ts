@@ -1,4 +1,4 @@
-// Copyright 2025, University of Colorado Boulder
+// Copyright 2025-2026, University of Colorado Boulder
 
 /**
  * Create the {sim}-strings_en.yaml string file from the {sim}-strings_en.json string file.
