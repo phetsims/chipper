@@ -16,7 +16,7 @@ import { Stats } from 'webpack';
 import SimVersion from '../../../perennial-alias/js/browser-and-node/SimVersion.js';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
-import typeCheck from '../../../perennial-alias/js/grunt/typeCheck.js';
+import typeCheck from '../../../perennial-alias/js/common/typeCheck.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';

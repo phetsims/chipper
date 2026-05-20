@@ -19,7 +19,7 @@
  */
 
 import { getModulifiedFileString } from './modulify.js';
-import { gitRevParse } from '../../../../perennial-alias/js/common/gitRevParse.js';
+import { gitRevParse } from '../../../../perennial-alias/js/common/git/gitRevParse.js';
 
 // Request type, for process.send()
 export type ModulifyRequest = {

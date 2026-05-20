@@ -53,7 +53,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import { getActiveRepos } from '../../../../perennial-alias/js/common/getActiveRepos.js';
+import { getActiveRepos } from '../../../../perennial-alias/js/common/repos/getActiveRepos.js';
 import getReposWithWorkingCopyChanges from '../../../../perennial-alias/js/common/getReposWithWorkingCopyChanges.js';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';

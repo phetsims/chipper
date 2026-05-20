@@ -14,7 +14,7 @@ import path from 'path';
 import { Repo } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
-import { getActiveRepos } from '../../../perennial-alias/js/common/getActiveRepos.js';
+import { getActiveRepos } from '../../../perennial-alias/js/common/repos/getActiveRepos.js';
 import getOption, { isOptionKeyProvided } from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import optionize from '../../../phet-core/js/optionize.js';

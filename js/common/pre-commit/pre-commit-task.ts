@@ -10,7 +10,7 @@
 
 import path from 'path';
 import lint from '../../../../perennial-alias/js/eslint/lint.js';
-import typeCheck from '../../../../perennial-alias/js/grunt/typeCheck.js';
+import typeCheck from '../../../../perennial-alias/js/common/typeCheck.js';
 import reportMedia from '../../grunt/reportMedia.js';
 import runPhetioApiCompare from './runPhetioApiCompare.js';
 import runUnitTests from './runUnitTests.js';

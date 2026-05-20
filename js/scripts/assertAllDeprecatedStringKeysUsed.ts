@@ -16,7 +16,7 @@
 
 import assert from 'assert';
 import fs from 'fs';
-import { getActiveRepos } from '../../../perennial-alias/js/common/getActiveRepos.js';
+import { getActiveRepos } from '../../../perennial-alias/js/common/repos/getActiveRepos.js';
 import { loadJSON } from '../../../perennial-alias/js/common/loadJSON.js';
 import { ReleaseBranch } from '../../../perennial-alias/js/common/ReleaseBranch.js';
 import { Checkout } from '../../../perennial-alias/js/common/Checkout.js';

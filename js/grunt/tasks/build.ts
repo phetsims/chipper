@@ -31,7 +31,7 @@ import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.j
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
 import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import typeCheck from '../../../../perennial-alias/js/grunt/typeCheck.js';
+import typeCheck from '../../../../perennial-alias/js/common/typeCheck.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import transpile from '../../common/transpile.js';
