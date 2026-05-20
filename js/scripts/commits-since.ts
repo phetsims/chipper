@@ -15,10 +15,10 @@
  */
 
 import assert from 'assert';
-import execute from '../../../perennial-alias/js/common/execute.js';
 import getOption from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import getPhetLibs from '../grunt/getPhetLibs.js';
+import { gitImmutableExecute } from '../../../perennial-alias/js/common/git/gitMutex.js';
 
 ( async () => {
 
@@ -30,7 +30,7 @@ import getPhetLibs from '../grunt/getPhetLibs.js';
   for ( const dependency of getPhetLibs( repo ) ) {
     output += `${dependency} since ${dateString} ----------------------------------------------\n`;
 
-    const logOut = await execute( 'git', [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], `../${dependency}` );
+    const logOut = await gitImmutableExecute( [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], `../${dependency}` );
     output += logOut;
   }
 

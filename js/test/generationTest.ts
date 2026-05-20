@@ -9,12 +9,13 @@
 import execute from '../../../perennial-alias/js/common/execute.js';
 import { gruntCommand } from '../../../perennial-alias/js/common/gruntCommand.js';
 import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
+import { gitMutableExecute } from '../../../perennial-alias/js/common/git/gitMutex.js';
 
 qunit.module( 'Generation', {
   afterEach: async () => {
     // Hard reset to undo what we just did
-    await execute( 'git', [ 'reset', '--hard' ], '../chains' );
-    await execute( 'git', [ 'clean', '-f' ], '../chains' );
+    await gitMutableExecute( [ 'reset', '--hard' ], '../chains' );
+    await gitMutableExecute( [ 'clean', '-f' ], '../chains' );
   }
 } );
 

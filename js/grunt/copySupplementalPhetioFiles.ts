@@ -27,6 +27,7 @@ import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import buildStandalone from './buildStandalone.js';
 import getPhetLibs from './getPhetLibs.js';
 import webpackBuild from './webpackBuild.js';
+import { gitImmutableExecute } from '../../../perennial-alias/js/common/git/gitMutex.js';
 
 const webpack = require( 'webpack' );
 const archiver = require( 'archiver' );
@@ -112,7 +113,7 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   // every brand. Developers without phet-io checked out still need to be able to build.
   assert( fs.readFileSync( transpiledClientPath ).toString().includes( '/**' ), 'babel should not strip comments from transpiling' );
 
-  const simRepoSHA = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${repo}` ) ).trim();
+  const simRepoSHA = ( await gitImmutableExecute( [ 'rev-parse', 'HEAD' ], `../${repo}` ) ).trim();
 
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;

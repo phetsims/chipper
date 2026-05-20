@@ -8,7 +8,7 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
-import execute from '../../../perennial-alias/js/common/execute.js';
+import { gitImmutableExecute } from '../../../perennial-alias/js/common/git/gitMutex.js';
 
 /**
  * @param repo - The repository of the file to update (should be a git root)
@@ -16,11 +16,11 @@ import execute from '../../../perennial-alias/js/common/execute.js';
  */
 export default async ( repo: string, relativeFile: string ): Promise<string> => {
 
-  let startDate = ( await execute( 'git', [
+  let startDate = ( await gitImmutableExecute( [
     'log', '--diff-filter=A', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
   ], `../${repo}` ) ).trim().split( '-' )[ 0 ];
 
-  const endDate = ( await execute( 'git', [
+  const endDate = ( await gitImmutableExecute( [
     'log', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
   ], `../${repo}` ) ).trim().split( '-' )[ 0 ];
 

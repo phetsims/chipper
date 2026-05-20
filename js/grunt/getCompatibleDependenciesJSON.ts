@@ -9,8 +9,8 @@
  */
 
 import { readFileSync } from 'fs';
-import execute from '../../../perennial-alias/js/common/execute.js';
 import { Repo } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
+import { gitImmutableExecute } from '../../../perennial-alias/js/common/git/gitMutex.js';
 
 export const getCompatibleDependenciesJSON = async (
   repo: Repo,
@@ -23,14 +23,14 @@ export const getCompatibleDependenciesJSON = async (
   const dependenciesInfo: Record<string, unknown> = {
     comment: `# ${repo} ${version} ${new Date().toString()}`,
     totality: {
-      sha: ( await execute( 'git', [ 'rev-parse', 'HEAD' ], '..' ) ).trim(),
+      sha: ( await gitImmutableExecute( [ 'rev-parse', 'HEAD' ], '..' ) ).trim(),
       branch: 'HEAD'
     }
   };
 
   if ( includeBabel ) {
     dependenciesInfo.babel = {
-      sha: ( await execute( 'git', [ 'rev-parse', 'HEAD' ], '../babel' ) ).trim(),
+      sha: ( await gitImmutableExecute( [ 'rev-parse', 'HEAD' ], '../babel' ) ).trim(),
       branch: 'main'
     };
   }
