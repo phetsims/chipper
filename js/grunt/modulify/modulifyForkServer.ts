@@ -20,6 +20,7 @@
 
 import { getModulifiedFileString } from './modulify.js';
 import { gitRevParse } from '../../../../perennial-alias/js/common/git/gitRevParse.js';
+import { SHA } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
 // Request type, for process.send()
 export type ModulifyRequest = {
@@ -44,14 +45,11 @@ export type ModulifyResponse = {
 } | {
   modulified: true;
   fileContents: string;
-  chipperSHA: string;
-  perennialSHA: string;
+  sha: SHA;
   usedRelativeFiles: string[];
 } );
 
-// TODO: handle these being the same
-const chipperSHAPromise: Promise<string> = gitRevParse( 'HEAD' );
-const perennialSHAPromise: Promise<string> = gitRevParse( 'HEAD' );
+const shaPromise: Promise<string> = gitRevParse( 'HEAD' );
 
 console.log( 'Started modulifyForkServer' );
 
@@ -68,9 +66,7 @@ process.on( 'message', async ( request: ModulifyRequest ) => {
       id: request.id,
       modulified: true,
       fileContents: content.content,
-      // TODO: handle these being the same
-      chipperSHA: await chipperSHAPromise,
-      perennialSHA: await perennialSHAPromise,
+      sha: await shaPromise,
       usedRelativeFiles: content.usedRelativeFiles
     } : {
       type: 'modulifyResponse' as const,

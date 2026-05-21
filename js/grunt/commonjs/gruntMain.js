@@ -87,7 +87,7 @@ module.exports = function( grunt ) {
     'create-sim',
     'generate-data',
     'release-branch-list',
-    'sync',
+    'sync'
   ].forEach( task => {
 
     // In totality/ forward to perennial-alias

@@ -21,7 +21,7 @@ import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import pascalCase from '../common/pascalCase.js';
 import { getFluentInternalReferences } from './modulify/getFluentInternalReferences.js';
-import { Locale, StringMap } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
+import { Locale, LocaleData, StringMap } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
 // Metadata for a single string key from an english strings file
 type StringKeyMetadata = Record<string, boolean | string | number> & PhetioElementMetadata;
