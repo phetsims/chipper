@@ -11,7 +11,7 @@ import assert from 'assert';
 import fs from 'fs';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
-import { StringMap } from './getStringMap.js';
+import { LocaleData, StringMap } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import getTitleStringKey from './getTitleStringKey.js';
 
 const pako = require( 'pako' );
@@ -27,7 +27,7 @@ type PackageRunnableOptions = {
   compressScripts?: boolean;
 };
 
-const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf-8' ) );
+const localeData: LocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf-8' ) );
 
 /**
  * From a given set of config (including the JS and other required things), it creates an HTML file for a runnable.

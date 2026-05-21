@@ -11,7 +11,7 @@
 
 import child_process from 'child_process';
 import fs from 'fs';
-import { LocaleData } from '../grunt/getStringMap.js';
+import { LocaleData } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
 /**
  * Converts locale data from babel/localeData.json into legacy formats used by rosetta and the website.

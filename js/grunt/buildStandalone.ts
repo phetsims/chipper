@@ -16,6 +16,7 @@ import getPhetLibs from './getPhetLibs.js';
 import getStringMap from './getStringMap.js';
 import minify, { MinifyOptions } from './minify.js';
 import webpackBuild from './webpackBuild.js';
+import { LocaleData } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
 type SelfOptions = {
   isDebug?: boolean;
@@ -120,7 +121,7 @@ export default async function buildStandalone( repo: string, providedOptions?: B
     ];
     const { stringMap, stringMetadata } = getStringMap( repo, locales, phetLibs, webpackResult.usedModules );
 
-    const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+    const localeData: LocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
     globals += 'phet.chipper.stringPath = \'../\';\n';
     globals += 'phet.chipper.locale = \'en\';\n';

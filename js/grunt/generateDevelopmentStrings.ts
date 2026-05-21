@@ -18,6 +18,7 @@ import dirname from '../../../perennial-alias/js/common/dirname.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import fixEOL from './fixEOL.js';
 import { ModulifiedFile } from './modulify/modulify.js';
+import { LocaleData } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
 // @ts-expect-error - until we have "type": "module" in our package.json
 const __dirname = dirname( import.meta.url );
@@ -129,7 +130,7 @@ export const getDevelopmentStringsContents = async (
   }
 
   usedRelativeFiles.push( 'babel/localeData.json' );
-  const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+  const localeData: LocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
   // Do not generate a file if no translations were found.
   if ( stringFiles.length > 0 ) {

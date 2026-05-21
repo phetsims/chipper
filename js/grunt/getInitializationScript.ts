@@ -17,6 +17,7 @@ import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import stringEncoding from '../common/stringEncoding.js';
 import transpileForBuild from './transpileForBuild.js';
+import { LocaleData } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
 /**
  * Returns a string for the JS of the initialization script.
@@ -45,7 +46,7 @@ export default function getInitializationScript( config: IntentionalAny ): strin
   assert( buildInfo, 'Requires buildInfo' );
 
   // Load localeData
-  const fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+  const fullLocaleData: LocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
   // Include a subset of locales' translated strings
   let phetStrings = stringMap;

@@ -21,25 +21,12 @@ import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import pascalCase from '../common/pascalCase.js';
 import { getFluentInternalReferences } from './modulify/getFluentInternalReferences.js';
-
-export type Locale = string;
-
-// TODO: Use this in all spots importing localeData.json https://github.com/phetsims/chipper/issues/1539
-export type LocaleData = Record<Locale, {
-  englishName: string;
-  localizedName: string;
-  direction: 'rtl' | 'ltr';
-  locale3?: string;
-  fallbackLocales?: Locale[];
-}>;
+import { Locale, StringMap } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
 // Metadata for a single string key from an english strings file
 type StringKeyMetadata = Record<string, boolean | string | number> & PhetioElementMetadata;
 
 const localeData: LocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
-
-// TODO: https://github.com/phetsims/chipper/issues/1537
-export type StringMap = Record<string, Record<string, string>>;
 
 /**
  * For a given locale, return an array of specific locales that we'll use as fallbacks, e.g.

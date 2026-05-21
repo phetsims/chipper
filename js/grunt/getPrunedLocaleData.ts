@@ -9,7 +9,7 @@
 import fs from 'fs';
 import _ from 'lodash';
 import ChipperConstants from '../common/ChipperConstants.js';
-import { Locale, LocaleData } from './getStringMap.js';
+import { Locale, LocaleData } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
 /**
  * Returns a subset of the localeData that should be included in the built simulation.
