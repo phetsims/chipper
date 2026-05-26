@@ -53,6 +53,11 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+// TODO: not ported to totality, see https://github.com/phetsims/totality/issues/140
+// eslint-disable
+// eslint-disable-next-line phet/bad-typescript-text
+// @ts-nocheck
+
 import { getActiveRepos } from '../../../../perennial-alias/js/common/repos/getActiveRepos.js';
 import getReposWithWorkingCopyChanges from '../../../../perennial-alias/js/common/getReposWithWorkingCopyChanges.js';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
