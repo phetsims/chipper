@@ -11,7 +11,7 @@
  */
 
 import assert from 'assert';
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
+import { fixEOL } from '../../../perennial-alias/js/common/fixEOL.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 /**

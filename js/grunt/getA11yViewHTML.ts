@@ -7,7 +7,7 @@
  * @returns - the html string, filled in from the template.
  */
 
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
+import { fixEOL } from '../../../perennial-alias/js/common/fixEOL.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 
