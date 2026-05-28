@@ -1,15 +1,14 @@
-// Copyright 2021-2025, University of Colorado Boulder
+// Copyright 2021-2026, University of Colorado Boulder
 
 /**
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
 import _ from 'lodash';
-import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
 import { PhetioAPI } from '../../../tandem/js/phet-io-types.js';
 import phetioCompareAPIs, { PhetioCompareAPIsOptions } from '../browser-and-node/phetioCompareAPIs.js';
 
-qunit.module( 'phetioCompareAPIs' );
+QUnit.module( 'phetioCompareAPIs' );
 
 const _phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, options?: PhetioCompareAPIsOptions ) => {
   return phetioCompareAPIs( referenceAPI, proposedAPI, _, options );
@@ -52,7 +51,7 @@ const DEFAULT_API = {
 };
 
 
-qunit.test( 'basics', assert => {
+QUnit.test( 'basics', assert => {
 
   const referenceAPI = _.merge( {
     phetioElements: {
@@ -85,7 +84,7 @@ qunit.test( 'basics', assert => {
 } );
 
 
-qunit.test( 'designed changes', assert => {
+QUnit.test( 'designed changes', assert => {
   const referenceAPI = _.merge( {
     phetioElements: {
       designedElement: {
@@ -133,7 +132,7 @@ qunit.test( 'designed changes', assert => {
 } );
 
 
-qunit.test( 'breaking element API changes', assert => {
+QUnit.test( 'breaking element API changes', assert => {
   const referenceAPI = _.merge( {
     phetioElements: {
       breakingElement: {
@@ -210,7 +209,7 @@ qunit.test( 'breaking element API changes', assert => {
   } );
 } );
 
-qunit.test( 'testing PhetioTypes', assert => {
+QUnit.test( 'testing PhetioTypes', assert => {
   const referenceAPI = {
     version: { major: 1, minor: 1 },
     phetioElements: {},

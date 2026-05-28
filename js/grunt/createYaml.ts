@@ -1,8 +1,17 @@
-// Copyright 2025, University of Colorado Boulder
+// Copyright 2025-2026, University of Colorado Boulder
 
 /**
- * Create the {sim}_en.yaml string file from the {sim}_en.json string file.
- * 
+ * Create the {sim}-strings_en.yaml string file from the {sim}-strings_en.json string file.
+ *
+ * Run from the root of totality:
+ *
+ *   npm run grunt -- create-yaml --repo={{sim}}
+ *
+ * Or set an active repo first:
+ *
+ *   npm run use -- {{sim}}
+ *   npm run grunt -- create-yaml
+ *
  * This script now supports extracting metadata from JSON to YAML:
  * - deprecated: true → __deprecated: true
  * - _comment: "text" → __comment: "text"

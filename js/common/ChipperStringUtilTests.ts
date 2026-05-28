@@ -1,16 +1,15 @@
-// Copyright 2019-2025, University of Colorado Boulder
+// Copyright 2019-2026, University of Colorado Boulder
 
 /**
  * Tests for ChipperStringUtils
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
 import ChipperStringUtils, { StringFileMap } from './ChipperStringUtils.js';
 
-qunit.module( 'ChipperStringUtils' );
+QUnit.module( 'ChipperStringUtils' );
 
-qunit.test( 'forEachString', assert => {
+QUnit.test( 'forEachString', assert => {
   const map1: StringFileMap = {
     x: { value: 'x' },
     y: {

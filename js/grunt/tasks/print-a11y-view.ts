@@ -1,4 +1,4 @@
-// Copyright 2025, University of Colorado Boulder
+// Copyright 2025-2026, University of Colorado Boulder
 
 /**
  * Launches the a11y-view wrapper in Playwright so the DOM snapshot can be dumped through the page console.

@@ -1,4 +1,4 @@
-// Copyright 2025, University of Colorado Boulder
+// Copyright 2025-2026, University of Colorado Boulder
 
 /**
  * Throws an error if the codebase has any deprecated strings found in `repo-en.json` string files that aren't used
