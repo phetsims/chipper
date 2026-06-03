@@ -16,10 +16,17 @@
     html {
       font-family: Arial, Helvetica, sans-serif;
       line-height: 1.4;
+      height: 100%;
+      overflow: hidden;
     }
 
     body {
-      margin: 1em;
+      box-sizing: border-box;
+      display: flex;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      padding: 1em;
       background: #ccc;
     }
 
@@ -33,27 +40,22 @@
       display: flex;
       align-items: stretch;
       width: 100%;
-      min-height: calc(100vh - 8em);
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
     }
 
     .split-pane {
       flex: 0 1 33.333%;
       min-width: 0;
-      max-height: calc(100vh - 1.1em);
+      min-height: 0;
       overflow: auto;
-      position: -webkit-sticky;
-      position: sticky;
-      top: .55em;
       box-sizing: border-box;
       padding: 0 0.5em;
     }
 
     .split-resizer {
       flex: 0 0 0.75em;
-      position: -webkit-sticky;
-      position: sticky;
-      top: .55em;
-      height: calc(100vh - 1.1em);
       cursor: col-resize;
       box-sizing: border-box;
       background: linear-gradient(90deg, transparent 0, transparent calc(50% - 1px), #888 calc(50% - 1px), #888 calc(50% + 1px), transparent calc(50% + 1px));
@@ -239,8 +241,20 @@
     }
 
     div.wrapper {
-      height: auto;
-      width: 97%;
+      height: 100%;
+      min-height: 0;
+      width: 100%;
+    }
+
+    div#content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+    }
+
+    div#intro {
+      flex: 0 0 auto;
     }
 
     .dynamic {
@@ -551,11 +565,6 @@
       font-weight: 600;
     }
 
-    /* ************SAFARI ONLY *********************** */
-    .left-safari {
-      display: block;
-    }
-
     .sr-only {
       position: absolute;
       width: 1px;
@@ -731,30 +740,9 @@
       }
 
       iframe.setAttribute( 'src', simURL );
-      applyStickyBehavior();
     }
 
     initializeSimulationFrame();
-
-    /**
-     * Adds sticky positioning styles to the left column, accounting for Safari's non-standard behavior.
-     */
-    function applyStickyBehavior() {
-      const left = document.getElementById( 'left' );
-      if ( !left ) {
-        return;
-      }
-
-      const ua = navigator.userAgent.toLowerCase();
-      if ( ua.indexOf( 'safari' ) !== -1 ) {
-        if ( ua.indexOf( 'chrome' ) > -1 ) {
-          left.classList.add( 'left' );
-        }
-        else {
-          left.classList.add( 'left-safari' );
-        }
-      }
-    }
   } )();
 </script>
 
