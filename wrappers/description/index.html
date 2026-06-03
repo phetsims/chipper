@@ -253,10 +253,6 @@
       min-height: 0;
     }
 
-    div#intro {
-      flex: 0 0 auto;
-    }
-
     .dynamic {
       background-color: #9adaa6;
       border-bottom: double .167em #000; /*or a border in dark green*/
@@ -584,25 +580,6 @@
 <div class="wrapper">
 
   <div id="content">
-    <div id="intro">
-      <h1>A11y View</h1>
-      <details>
-        <summary>About the A11y View Tool</summary>
-        <p>
-          The A11y View is a design and presentation tool that visually displays a copy of the descriptions we design
-          for the Interactive Description feature. The State Descriptions (blue box) track the current state of the
-          simulation. The Responsive Descriptions (orange box) deliver relevant changes in real time as they happen.
-          Using this tool, designers can test and assess the descriptions during the design process without using a
-          screen reader. Educators can also use this tool to see if the content of the descritpions meets their teaching
-          and learning needs.
-        </p>
-        <p>
-          <b>Please note:</b> The A11y View is not for learners. In learning contexts, screen reader users access the
-          Interactive Description feature using the same simulation as everyone else.
-        </p>
-      </details>
-    </div>
-
     <div id="split-layout" class="split-layout">
 
       <!--The sim and alert containers will both be placed in here -->
@@ -612,18 +589,9 @@
         </div>
         <div id="alerts">
           <div class="activity-log-heading-container">
-            <h3 class="activity-log-heading-item">Activity log of Responsive Descriptions</h3>
-            <button class="activity-log-heading-item" id="clear-activity-log-button">Clear Log</button>
+            <h3 class="activity-log-heading-item">Responses</h3>
+            <button class="activity-log-heading-item" id="clear-activity-log-button">Clear</button>
           </div>
-          <details>
-            <summary>About Responsive Descriptions</summary>
-            Responsive Descriptions are a combination of object responses (OBJ), descriptions of changes made directly to
-            interactive objects, and context responses (CTX), descriptions of changes to the surrounding context.
-            Together, they are designed to deliver relevant changes in real time as they happen. The object and context
-            responses powered by ARIA Live appear in the activity log below. The object responses for slider interactions
-            are powered by the aria-valuetext attribute, and are found in grey text under slider interactions in the blue
-            box.
-          </details>
           <div id='alert-copy-container' class='alert_copy_container' role='presentation'>
             <div id='polite-element-container'>
               <ul class='alert_copy' id='alert-list'></ul>
@@ -636,11 +604,6 @@
 
       <div id="accessible-view-state" class="split-pane">
         <h3>Accessible View State</h3>
-        <details>
-          <summary>About Accessible View State</summary>
-          Accessible View State is a developer-facing JSON snapshot returned by the active ScreenView. It shows authored
-          semantic state used for Core Description design and comparison, not localized screen reader text.
-        </details>
         <div class="accessible_view_state_container" role="presentation">
           <pre class="accessible-view-state-output"><code id="accessible-view-state-code">No accessible view state available.</code></pre>
         </div>
@@ -652,14 +615,6 @@
       <div class="right split-pane" id="right">
         <div id="pdom">
           <h3>State Descriptions</h3>
-          <details>
-            <summary>About State Descriptions</summary>
-            State Descriptions are a combination of static state descriptions (descriptions that never change) and dynamic
-            state descriptions (descriptions that update silently as the simulation changes). Together, they form a
-            complete description of the current state at any given moment. These are the descriptions that a screen reader
-            user can read through or review as they feel the need when they are accessing a simulation (i.e., not the A11y
-            View tool).
-          </details>
           <div class="dom_copy_container" role="presentation">
             <fieldset id="view-mode-controls" class="view-mode-controls" role="radiogroup" aria-label="View mode">
               <legend class="sr-only">Select view mode</legend>
@@ -671,15 +626,10 @@
                 <input type="radio" name="a11y-view-mode" value="development">
                 <span class="view-mode-option-label">Development view</span>
               </label>
-              <label class="view-mode-option">
-                <input type="radio" name="a11y-view-mode" value="legacy">
-                <span class="view-mode-option-label">Legacy view</span>
-              </label>
             </fieldset>
             <div id="dom-copy-container">
               <div class="dom-view" data-view="formatted"></div>
               <div class="dom-view" data-view="development"></div>
-              <div class="dom-view" data-view="legacy"></div>
             </div>
           </div>
         </div>
@@ -865,8 +815,7 @@
 
     const VIEW_MODES = {
       FORMATTED: 'formatted',
-      DEVELOPMENT: 'development',
-      LEGACY: 'legacy'
+      DEVELOPMENT: 'development'
     };
 
     const VIEW_MODE_STORAGE_KEY = 'a11y-view-mode';
@@ -942,8 +891,7 @@
     const viewContainers = createViewContainers( domReferences.domCopyContainer );
     const viewRenderers = {
       [ VIEW_MODES.FORMATTED ]: renderFormattedView,
-      [ VIEW_MODES.DEVELOPMENT ]: renderDevelopmentView,
-      [ VIEW_MODES.LEGACY ]: renderLegacyView
+      [ VIEW_MODES.DEVELOPMENT ]: renderDevelopmentView
     };
 
     const MUTATION_OBSERVER_CONFIG = {
@@ -971,52 +919,6 @@
     /*******************************************************************************
      * Helper Functions
      */
-
-    /**
-     * Get all 'element' nodes off the parent element, placing them in an array for easy traversal.  Note that this
-     * includes all elements, even those that are 'hidden' or purely for structure.
-     *
-     * @param  {HTMLElement} ancestor - parent whose children will be linearized
-     * @returns {HTMLElement[]}
-     */
-    function getAllDOMElementsAsLinear( ancestor ) {
-
-      // gets ALL descendant children for the element
-      const children = ancestor.getElementsByTagName( '*' );
-
-      const linearDOM = [];
-      for ( let i = 0; i < children.length; i++ ) {
-
-        // searching for the HTML element nodes (NOT Scenery nodes)
-        if ( children[ i ].nodeType === Node.ELEMENT_NODE ) {
-          linearDOM[ i ] = ( children[ i ] );
-        }
-      }
-      return linearDOM;
-    }
-
-    /**
-     * Apply the necessary styling to the PDOM copy so that it looks and behaves well. This includes removing from
-     * navigation order and ensuring that all of the styling copied from the actual PDOM is removed so that the copy
-     * is visible and elements have proper dimensions.
-     *
-     * @param {HTMLElement} root - ancestor element, this and all descendants will be styled
-     */
-    function styleCopy( root ) {
-      const allElements = getAllDOMElementsAsLinear( root );
-
-      for ( let i = 0; i < allElements.length; i++ ) {
-        const element = allElements[ i ];
-
-        // make sure nothing in copy is focusable
-        element.tabIndex = '-1';
-
-        // make sure that styling is removed, unless some styling was added just for the copy
-        if ( element.className !== 'pdom-style' ) {
-          element.removeAttribute( 'style' );
-        }
-      }
-    }
 
     /**
      * Updates the data-active attribute for view containers so that only the selected view is marked active.
@@ -1324,24 +1226,6 @@
       return currentMode;
     }
 
-    /**
-     * Renders an unmodified copy of the PDOM into the legacy view container.
-     *
-     * @param {HTMLElement} pdomRoot
-     * @param {HTMLElement|null} container
-     */
-    function renderLegacyView( pdomRoot, container ) {
-      if ( !container ) {
-        return;
-      }
-      container.innerHTML = '';
-      const pdomCopy = pdomRoot.cloneNode( true );
-      pdomCopy.removeAttribute( 'style' );
-      container.appendChild( pdomCopy );
-      addInlineAttributesTHTML( pdomCopy );
-      styleCopy( pdomCopy );
-    }
-
     // Elements that exist purely for document structure; we flatten them when building the formatted view.
     const DECORATOR_TAGS = new Set( [ 'SECTION', 'ARTICLE', 'MAIN', 'ASIDE' ] );
 
@@ -1448,8 +1332,7 @@
      * Builds the formatted output for a heading. The algorithm first tries to locate a sibling container whose ID
      * shares the heading's related group key and contains the "primary" token. When found, the heading and that
      * container are grouped together, mirroring the logical structure used in the PDOM. If no qualifying sibling is
-     * present, we fall back to the legacy behavior of grouping contiguous content until the next heading of the same
-     * or higher level.
+     * present, we group contiguous content until the next heading of the same or higher level.
      */
     function appendHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
       if ( headingLevel === 1 ) {
@@ -1470,7 +1353,7 @@
         return appendHeadingGroupWithPrimary( nodes, startIndex, groupEndIndex, targetParent );
       }
 
-      // Fall back to structural sections before reverting to the legacy heading range grouping.
+      // Fall back to structural sections before reverting to heading range grouping.
       const sectionIndex = findFollowingSectionSiblingIndex( nodes, startIndex + 1, headingLevel );
       if ( sectionIndex !== null ) {
         return appendHeadingGroupWithPrimary( nodes, startIndex, sectionIndex, targetParent );
@@ -1521,9 +1404,8 @@
     }
 
     /**
-     * Legacy fallback when no matching primary sibling exists. Continues to collect nodes until the next heading of the
-     * same or higher level is encountered, preserving the previous structured output for PDOM fragments that have not
-     * migrated to the new naming conventions yet.
+     * Fallback when no matching primary sibling exists. Continues to collect nodes until the next heading of the same
+     * or higher level is encountered.
      *
      * @param {Node[]} nodes
      * @param {number} startIndex
@@ -2646,11 +2528,6 @@
         if ( typeof developmentRenderer === 'function' ) {
           developmentRenderer( pdomRoot, viewContainers[ VIEW_MODES.DEVELOPMENT ] );
         }
-
-        const legacyRenderer = renderers[ VIEW_MODES.LEGACY ];
-        if ( typeof legacyRenderer === 'function' ) {
-          legacyRenderer( pdomRoot, viewContainers[ VIEW_MODES.LEGACY ] );
-        }
       }
       finally {
         RELATIONSHIP_LOOKUP_ROOT = null;
@@ -2856,82 +2733,6 @@
       } );
 
       return invalidateView;
-    }
-
-    /**
-     * Converts inline ARIA metadata into visible markup in the legacy view so the information is easy to inspect.
-     *
-     * @param {HTMLElement} rootNode - Root whose descendants will be processed.
-     */
-    function addInlineAttributesTHTML( rootNode ) {
-
-      // all elements in the PDOM - a defensive copy since we may be adding new elements to the DOM
-      const allElements = Array.prototype.slice.call( rootNode.getElementsByTagName( '*' ) );
-
-      for ( let i = 0; i < allElements.length; i++ ) {
-        const element = allElements[ i ];
-
-        // this check works because PDOMInstance sets hidden on the entire subtree of PDOMInstances when not visible on
-        // an accessible display rather than just the hidden ancestor
-        if ( !element.hidden ) {
-          if ( element.hasAttribute( 'aria-label' ) && element.innerHTML === '' ) {
-            const ariaLabel = element.getAttribute( 'aria-label' );
-
-            // remove the style
-            element.removeAttribute( 'style' );
-
-            if ( element.tagName.toLowerCase() === 'input' ) {
-              if ( element.type === 'button' ) {
-
-                // set the value of the input to be the same as the aria-label appears inside the button
-                element.setAttribute( 'value', ariaLabel );
-              }
-              else {
-
-                // add a special label element to appear before the input element
-                const labelElement = document.createElement( 'label' );
-                labelElement.textContent = ariaLabel;
-                const parentElement = element.parentNode;
-                parentElement.insertBefore( labelElement, parentElement.firstChild );
-              }
-            }
-            else {
-
-              // if not an input, then add it to the innerHTML of an element, without overriding what is already there.
-              element.innerHTML = ariaLabel + element.innerHTML;
-            }
-          }
-
-          IMPORTANT_ARIA_ATTRIBUTES.forEach( attributeDefinition => {
-            const config = typeof attributeDefinition === 'string' ? { name: attributeDefinition } : attributeDefinition;
-            const attributeName = config.name;
-            const shouldDisplay = config.shouldDisplay;
-
-            if ( element.hasAttribute( attributeName ) ) {
-              const value = element.getAttribute( attributeName );
-
-              if ( shouldDisplay && !shouldDisplay( value, element ) ) {
-                return;
-              }
-
-              const displayValue = formatAriaValue( config, value, element );
-
-              // add a new element to the DOM that displays the value of the attribute
-              const valueElement = document.createElement( 'p' );
-
-              // Assign a className so that we can avoid removing this specific styling when we present the PDOM copy
-              valueElement.className = 'pdom-style';
-              valueElement.style.opacity = 0.55;
-              valueElement.style.display = 'inline-block';
-              valueElement.style.paddingLeft = '1em';
-              valueElement.textContent = `(${attributeName}: ${displayValue})`;
-
-              // insert directly after the element that has the attribute. This handles the case if element is last, see https://stackoverflow.com/questions/4793604/how-to-insert-an-element-after-another-element-in-javascript-without-using-a-lib
-              element.parentNode.insertBefore( valueElement, element.nextSibling );
-            }
-          } );
-        }
-      }
     }
 
     /**
@@ -3180,21 +2981,19 @@
      * Resolves the specific DOM view containers under the provided root element.
      *
      * @param {HTMLElement|null} root
-     * @returns {{ formatted: HTMLElement|null, development: HTMLElement|null, legacy: HTMLElement|null }}
+     * @returns {{ formatted: HTMLElement|null, development: HTMLElement|null }}
      */
     function createViewContainers( root ) {
       if ( !root ) {
         return {
           formatted: null,
-          development: null,
-          legacy: null
+          development: null
         };
       }
 
       return {
         formatted: root.querySelector( '[data-view="formatted"]' ),
-        development: root.querySelector( '[data-view="development"]' ),
-        legacy: root.querySelector( '[data-view="legacy"]' )
+        development: root.querySelector( '[data-view="development"]' )
       };
     }
 
