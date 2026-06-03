@@ -778,14 +778,16 @@
                 <button id="manual-context-add-button" type="button">Add Response</button>
                 <span id="manual-context-response-status" class="manual-context-response-status">No manual response in progress.</span>
               </div>
-              <textarea id="manual-context-response-input" class="manual-context-response-input" placeholder="Type the context response that should be added."></textarea>
+              <textarea id="manual-context-response-input" class="manual-context-response-input"
+                        placeholder="Type the context response that should be added."></textarea>
             </div>
             <div id="response-design-list"></div>
           </div>
         </div>
       </div>
 
-      <div class="split-resizer" role="separator" aria-orientation="vertical" aria-label="Resize simulation and accessible view state columns" tabindex="0" data-resizer-index="0"></div>
+      <div class="split-resizer" role="separator" aria-orientation="vertical"
+           aria-label="Resize simulation and accessible view state columns" tabindex="0" data-resizer-index="0"></div>
 
       <div id="accessible-view-state" class="split-pane">
         <h3>Accessible View State</h3>
@@ -794,7 +796,9 @@
         </div>
       </div>
 
-      <div class="split-resizer" role="separator" aria-orientation="vertical" aria-label="Resize accessible view state and state descriptions columns" tabindex="0" data-resizer-index="1"></div>
+      <div class="split-resizer" role="separator" aria-orientation="vertical"
+           aria-label="Resize accessible view state and state descriptions columns" tabindex="0"
+           data-resizer-index="1"></div>
 
       <!--The PDOM copy will be placed in this container -->
       <div class="right split-pane" id="right">
@@ -1403,8 +1407,8 @@
       return Array.isArray( widths ) &&
              widths.length === 3 &&
              widths.every( width => typeof width === 'number' &&
-                                     Number.isFinite( width ) &&
-                                     width >= MIN_COLUMN_WIDTH_PERCENT );
+             Number.isFinite( width ) &&
+             width >= MIN_COLUMN_WIDTH_PERCENT );
     }
 
     /**
@@ -3688,7 +3692,7 @@
         const children = typeof node.getChildren === 'function' ? node.getChildren() :
                          Array.isArray( node.children ) ? node.children :
                          Array.isArray( node._children ) ? node._children :
-                         [];
+                           [];
         children.forEach( visit );
       };
 
@@ -3945,13 +3949,47 @@
     }
 
     /**
+     * Gets all records that should be exported, including live state-description edits that have not been captured
+     * explicitly with Capture Design.
+     *
+     * @returns {Object[]}
+     */
+    function getPrescriptionRecordsForExport() {
+      const records = [
+        ...designState.prescriptionRecords
+      ];
+
+      const liveStateDescriptionRecord = createStateDescriptionPrescriptionRecord();
+      if ( liveStateDescriptionRecord &&
+           liveStateDescriptionRecord.prescriptions.length > 0 &&
+           !hasMatchingStateDescriptionRecord( records, liveStateDescriptionRecord ) ) {
+        records.push( liveStateDescriptionRecord );
+      }
+
+      records.push( ...designState.responseDesigns.map( design => design.record ) );
+      return records;
+    }
+
+    /**
+     * Determines whether a matching state-description prescription record is already included for export.
+     *
+     * @param {Object[]} records
+     * @param {Object} liveRecord
+     * @returns {boolean}
+     */
+    function hasMatchingStateDescriptionRecord( records, liveRecord ) {
+      const livePrescriptions = JSON.stringify( liveRecord.prescriptions );
+      return records.some( record => {
+        return record.type === 'stateDescriptionPrescriptions' &&
+               JSON.stringify( record.prescriptions ) === livePrescriptions;
+      } );
+    }
+
+    /**
      * Downloads all captured records as line-delimited JSON.
      */
     function downloadDesignSessionJSONL() {
-      const records = [
-        ...designState.prescriptionRecords,
-        ...designState.responseDesigns.map( design => design.record )
-      ];
+      const records = getPrescriptionRecordsForExport();
       const jsonl = records.map( record => JSON.stringify( record ) ).join( '\n' );
       const blob = new Blob( [ jsonl ? `${jsonl}\n` : '' ], { type: 'application/jsonl' } );
       const url = URL.createObjectURL( blob );
@@ -3986,10 +4024,7 @@
      * @returns {string}
      */
     function createCodexPrompt() {
-      const records = [
-        ...designState.prescriptionRecords,
-        ...designState.responseDesigns.map( design => design.record )
-      ];
+      const records = getPrescriptionRecordsForExport();
       const simMetadata = getSimMetadata();
       const lines = [
         `Implement these accessibility description prescriptions in ${simMetadata.repo || 'the current sim'}.`,
@@ -4000,6 +4035,8 @@
         '- Use existing describer, Core Description, and accessible response patterns.',
         '- For context responses, prefer component accessibleContextResponse options when appropriate; otherwise use addAccessibleContextResponse at the interaction point.',
         '- Run npm run check -- --fix --skip-phet-io-compare-api.',
+        '- Generalize beyond what is provided -- the designer probably just specified one data point but it is your job to understand the intent and represent it in a way that covers similar cases.',
+        '- Do not be fooled by "noise" in the state delta, other things may have happened, pay attention to the thing that relates to the prescribed message',
         '',
         'Prescriptions:'
       ];
