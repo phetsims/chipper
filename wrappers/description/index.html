@@ -2149,7 +2149,9 @@
 
       const addButton = document.createElement( 'button' );
       addButton.type = 'button';
-      addButton.textContent = position === 'before' ? '+ Before' : '+ After';
+      addButton.textContent = '+';
+      addButton.title = position === 'before' ? 'Insert text before' : 'Insert text after';
+      addButton.setAttribute( 'aria-label', addButton.title );
       addButton.addEventListener( 'click', event => {
         event.preventDefault();
         createInsertionPrescription( locator, locatorKey, position === 'before' ? 'insertBefore' : 'insertAfter' );
@@ -2159,7 +2161,9 @@
       if ( position === 'after' ) {
         const deleteButton = document.createElement( 'button' );
         deleteButton.type = 'button';
-        deleteButton.textContent = 'Delete';
+        deleteButton.textContent = '⌫';
+        deleteButton.title = 'Delete text';
+        deleteButton.setAttribute( 'aria-label', deleteButton.title );
         deleteButton.addEventListener( 'click', event => {
           event.preventDefault();
           toggleDeletePrescription( locator, locatorKey, currentText );
