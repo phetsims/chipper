@@ -226,6 +226,114 @@
       flex: 1;
     }
 
+    .design-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.6em;
+      flex-wrap: wrap;
+      margin: 0.6em 0 0.9em;
+      padding: 0.6em 0.75em;
+      border-radius: 0.75em;
+      background: #eef4fc;
+      border: 1px solid #b9cdea;
+    }
+
+    .design-toolbar label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
+      font-weight: 600;
+    }
+
+    .design-toolbar button,
+    .response-design-item button {
+      border: 1px solid #8ca8c9;
+      border-radius: 0.45em;
+      background: #ffffff;
+      color: #173d66;
+      padding: 0.35em 0.65em;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .design-toolbar button:hover,
+    .design-toolbar button:focus-visible,
+    .response-design-item button:hover,
+    .response-design-item button:focus-visible {
+      background: #dfefff;
+      outline: 2px solid rgba(20, 110, 188, 0.35);
+      outline-offset: 1px;
+    }
+
+    .design-editable-text,
+    .response-design-editable {
+      border-radius: 0.25em;
+      padding: 0.05em 0.15em;
+    }
+
+    .design-editable-text[contenteditable="true"],
+    .response-design-editable[contenteditable="true"] {
+      background: #fffdf2;
+      box-shadow: inset 0 0 0 1px rgba(196, 154, 38, 0.45);
+      cursor: text;
+    }
+
+    .design-editable-text.design-edited,
+    .response-design-editable.design-edited {
+      background: #fff0b8;
+      box-shadow: inset 0 0 0 2px #c69116;
+    }
+
+    .design-editable-text:focus-visible,
+    .response-design-editable:focus-visible {
+      outline: 3px solid rgba(20, 110, 188, 0.5);
+      outline-offset: 2px;
+    }
+
+    .stale-edits-container,
+    .response-designs-container {
+      margin-top: 1em;
+      padding: 0.75em;
+      border-radius: 0.75em;
+      background: #f7f9fc;
+      border: 1px solid #cbd6e4;
+    }
+
+    .stale-edits-container[hidden] {
+      display: none;
+    }
+
+    .stale-edit-item,
+    .response-design-item {
+      margin-top: 0.55em;
+      padding: 0.55em 0.7em;
+      border-radius: 0.55em;
+      background: #ffffff;
+      border: 1px solid #d6deea;
+    }
+
+    .stale-edit-label,
+    .response-design-meta {
+      display: block;
+      color: #526578;
+      font-size: 0.82em;
+      margin-bottom: 0.25em;
+      word-break: break-word;
+    }
+
+    .response-design-editable {
+      display: block;
+      min-height: 2.5em;
+      line-height: 1.35;
+      white-space: pre-wrap;
+    }
+
+    .response-design-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.45em;
+    }
+
     p.alert_copy {
       min-height: 5em;
     }
@@ -597,6 +705,10 @@
               <ul class='alert_copy' id='alert-list'></ul>
             </div>
           </div>
+          <div class="response-designs-container" role="presentation">
+            <h3>Response Designs</h3>
+            <div id="response-design-list"></div>
+          </div>
         </div>
       </div>
 
@@ -616,6 +728,14 @@
         <div id="pdom">
           <h3>State Descriptions</h3>
           <div class="dom_copy_container" role="presentation">
+            <div class="design-toolbar" role="group" aria-label="Design capture controls">
+              <label>
+                <input type="checkbox" id="design-mode-checkbox">
+                Design Mode
+              </label>
+              <button id="capture-design-button" type="button">Capture Design</button>
+              <button id="download-jsonl-button" type="button">Download JSONL</button>
+            </div>
             <fieldset id="view-mode-controls" class="view-mode-controls" role="radiogroup" aria-label="View mode">
               <legend class="sr-only">Select view mode</legend>
               <label class="view-mode-option">
@@ -630,6 +750,10 @@
             <div id="dom-copy-container">
               <div class="dom-view" data-view="formatted"></div>
               <div class="dom-view" data-view="development"></div>
+            </div>
+            <div id="stale-edits-container" class="stale-edits-container" hidden>
+              <h3>Stale Edits</h3>
+              <div id="stale-edits-list"></div>
             </div>
           </div>
         </div>
@@ -825,6 +949,9 @@
     const DEFAULT_COLUMN_WIDTHS = [ 100 / 3, 100 / 3, 100 / 3 ];
     const MIN_COLUMN_WIDTH_PERCENT = 15;
     const RESIZER_KEYBOARD_STEP_PERCENT = 2;
+    const DESIGN_MODE_STORAGE_KEY = 'a11y-design-mode';
+    const PRE_INTERACTION_SNAPSHOT_MAX_AGE = 5000;
+    const RESPONSE_AFTER_SNAPSHOT_DELAY = 150;
 
     const queryParameters = new URLSearchParams( window.location.search );
     const SHOULD_PRINT_DEVELOPMENT_VIEW = queryParameters.has( 'printA11yView' );
@@ -886,6 +1013,18 @@
     let developmentFocusLines = [];
     const DEVELOPMENT_FOCUS_CLASS = 'development-focus-highlight';
     let currentFocusedElement = null;
+    const designState = {
+      designModeEnabled: false,
+      pdomRoot: null,
+      innerWindow: null,
+      editRegistry: new Map(),
+      activeLocatorKeys: new Set(),
+      capturedRecords: [],
+      responseDesigns: [],
+      recentResponses: [],
+      lastPreInteractionSnapshot: null,
+      lastPreInteractionTimestamp: 0
+    };
 
     const domReferences = createDomReferences();
     const viewContainers = createViewContainers( domReferences.domCopyContainer );
@@ -910,6 +1049,7 @@
       other: { className: 'alert-log-item--other', badge: 'OTH' }
     };
 
+    initializeDesignControls( domReferences );
     initializeViewModeControls( domReferences.viewModeControls, viewContainers );
     initializeActivityLogButton( domReferences.clearActivityLogButton, domReferences.alertList );
     initializeColumnResizers( domReferences.splitLayout, domReferences.splitPanes, domReferences.splitResizers );
@@ -919,6 +1059,86 @@
     /*******************************************************************************
      * Helper Functions
      */
+
+    /**
+     * Initializes Design Mode controls for editable descriptions, state capture, and JSONL export.
+     *
+     * @param {{ designModeCheckbox: HTMLInputElement|null, captureDesignButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null }} domRefs
+     */
+    function initializeDesignControls( domRefs ) {
+      designState.designModeEnabled = loadBooleanPreference( DESIGN_MODE_STORAGE_KEY, false );
+
+      if ( domRefs.designModeCheckbox ) {
+        domRefs.designModeCheckbox.checked = designState.designModeEnabled;
+        domRefs.designModeCheckbox.addEventListener( 'change', () => {
+          designState.designModeEnabled = domRefs.designModeCheckbox.checked;
+          storeBooleanPreference( DESIGN_MODE_STORAGE_KEY, designState.designModeEnabled );
+          rerenderCurrentPDOMViews();
+        } );
+      }
+
+      if ( domRefs.captureDesignButton ) {
+        domRefs.captureDesignButton.addEventListener( 'click', () => {
+          const record = createStateDescriptionDesignRecord();
+          if ( record ) {
+            designState.capturedRecords.push( record );
+            console.log( JSON.stringify( record ) );
+          }
+        } );
+      }
+
+      if ( domRefs.downloadJsonlButton ) {
+        domRefs.downloadJsonlButton.addEventListener( 'click', downloadDesignSessionJSONL );
+      }
+    }
+
+    /**
+     * Loads a persisted boolean preference from localStorage.
+     *
+     * @param {string} key
+     * @param {boolean} fallback
+     * @returns {boolean}
+     */
+    function loadBooleanPreference( key, fallback ) {
+      try {
+        const value = localStorage.getItem( key );
+        if ( value === 'true' ) {
+          return true;
+        }
+        if ( value === 'false' ) {
+          return false;
+        }
+      }
+      catch( e ) {
+        // ignore storage errors
+      }
+      return fallback;
+    }
+
+    /**
+     * Persists a boolean preference to localStorage.
+     *
+     * @param {string} key
+     * @param {boolean} value
+     */
+    function storeBooleanPreference( key, value ) {
+      try {
+        localStorage.setItem( key, value ? 'true' : 'false' );
+      }
+      catch( e ) {
+        // ignore storage errors
+      }
+    }
+
+    /**
+     * Re-renders the mirrored PDOM views if a sim PDOM has already been connected.
+     */
+    function rerenderCurrentPDOMViews() {
+      if ( designState.pdomRoot ) {
+        renderViews( designState.pdomRoot, viewContainers, viewRenderers );
+        updateStaleEditSection();
+      }
+    }
 
     /**
      * Updates the data-active attribute for view containers so that only the selected view is marked active.
@@ -1242,6 +1462,7 @@
         return;
       }
       container.innerHTML = '';
+      designState.activeLocatorKeys = new Set();
       relatedGroupWrappers = new Map();
       try {
         const fragment = document.createDocumentFragment();
@@ -1254,6 +1475,7 @@
         }
 
         container.appendChild( fragment );
+        updateStaleEditSection();
       }
       finally {
         relatedGroupWrappers = null;
@@ -1650,7 +1872,79 @@
       const needsLeadingSpace = /^\s/.test( content );
       const needsTrailingSpace = /\s$/.test( content );
       const finalText = `${needsLeadingSpace ? ' ' : ''}${trimmed}${needsTrailingSpace ? ' ' : ''}`;
-      targetParent.appendChild( document.createTextNode( finalText ) );
+      const editableText = createEditableDesignTextNode( textNode, finalText );
+      targetParent.appendChild( editableText );
+    }
+
+    /**
+     * Creates the mirrored text for a PDOM text node, applying frozen designer edits when present.
+     *
+     * @param {Text} textNode
+     * @param {string} currentText
+     * @returns {HTMLElement|Text}
+     */
+    function createEditableDesignTextNode( textNode, currentText ) {
+      const locator = createTextLocator( textNode, currentText );
+      if ( !locator ) {
+        return document.createTextNode( currentText );
+      }
+
+      return createEditableDesignSpan( locator, currentText, 'design-editable-text' );
+    }
+
+    /**
+     * Creates an editable span for design prescriptions, keyed by a stable locator.
+     *
+     * @param {Object} locator
+     * @param {string} currentText
+     * @param {string} className
+     * @returns {HTMLSpanElement}
+     */
+    function createEditableDesignSpan( locator, currentText, className ) {
+      const locatorKey = getLocatorKey( locator );
+      designState.activeLocatorKeys.add( locatorKey );
+
+      const editEntry = designState.editRegistry.get( locatorKey );
+      const displayedText = editEntry && editEntry.edited ? editEntry.prescribedText : currentText;
+      const span = document.createElement( 'span' );
+      span.className = className;
+      span.textContent = displayedText;
+      span.dataset.locatorKey = locatorKey;
+      span.contentEditable = designState.designModeEnabled ? 'true' : 'false';
+
+      if ( editEntry && editEntry.edited ) {
+        span.classList.add( 'design-edited' );
+      }
+
+      const freezeEdit = () => {
+        let entry = designState.editRegistry.get( locatorKey );
+        if ( !entry ) {
+          entry = {
+            locator: locator,
+            beforeText: currentText,
+            prescribedText: span.textContent || '',
+            edited: true
+          };
+          designState.editRegistry.set( locatorKey, entry );
+        }
+        else {
+          entry.edited = true;
+          entry.prescribedText = span.textContent || '';
+        }
+        span.classList.add( 'design-edited' );
+        updateStaleEditSection();
+      };
+
+      span.addEventListener( 'focus', freezeEdit );
+      span.addEventListener( 'input', () => {
+        freezeEdit();
+        const entry = designState.editRegistry.get( locatorKey );
+        if ( entry ) {
+          entry.prescribedText = span.textContent || '';
+        }
+      } );
+
+      return span;
     }
 
     /**
@@ -1727,10 +2021,7 @@
         }
 
         attributes.forEach( attribute => {
-          const chip = document.createElement( 'span' );
-          chip.className = 'aria-chip';
-          chip.textContent = `${attribute.name}: ${attribute.value}`;
-          ariaBody.appendChild( chip );
+          ariaBody.appendChild( createAriaChip( sourceElement, attribute ) );
           groupInfo.attributeCount += 1;
         } );
         updateGroupWrapperDecoration( groupInfo );
@@ -1754,10 +2045,7 @@
       body.className = 'formatted-aria-body';
 
       attributes.forEach( attribute => {
-        const chip = document.createElement( 'span' );
-        chip.className = 'aria-chip';
-        chip.textContent = `${attribute.name}: ${attribute.value}`;
-        body.appendChild( chip );
+        body.appendChild( createAriaChip( sourceElement, attribute ) );
       } );
 
       ariaContainer.appendChild( body );
@@ -1770,6 +2058,176 @@
       else {
         parent.appendChild( wrapper );
       }
+    }
+
+    /**
+     * Creates an ARIA chip with the attribute value editable in Design Mode.
+     *
+     * @param {HTMLElement} sourceElement
+     * @param {{ name: string, value: string }} attribute
+     * @returns {HTMLElement}
+     */
+    function createAriaChip( sourceElement, attribute ) {
+      const chip = document.createElement( 'span' );
+      chip.className = 'aria-chip';
+
+      const label = document.createElement( 'span' );
+      label.textContent = `${attribute.name}: `;
+      chip.appendChild( label );
+
+      const locator = createAttributeLocator( sourceElement, attribute.name );
+      const value = createEditableDesignSpan( locator, attribute.value, 'design-editable-text' );
+      chip.appendChild( value );
+      return chip;
+    }
+
+    /**
+     * Creates a locator for a text node in the live PDOM.
+     *
+     * @param {Text} textNode
+     * @param {string} currentText
+     * @returns {Object|null}
+     */
+    function createTextLocator( textNode, currentText ) {
+      const parentElement = textNode && textNode.parentElement;
+      if ( !parentElement ) {
+        return null;
+      }
+
+      return Object.assign( createElementLocator( parentElement ), {
+        kind: 'pdom',
+        textIndex: getTextNodeIndex( textNode ),
+        textExcerpt: truncateText( currentText, 80 )
+      } );
+    }
+
+    /**
+     * Creates a locator for a PDOM attribute that has user-visible descriptive content.
+     *
+     * @param {HTMLElement} element
+     * @param {string} attributeName
+     * @returns {Object}
+     */
+    function createAttributeLocator( element, attributeName ) {
+      return Object.assign( createElementLocator( element ), {
+        kind: 'pdomAttribute',
+        attributeName: attributeName
+      } );
+    }
+
+    /**
+     * Creates metadata that can help map a prescription back to a live PDOM element.
+     *
+     * @param {HTMLElement} element
+     * @returns {Object}
+     */
+    function createElementLocator( element ) {
+      return {
+        tagName: element.tagName.toLowerCase(),
+        id: element.id || null,
+        role: element.getAttribute( 'role' ),
+        ariaLabel: element.getAttribute( 'aria-label' ),
+        ariaRoleDescription: element.getAttribute( 'aria-roledescription' ),
+        path: getElementPath( element ),
+        headingLevel: getHeadingLevel( element ),
+        relatedGroupKey: getRelatedElementGroupKey( element )
+      };
+    }
+
+    /**
+     * Builds a path from the PDOM root to the provided element using tag names and sibling positions.
+     *
+     * @param {HTMLElement} element
+     * @returns {string}
+     */
+    function getElementPath( element ) {
+      const parts = [];
+      let current = element;
+      while ( current && current.nodeType === Node.ELEMENT_NODE && current !== designState.pdomRoot ) {
+        const parent = current.parentElement;
+        const tagName = current.tagName.toLowerCase();
+        const sameTagIndex = parent ?
+                             Array.from( parent.children ).filter( sibling => sibling.tagName === current.tagName ).indexOf( current ) :
+                             0;
+        parts.unshift( `${tagName}[${sameTagIndex}]` );
+        current = parent;
+      }
+      return parts.join( '/' );
+    }
+
+    /**
+     * Returns the index of a text node among meaningful text-node siblings.
+     *
+     * @param {Text} textNode
+     * @returns {number}
+     */
+    function getTextNodeIndex( textNode ) {
+      const parent = textNode.parentNode;
+      if ( !parent ) {
+        return 0;
+      }
+      return Array.from( parent.childNodes )
+        .filter( node => node.nodeType === Node.TEXT_NODE && ( node.textContent || '' ).trim().length > 0 )
+        .indexOf( textNode );
+    }
+
+    /**
+     * Creates the registry key for a locator.
+     *
+     * @param {Object} locator
+     * @returns {string}
+     */
+    function getLocatorKey( locator ) {
+      if ( locator.id ) {
+        return `${locator.kind}:${locator.id}:${locator.attributeName || ''}:${locator.textIndex || 0}`;
+      }
+      return JSON.stringify( locator );
+    }
+
+    /**
+     * Truncates text for locator context.
+     *
+     * @param {string} text
+     * @param {number} length
+     * @returns {string}
+     */
+    function truncateText( text, length ) {
+      return text.length <= length ? text : `${text.slice( 0, length - 1 )}...`;
+    }
+
+    /**
+     * Updates the stale edits section with frozen edits whose source locator is no longer in the live PDOM view.
+     */
+    function updateStaleEditSection() {
+      const container = domReferences.staleEditsContainer;
+      const list = domReferences.staleEditsList;
+      if ( !container || !list ) {
+        return;
+      }
+
+      list.innerHTML = '';
+      const staleEntries = Array.from( designState.editRegistry.entries() ).filter( entry => {
+        const locatorKey = entry[ 0 ];
+        const edit = entry[ 1 ];
+        return edit.edited && !designState.activeLocatorKeys.has( locatorKey );
+      } );
+
+      container.hidden = staleEntries.length === 0;
+      staleEntries.forEach( entry => {
+        const edit = entry[ 1 ];
+        const item = document.createElement( 'div' );
+        item.className = 'stale-edit-item';
+
+        const label = document.createElement( 'span' );
+        label.className = 'stale-edit-label';
+        label.textContent = `${edit.locator.kind} ${edit.locator.tagName || ''} ${edit.locator.id || edit.locator.path || ''}`;
+        item.appendChild( label );
+
+        const text = document.createElement( 'div' );
+        text.textContent = edit.prescribedText;
+        item.appendChild( text );
+        list.appendChild( item );
+      } );
     }
 
     /**
@@ -2683,6 +3141,355 @@
     }
 
     /**
+     * Creates a state-description design record from the current sim state and designer edits.
+     *
+     * @returns {Object|null}
+     */
+    function createStateDescriptionDesignRecord() {
+      const snapshot = captureDesignSnapshot();
+      if ( !snapshot ) {
+        return null;
+      }
+
+      return {
+        schemaVersion: 1,
+        type: 'stateDescriptionDesign',
+        timestamp: new Date().toISOString(),
+        sim: getSimMetadata(),
+        screenshot: snapshot.screenshot,
+        accessibleViewState: snapshot.accessibleViewState,
+        pdom: {
+          text: snapshot.pdomText,
+          developmentText: snapshot.pdomDevelopmentText
+        },
+        visibleText: snapshot.visibleText,
+        edits: getEditedDescriptionPrescriptions()
+      };
+    }
+
+    /**
+     * Creates a context-response design record from a response and before/after snapshots.
+     *
+     * @param {Object|null} beforeSnapshot
+     * @param {Object} afterSnapshot
+     * @param {string} responseText
+     * @param {string} category
+     * @returns {Object}
+     */
+    function createContextResponseDesignRecord( beforeSnapshot, afterSnapshot, responseText, category ) {
+      return {
+        schemaVersion: 1,
+        type: 'contextResponseDesign',
+        timestamp: new Date().toISOString(),
+        sim: getSimMetadata(),
+        before: formatResponseSnapshot( beforeSnapshot ),
+        after: formatResponseSnapshot( afterSnapshot ),
+        response: {
+          category: category,
+          beforeText: responseText,
+          prescribedText: responseText
+        }
+      };
+    }
+
+    /**
+     * Captures the wrapper's current design-relevant state.
+     *
+     * @returns {Object|null}
+     */
+    function captureDesignSnapshot() {
+      const pdomRoot = designState.pdomRoot;
+      const innerWindow = designState.innerWindow;
+      if ( !pdomRoot || !innerWindow ) {
+        return null;
+      }
+
+      return {
+        screenshot: captureScreenshotDataURL( innerWindow ),
+        accessibleViewState: getAccessibleViewStateValue( innerWindow ),
+        pdomText: getElementTextSnapshot( pdomRoot ),
+        pdomDevelopmentText: buildDevelopmentViewSnapshot( viewContainers[ VIEW_MODES.DEVELOPMENT ] ),
+        visibleText: collectVisibleSceneryText( innerWindow ),
+        focus: getFocusMetadata( innerWindow ),
+        recentResponses: designState.recentResponses.slice( -10 )
+      };
+    }
+
+    /**
+     * Captures the visible sim using Joist's ScreenshotGenerator when available.
+     *
+     * @param {Window} innerWindow
+     * @returns {string|null}
+     */
+    function captureScreenshotDataURL( innerWindow ) {
+      try {
+        const sim = getSim( innerWindow );
+        const generator = innerWindow &&
+                          innerWindow.phet &&
+                          innerWindow.phet.joist &&
+                          innerWindow.phet.joist.ScreenshotGenerator;
+        if ( sim && generator && typeof generator.generateScreenshot === 'function' ) {
+          return generator.generateScreenshot( sim );
+        }
+      }
+      catch( e ) {
+        // fall through to canvas fallback
+      }
+
+      try {
+        const canvas = innerWindow.document.querySelector( 'canvas' );
+        if ( canvas && typeof canvas.toDataURL === 'function' ) {
+          return canvas.toDataURL( 'image/png' );
+        }
+      }
+      catch( e ) {
+        // best-effort capture only
+      }
+
+      return null;
+    }
+
+    /**
+     * Reads the active accessible view state object without rendering it.
+     *
+     * @param {Window|null} innerWindow
+     * @returns {Object|null}
+     */
+    function getAccessibleViewStateValue( innerWindow ) {
+      const sim = getSim( innerWindow );
+      const candidates = getAccessibleViewStateScreenCandidates( sim );
+
+      for ( let i = 0; i < candidates.length; i++ ) {
+        const screen = candidates[ i ];
+        if ( !screen || !screen.view || typeof screen.view.getAccessibleViewState !== 'function' ) {
+          continue;
+        }
+
+        try {
+          const accessibleViewState = screen.view.getAccessibleViewState();
+          if ( accessibleViewState !== null && typeof accessibleViewState !== 'undefined' ) {
+            return accessibleViewState;
+          }
+        }
+        catch( e ) {
+          // Keep trying less specific candidates.
+        }
+      }
+
+      return null;
+    }
+
+    /**
+     * Returns the live Sim instance from the iframe window.
+     *
+     * @param {Window|null} innerWindow
+     * @returns {Object|null}
+     */
+    function getSim( innerWindow ) {
+      return innerWindow &&
+             innerWindow.phet &&
+             innerWindow.phet.joist &&
+             innerWindow.phet.joist.sim ?
+             innerWindow.phet.joist.sim :
+             null;
+    }
+
+    /**
+     * Captures basic sim/screen metadata for exported prescriptions.
+     *
+     * @returns {Object}
+     */
+    function getSimMetadata() {
+      const innerWindow = designState.innerWindow;
+      const sim = getSim( innerWindow );
+      const screens = sim && Array.isArray( sim.screens ) ? sim.screens : [];
+      const selectedScreen = sim && sim.selectedScreenProperty ? sim.selectedScreenProperty.value : null;
+      const screenIndex = selectedScreen ? screens.indexOf( selectedScreen ) : -1;
+      const screenName = selectedScreen && selectedScreen.nameProperty ? selectedScreen.nameProperty.value :
+                         selectedScreen && selectedScreen.name ? selectedScreen.name :
+                         null;
+
+      return {
+        repo: queryParameters.get( 'sim' ) || getRepoFromIframeURL(),
+        url: domReferences.iframe ? domReferences.iframe.src : '',
+        screenIndex: screenIndex >= 0 ? screenIndex : null,
+        screenName: screenName
+      };
+    }
+
+    /**
+     * Best-effort repository name extraction for built wrappers or missing query parameters.
+     *
+     * @returns {string|null}
+     */
+    function getRepoFromIframeURL() {
+      if ( !domReferences.iframe || !domReferences.iframe.src ) {
+        return null;
+      }
+      const match = domReferences.iframe.src.match( /\/([^/?#]+)\/\1_(?:en|all)(?:_phet)?\.html/ );
+      return match ? match[ 1 ] : null;
+    }
+
+    /**
+     * Returns text content from an element with whitespace normalized.
+     *
+     * @param {HTMLElement} element
+     * @returns {string}
+     */
+    function getElementTextSnapshot( element ) {
+      return ( element.innerText || element.textContent || '' ).replace( /\s+/g, ' ' ).trim();
+    }
+
+    /**
+     * Best-effort scrape of visible Scenery Text nodes.
+     *
+     * @param {Window} innerWindow
+     * @returns {Object[]}
+     */
+    function collectVisibleSceneryText( innerWindow ) {
+      const sim = getSim( innerWindow );
+      const rootNode = sim && sim.rootNode;
+      const visibleText = [];
+      const visited = new Set();
+
+      const visit = node => {
+        if ( !node || visited.has( node ) ) {
+          return;
+        }
+        visited.add( node );
+
+        try {
+          if ( typeof node.isVisible === 'function' && !node.isVisible() ) {
+            return;
+          }
+        }
+        catch( e ) {
+          // continue best-effort traversal
+        }
+
+        const text = getSceneryNodeText( node );
+        if ( text ) {
+          visibleText.push( {
+            text: text,
+            tandemName: node.tandem && node.tandem.name ? node.tandem.name : null,
+            phetioID: node.tandem && typeof node.tandem.phetioID === 'string' ? node.tandem.phetioID : null
+          } );
+        }
+
+        const children = typeof node.getChildren === 'function' ? node.getChildren() :
+                         Array.isArray( node.children ) ? node.children :
+                         Array.isArray( node._children ) ? node._children :
+                         [];
+        children.forEach( visit );
+      };
+
+      visit( rootNode );
+      return visibleText;
+    }
+
+    /**
+     * Reads visible text from common Scenery Text-node APIs.
+     *
+     * @param {Object} node
+     * @returns {string|null}
+     */
+    function getSceneryNodeText( node ) {
+      try {
+        const text = typeof node.getString === 'function' ? node.getString() :
+                     typeof node.string === 'string' ? node.string :
+                     node.stringProperty && typeof node.stringProperty.value === 'string' ? node.stringProperty.value :
+                     null;
+        return text && text.trim().length > 0 ? text : null;
+      }
+      catch( e ) {
+        return null;
+      }
+    }
+
+    /**
+     * Captures focused element metadata from the iframe PDOM.
+     *
+     * @param {Window} innerWindow
+     * @returns {Object}
+     */
+    function getFocusMetadata( innerWindow ) {
+      const activeElement = innerWindow && innerWindow.document ? innerWindow.document.activeElement : null;
+      if ( !activeElement || activeElement === innerWindow.document.body ) {
+        return {};
+      }
+      return {
+        tagName: activeElement.tagName ? activeElement.tagName.toLowerCase() : null,
+        id: activeElement.id || null,
+        role: activeElement.getAttribute ? activeElement.getAttribute( 'role' ) : null,
+        ariaLabel: activeElement.getAttribute ? activeElement.getAttribute( 'aria-label' ) : null,
+        text: getElementTextSnapshot( activeElement )
+      };
+    }
+
+    /**
+     * Converts a full snapshot into the context response before/after shape.
+     *
+     * @param {Object|null} snapshot
+     * @returns {Object}
+     */
+    function formatResponseSnapshot( snapshot ) {
+      if ( !snapshot ) {
+        return {
+          screenshot: null,
+          accessibleViewState: null,
+          pdomText: '',
+          visibleText: [],
+          focus: {}
+        };
+      }
+
+      return {
+        screenshot: snapshot.screenshot,
+        accessibleViewState: snapshot.accessibleViewState,
+        pdomText: snapshot.pdomText,
+        visibleText: snapshot.visibleText,
+        focus: snapshot.focus
+      };
+    }
+
+    /**
+     * Gets all edited state-description prescriptions for capture/export.
+     *
+     * @returns {Object[]}
+     */
+    function getEditedDescriptionPrescriptions() {
+      return Array.from( designState.editRegistry.values() )
+        .filter( edit => edit.edited )
+        .map( edit => {
+          return {
+            locator: edit.locator,
+            beforeText: edit.beforeText,
+            prescribedText: edit.prescribedText
+          };
+        } );
+    }
+
+    /**
+     * Downloads all captured records as line-delimited JSON.
+     */
+    function downloadDesignSessionJSONL() {
+      const records = [
+        ...designState.capturedRecords,
+        ...designState.responseDesigns.map( design => design.record )
+      ];
+      const jsonl = records.map( record => JSON.stringify( record ) ).join( '\n' );
+      const blob = new Blob( [ jsonl ? `${jsonl}\n` : '' ], { type: 'application/jsonl' } );
+      const url = URL.createObjectURL( blob );
+      const link = document.createElement( 'a' );
+      link.href = url;
+      link.download = `description-design-${new Date().toISOString().replace( /[:.]/g, '-' )}.jsonl`;
+      document.body.appendChild( link );
+      link.click();
+      document.body.removeChild( link );
+      URL.revokeObjectURL( url );
+    }
+
+    /**
      * Observes the PDOM for changes and throttles re-rendering of the various DOM views.
      *
      * @param {HTMLElement} pdomRoot
@@ -2762,6 +3569,16 @@
             // update the text content of the copied element to match the element in the iframe document
             // create a list item to add to the alert list
             if ( alertText.length > 0 ) {
+              const responseMetadata = {
+                timestamp: new Date().toISOString(),
+                category: responseCategory,
+                text: alertText
+              };
+              designState.recentResponses.push( responseMetadata );
+              if ( designState.recentResponses.length > ACTIVITY_LOG_LENGTH ) {
+                designState.recentResponses.shift();
+              }
+
               const listItem = document.createElement( 'li' );
               listItem.style.opacity = 1.0;
               listItem.classList.add( 'alert-log-item', responseStyle.className );
@@ -2790,12 +3607,110 @@
                 listElement.removeChild( listElement.firstChild );
               }
 
+              if ( responseCategory === 'context' ) {
+                captureContextResponseDesign( alertText, responseCategory );
+              }
+
             }
           }
         } );
       } );
 
       liveObserver.observe( originalElement, mutationConfig );
+    }
+
+    /**
+     * Captures a context response design with the latest pre-interaction snapshot and a delayed after snapshot.
+     *
+     * @param {string} responseText
+     * @param {string} category
+     */
+    function captureContextResponseDesign( responseText, category ) {
+      const beforeSnapshot = Date.now() - designState.lastPreInteractionTimestamp <= PRE_INTERACTION_SNAPSHOT_MAX_AGE ?
+                             designState.lastPreInteractionSnapshot :
+                             null;
+
+      setTimeout( () => {
+        const afterSnapshot = captureDesignSnapshot();
+        if ( !afterSnapshot ) {
+          return;
+        }
+
+        const record = createContextResponseDesignRecord( beforeSnapshot, afterSnapshot, responseText, category );
+        const design = {
+          id: `response-design-${designState.responseDesigns.length + 1}`,
+          record: record,
+          edited: false
+        };
+        designState.responseDesigns.push( design );
+        renderResponseDesignItem( design );
+        console.log( JSON.stringify( record ) );
+      }, RESPONSE_AFTER_SNAPSHOT_DELAY );
+    }
+
+    /**
+     * Renders one editable response design record.
+     *
+     * @param {{ id: string, record: Object, edited: boolean }} design
+     */
+    function renderResponseDesignItem( design ) {
+      const list = domReferences.responseDesignList;
+      if ( !list ) {
+        return;
+      }
+
+      const item = document.createElement( 'div' );
+      item.className = 'response-design-item';
+
+      const meta = document.createElement( 'span' );
+      meta.className = 'response-design-meta';
+      meta.textContent = `${design.record.timestamp} ${design.record.sim.repo || ''} screen ${design.record.sim.screenIndex === null ? '?' : design.record.sim.screenIndex}`;
+      item.appendChild( meta );
+
+      const editable = document.createElement( 'span' );
+      editable.className = 'response-design-editable';
+      editable.contentEditable = 'true';
+      editable.textContent = design.record.response.prescribedText;
+      editable.addEventListener( 'focus', () => {
+        design.edited = true;
+        editable.classList.add( 'design-edited' );
+      } );
+      editable.addEventListener( 'input', () => {
+        design.edited = true;
+        editable.classList.add( 'design-edited' );
+        design.record.response.prescribedText = editable.textContent || '';
+      } );
+      item.appendChild( editable );
+
+      const actions = document.createElement( 'div' );
+      actions.className = 'response-design-actions';
+      const logButton = document.createElement( 'button' );
+      logButton.type = 'button';
+      logButton.textContent = 'Log JSON';
+      logButton.addEventListener( 'click', () => console.log( JSON.stringify( design.record ) ) );
+      actions.appendChild( logButton );
+      item.appendChild( actions );
+
+      list.appendChild( item );
+    }
+
+    /**
+     * Installs listeners that capture the state before likely interactions that can trigger context responses.
+     *
+     * @param {Document} iframeDocument
+     */
+    function installPreInteractionSnapshotListeners( iframeDocument ) {
+      const captureBeforeInteraction = () => {
+        const snapshot = captureDesignSnapshot();
+        if ( snapshot ) {
+          designState.lastPreInteractionSnapshot = snapshot;
+          designState.lastPreInteractionTimestamp = Date.now();
+        }
+      };
+
+      [ 'pointerdown', 'keydown', 'input', 'change' ].forEach( eventType => {
+        iframeDocument.addEventListener( eventType, captureBeforeInteraction, true );
+      } );
     }
 
     /**
@@ -2867,6 +3782,8 @@
         if ( !PDOMRoot ) {
           return;
         }
+        designState.pdomRoot = PDOMRoot;
+        designState.innerWindow = innerWindow;
 
         const ariaLiveElementsContainer = phetNamespace.joist.sim.display.descriptionUtteranceQueue.announcer.ariaLiveContainer;
         const globalContainer = phetNamespace.scenery.globalDescriptionQueue.announcer.ariaLiveContainer;
@@ -2936,6 +3853,7 @@
         const iframeDocument = domRefs.iframe.contentWindow.document;
 
         domRefs.iframe.focus();
+        installPreInteractionSnapshotListeners( iframeDocument );
 
         let previousElement = null;
         const handleIframeFocus = () => {
@@ -2960,7 +3878,7 @@
     /**
      * Collects frequently accessed DOM nodes for later use.
      *
-     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[] }}
+     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, captureDesignButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignList: HTMLElement|null }}
      */
     function createDomReferences() {
       return {
@@ -2973,7 +3891,13 @@
         accessibleViewStateCode: document.getElementById( 'accessible-view-state-code' ),
         splitLayout: document.getElementById( 'split-layout' ),
         splitPanes: Array.from( document.querySelectorAll( '.split-pane' ) ),
-        splitResizers: Array.from( document.querySelectorAll( '.split-resizer' ) )
+        splitResizers: Array.from( document.querySelectorAll( '.split-resizer' ) ),
+        designModeCheckbox: document.getElementById( 'design-mode-checkbox' ),
+        captureDesignButton: document.getElementById( 'capture-design-button' ),
+        downloadJsonlButton: document.getElementById( 'download-jsonl-button' ),
+        staleEditsContainer: document.getElementById( 'stale-edits-container' ),
+        staleEditsList: document.getElementById( 'stale-edits-list' ),
+        responseDesignList: document.getElementById( 'response-design-list' )
       };
     }
 
