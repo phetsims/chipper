@@ -246,6 +246,8 @@
     }
 
     .design-toolbar button,
+    .design-inline-actions button,
+    .manual-context-response-controls button,
     .response-design-item button {
       border: 1px solid #8ca8c9;
       border-radius: 0.45em;
@@ -258,6 +260,10 @@
 
     .design-toolbar button:hover,
     .design-toolbar button:focus-visible,
+    .design-inline-actions button:hover,
+    .design-inline-actions button:focus-visible,
+    .manual-context-response-controls button:hover,
+    .manual-context-response-controls button:focus-visible,
     .response-design-item button:hover,
     .response-design-item button:focus-visible {
       background: #dfefff;
@@ -266,12 +272,14 @@
     }
 
     .design-editable-text,
+    .design-inserted-text,
     .response-design-editable {
       border-radius: 0.25em;
       padding: 0.05em 0.15em;
     }
 
     .design-editable-text[contenteditable="true"],
+    .design-inserted-text[contenteditable="true"],
     .response-design-editable[contenteditable="true"] {
       background: #fffdf2;
       box-shadow: inset 0 0 0 1px rgba(196, 154, 38, 0.45);
@@ -290,7 +298,38 @@
       outline-offset: 2px;
     }
 
+    .design-prescription-unit {
+      display: inline;
+    }
+
+    .design-inline-actions {
+      display: inline-flex;
+      gap: 0.25em;
+      margin: 0 0.25em;
+      vertical-align: baseline;
+    }
+
+    .design-inline-actions button {
+      padding: 0.1em 0.35em;
+      font-size: 0.78em;
+      line-height: 1.2;
+    }
+
+    .design-inserted-text {
+      display: inline-block;
+      min-width: 8em;
+      margin: 0 0.2em;
+      background: #eef9e8;
+      box-shadow: inset 0 0 0 2px #71a95a;
+    }
+
+    .design-deleted-text {
+      text-decoration: line-through;
+      opacity: 0.65;
+    }
+
     .stale-edits-container,
+    .manual-context-response-container,
     .response-designs-container {
       margin-top: 1em;
       padding: 0.75em;
@@ -326,6 +365,30 @@
       min-height: 2.5em;
       line-height: 1.35;
       white-space: pre-wrap;
+    }
+
+    .manual-context-response-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      flex-wrap: wrap;
+      margin: 0.4em 0 0.6em;
+    }
+
+    .manual-context-response-input {
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 5.5em;
+      resize: vertical;
+      border: 1px solid #b9cdea;
+      border-radius: 0.45em;
+      padding: 0.45em 0.55em;
+      font: inherit;
+    }
+
+    .manual-context-response-status {
+      color: #526578;
+      font-size: 0.86em;
     }
 
     .response-design-actions {
@@ -707,6 +770,16 @@
           </div>
           <div class="response-designs-container" role="presentation">
             <h3>Response Designs</h3>
+            <div class="manual-context-response-container" role="presentation">
+              <h3>Add Context Response</h3>
+              <div class="manual-context-response-controls">
+                <button id="manual-context-before-button" type="button">Capture Before</button>
+                <button id="manual-context-after-button" type="button">Capture After</button>
+                <button id="manual-context-add-button" type="button">Add Response</button>
+                <span id="manual-context-response-status" class="manual-context-response-status">No manual response in progress.</span>
+              </div>
+              <textarea id="manual-context-response-input" class="manual-context-response-input" placeholder="Type the context response that should be added."></textarea>
+            </div>
             <div id="response-design-list"></div>
           </div>
         </div>
@@ -735,6 +808,7 @@
               </label>
               <button id="capture-design-button" type="button">Capture Design</button>
               <button id="download-jsonl-button" type="button">Download JSONL</button>
+              <button id="download-codex-prompt-button" type="button">Download Codex Prompt</button>
             </div>
             <fieldset id="view-mode-controls" class="view-mode-controls" role="radiogroup" aria-label="View mode">
               <legend class="sr-only">Select view mode</legend>
@@ -952,6 +1026,7 @@
     const DESIGN_MODE_STORAGE_KEY = 'a11y-design-mode';
     const PRE_INTERACTION_SNAPSHOT_MAX_AGE = 5000;
     const RESPONSE_AFTER_SNAPSHOT_DELAY = 150;
+    const PRESCRIPTION_SCHEMA_VERSION = 2;
 
     const queryParameters = new URLSearchParams( window.location.search );
     const SHOULD_PRINT_DEVELOPMENT_VIEW = queryParameters.has( 'printA11yView' );
@@ -1019,11 +1094,14 @@
       innerWindow: null,
       editRegistry: new Map(),
       activeLocatorKeys: new Set(),
-      capturedRecords: [],
+      prescriptionRecords: [],
       responseDesigns: [],
       recentResponses: [],
       lastPreInteractionSnapshot: null,
-      lastPreInteractionTimestamp: 0
+      lastPreInteractionTimestamp: 0,
+      manualContextBeforeSnapshot: null,
+      manualContextAfterSnapshot: null,
+      pendingFocusPrescriptionId: null
     };
 
     const domReferences = createDomReferences();
@@ -1063,7 +1141,7 @@
     /**
      * Initializes Design Mode controls for editable descriptions, state capture, and JSONL export.
      *
-     * @param {{ designModeCheckbox: HTMLInputElement|null, captureDesignButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null }} domRefs
+     * @param {{ designModeCheckbox: HTMLInputElement|null, captureDesignButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null }} domRefs
      */
     function initializeDesignControls( domRefs ) {
       designState.designModeEnabled = loadBooleanPreference( DESIGN_MODE_STORAGE_KEY, false );
@@ -1079,9 +1157,9 @@
 
       if ( domRefs.captureDesignButton ) {
         domRefs.captureDesignButton.addEventListener( 'click', () => {
-          const record = createStateDescriptionDesignRecord();
+          const record = createStateDescriptionPrescriptionRecord();
           if ( record ) {
-            designState.capturedRecords.push( record );
+            designState.prescriptionRecords.push( record );
             console.log( JSON.stringify( record ) );
           }
         } );
@@ -1090,6 +1168,12 @@
       if ( domRefs.downloadJsonlButton ) {
         domRefs.downloadJsonlButton.addEventListener( 'click', downloadDesignSessionJSONL );
       }
+
+      if ( domRefs.downloadCodexPromptButton ) {
+        domRefs.downloadCodexPromptButton.addEventListener( 'click', downloadCodexPrompt );
+      }
+
+      initializeManualContextResponseControls( domRefs );
     }
 
     /**
@@ -1138,6 +1222,87 @@
         renderViews( designState.pdomRoot, viewContainers, viewRenderers );
         updateStaleEditSection();
       }
+    }
+
+    /**
+     * Initializes the manual add-context-response workflow.
+     *
+     * @param {{ manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null }} domRefs
+     */
+    function initializeManualContextResponseControls( domRefs ) {
+      if ( domRefs.manualContextBeforeButton ) {
+        domRefs.manualContextBeforeButton.addEventListener( 'click', () => {
+          designState.manualContextBeforeSnapshot = captureDesignSnapshot();
+          updateManualContextResponseStatus();
+        } );
+      }
+
+      if ( domRefs.manualContextAfterButton ) {
+        domRefs.manualContextAfterButton.addEventListener( 'click', () => {
+          designState.manualContextAfterSnapshot = captureDesignSnapshot();
+          updateManualContextResponseStatus();
+        } );
+      }
+
+      if ( domRefs.manualContextAddButton ) {
+        domRefs.manualContextAddButton.addEventListener( 'click', () => {
+          addManualContextResponsePrescription();
+        } );
+      }
+
+      updateManualContextResponseStatus();
+    }
+
+    /**
+     * Adds a manual context-response prescription from the captured before/after snapshots and typed text.
+     */
+    function addManualContextResponsePrescription() {
+      const input = domReferences.manualContextResponseInput;
+      const responseText = input ? input.value.trim() : '';
+      if ( !responseText || !designState.manualContextBeforeSnapshot || !designState.manualContextAfterSnapshot ) {
+        updateManualContextResponseStatus();
+        return;
+      }
+
+      const record = createContextResponsePrescriptionRecord(
+        designState.manualContextBeforeSnapshot,
+        designState.manualContextAfterSnapshot,
+        '',
+        'context',
+        'insertResponse',
+        responseText
+      );
+      const design = {
+        id: `manual-response-design-${designState.responseDesigns.length + 1}`,
+        record: record,
+        edited: true
+      };
+      designState.responseDesigns.push( design );
+      renderResponseDesignItem( design );
+      console.log( JSON.stringify( record ) );
+
+      if ( input ) {
+        input.value = '';
+      }
+      designState.manualContextBeforeSnapshot = null;
+      designState.manualContextAfterSnapshot = null;
+      updateManualContextResponseStatus();
+    }
+
+    /**
+     * Updates the manual context-response workflow status text.
+     */
+    function updateManualContextResponseStatus() {
+      const status = domReferences.manualContextResponseStatus;
+      if ( !status ) {
+        return;
+      }
+      const hasBefore = !!designState.manualContextBeforeSnapshot;
+      const hasAfter = !!designState.manualContextAfterSnapshot;
+      status.textContent = hasBefore && hasAfter ? 'Before and after captured.' :
+                           hasBefore ? 'Before captured. Capture after state.' :
+                           hasAfter ? 'After captured. Capture before state.' :
+                           'No manual response in progress.';
     }
 
     /**
@@ -1905,21 +2070,25 @@
       designState.activeLocatorKeys.add( locatorKey );
 
       const editEntry = designState.editRegistry.get( locatorKey );
-      const displayedText = editEntry && editEntry.edited ? editEntry.prescribedText : currentText;
+      const displayedText = editEntry && editEntry.edited && editEntry.operation !== 'deleteText' ? editEntry.prescribedText : currentText;
       const span = document.createElement( 'span' );
       span.className = className;
       span.textContent = displayedText;
       span.dataset.locatorKey = locatorKey;
-      span.contentEditable = designState.designModeEnabled ? 'true' : 'false';
+      span.contentEditable = designState.designModeEnabled && !( editEntry && editEntry.operation === 'deleteText' ) ? 'true' : 'false';
 
       if ( editEntry && editEntry.edited ) {
         span.classList.add( 'design-edited' );
+      }
+      if ( editEntry && editEntry.operation === 'deleteText' ) {
+        span.classList.add( 'design-deleted-text' );
       }
 
       const freezeEdit = () => {
         let entry = designState.editRegistry.get( locatorKey );
         if ( !entry ) {
           entry = {
+            operation: 'replaceText',
             locator: locator,
             beforeText: currentText,
             prescribedText: span.textContent || '',
@@ -1928,6 +2097,7 @@
           designState.editRegistry.set( locatorKey, entry );
         }
         else {
+          entry.operation = 'replaceText';
           entry.edited = true;
           entry.prescribedText = span.textContent || '';
         }
@@ -1944,7 +2114,178 @@
         }
       } );
 
-      return span;
+      const insertionsBefore = getInsertionEntriesForAnchor( locatorKey, 'insertBefore' );
+      const insertionsAfter = getInsertionEntriesForAnchor( locatorKey, 'insertAfter' );
+      if ( !designState.designModeEnabled && insertionsBefore.length === 0 && insertionsAfter.length === 0 ) {
+        return span;
+      }
+
+      const unit = document.createElement( 'span' );
+      unit.className = 'design-prescription-unit';
+      appendInsertionEntries( unit, insertionsBefore );
+      if ( designState.designModeEnabled ) {
+        unit.appendChild( createInlineActions( locator, locatorKey, currentText, 'before' ) );
+      }
+      unit.appendChild( span );
+      if ( designState.designModeEnabled ) {
+        unit.appendChild( createInlineActions( locator, locatorKey, currentText, 'after' ) );
+      }
+      appendInsertionEntries( unit, insertionsAfter );
+      return unit;
+    }
+
+    /**
+     * Creates inline controls for adding or deleting text prescriptions around an anchor.
+     *
+     * @param {Object} locator
+     * @param {string} locatorKey
+     * @param {string} currentText
+     * @param {string} position
+     * @returns {HTMLElement}
+     */
+    function createInlineActions( locator, locatorKey, currentText, position ) {
+      const actions = document.createElement( 'span' );
+      actions.className = 'design-inline-actions';
+
+      const addButton = document.createElement( 'button' );
+      addButton.type = 'button';
+      addButton.textContent = position === 'before' ? '+ Before' : '+ After';
+      addButton.addEventListener( 'click', event => {
+        event.preventDefault();
+        createInsertionPrescription( locator, locatorKey, position === 'before' ? 'insertBefore' : 'insertAfter' );
+      } );
+      actions.appendChild( addButton );
+
+      if ( position === 'after' ) {
+        const deleteButton = document.createElement( 'button' );
+        deleteButton.type = 'button';
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener( 'click', event => {
+          event.preventDefault();
+          toggleDeletePrescription( locator, locatorKey, currentText );
+        } );
+        actions.appendChild( deleteButton );
+      }
+
+      return actions;
+    }
+
+    /**
+     * Creates a new insertion prescription anchored to an existing PDOM locator.
+     *
+     * @param {Object} anchorLocator
+     * @param {string} anchorLocatorKey
+     * @param {string} operation
+     */
+    function createInsertionPrescription( anchorLocator, anchorLocatorKey, operation ) {
+      const prescriptionId = `${operation}:${anchorLocatorKey}:${Date.now()}`;
+      designState.editRegistry.set( prescriptionId, {
+        id: prescriptionId,
+        operation: operation,
+        anchorLocator: anchorLocator,
+        anchorLocatorKey: anchorLocatorKey,
+        beforeText: '',
+        prescribedText: 'New text',
+        edited: true
+      } );
+      designState.pendingFocusPrescriptionId = prescriptionId;
+      rerenderCurrentPDOMViews();
+    }
+
+    /**
+     * Toggles a delete prescription for an existing PDOM locator.
+     *
+     * @param {Object} locator
+     * @param {string} locatorKey
+     * @param {string} currentText
+     */
+    function toggleDeletePrescription( locator, locatorKey, currentText ) {
+      const existing = designState.editRegistry.get( locatorKey );
+      if ( existing && existing.operation === 'deleteText' ) {
+        designState.editRegistry.delete( locatorKey );
+      }
+      else {
+        designState.editRegistry.set( locatorKey, {
+          operation: 'deleteText',
+          locator: locator,
+          beforeText: currentText,
+          prescribedText: '',
+          edited: true
+        } );
+      }
+      rerenderCurrentPDOMViews();
+    }
+
+    /**
+     * Returns insertion prescriptions for a rendered anchor.
+     *
+     * @param {string} anchorLocatorKey
+     * @param {string} operation
+     * @returns {Object[]}
+     */
+    function getInsertionEntriesForAnchor( anchorLocatorKey, operation ) {
+      return Array.from( designState.editRegistry.values() ).filter( entry => {
+        return entry.edited && entry.operation === operation && entry.anchorLocatorKey === anchorLocatorKey;
+      } );
+    }
+
+    /**
+     * Appends rendered insertion prescriptions to a prescription unit.
+     *
+     * @param {HTMLElement} parent
+     * @param {Object[]} entries
+     */
+    function appendInsertionEntries( parent, entries ) {
+      entries.forEach( entry => {
+        const inserted = document.createElement( 'span' );
+        inserted.className = 'design-inserted-text design-edited';
+        inserted.contentEditable = designState.designModeEnabled ? 'true' : 'false';
+        inserted.textContent = entry.prescribedText;
+        inserted.addEventListener( 'input', () => {
+          entry.prescribedText = inserted.textContent || '';
+        } );
+        parent.appendChild( inserted );
+
+        if ( designState.pendingFocusPrescriptionId === entry.id ) {
+          setTimeout( () => {
+            inserted.focus();
+            selectElementContents( inserted );
+            designState.pendingFocusPrescriptionId = null;
+          }, 0 );
+        }
+
+        if ( designState.designModeEnabled ) {
+          const removeButton = document.createElement( 'button' );
+          removeButton.type = 'button';
+          removeButton.textContent = 'Remove';
+          removeButton.addEventListener( 'click', event => {
+            event.preventDefault();
+            designState.editRegistry.delete( entry.id );
+            rerenderCurrentPDOMViews();
+          } );
+
+          const actions = document.createElement( 'span' );
+          actions.className = 'design-inline-actions';
+          actions.appendChild( removeButton );
+          parent.appendChild( actions );
+        }
+      } );
+    }
+
+    /**
+     * Selects all text in a contenteditable element.
+     *
+     * @param {HTMLElement} element
+     */
+    function selectElementContents( element ) {
+      const selection = window.getSelection();
+      if ( !selection ) {
+        return;
+      }
+      const range = document.createRange();
+      range.selectNodeContents( element );
+      selection.removeAllRanges();
+      selection.addRange( range );
     }
 
     /**
@@ -2209,7 +2550,8 @@
       const staleEntries = Array.from( designState.editRegistry.entries() ).filter( entry => {
         const locatorKey = entry[ 0 ];
         const edit = entry[ 1 ];
-        return edit.edited && !designState.activeLocatorKeys.has( locatorKey );
+        const activeKey = edit.anchorLocatorKey || locatorKey;
+        return edit.edited && !designState.activeLocatorKeys.has( activeKey );
       } );
 
       container.hidden = staleEntries.length === 0;
@@ -2220,7 +2562,8 @@
 
         const label = document.createElement( 'span' );
         label.className = 'stale-edit-label';
-        label.textContent = `${edit.locator.kind} ${edit.locator.tagName || ''} ${edit.locator.id || edit.locator.path || ''}`;
+        const locator = edit.locator || edit.anchorLocator || {};
+        label.textContent = `${edit.operation} ${locator.kind || ''} ${locator.tagName || ''} ${locator.id || locator.path || ''}`;
         item.appendChild( label );
 
         const text = document.createElement( 'div' );
@@ -3141,59 +3484,56 @@
     }
 
     /**
-     * Creates a state-description design record from the current sim state and designer edits.
+     * Creates an implementation-ready prescription record from the current state-description edits.
      *
      * @returns {Object|null}
      */
-    function createStateDescriptionDesignRecord() {
+    function createStateDescriptionPrescriptionRecord() {
       const snapshot = captureDesignSnapshot();
       if ( !snapshot ) {
         return null;
       }
 
       return {
-        schemaVersion: 1,
-        type: 'stateDescriptionDesign',
+        schemaVersion: PRESCRIPTION_SCHEMA_VERSION,
+        type: 'stateDescriptionPrescriptions',
         timestamp: new Date().toISOString(),
         sim: getSimMetadata(),
-        screenshot: snapshot.screenshot,
-        accessibleViewState: snapshot.accessibleViewState,
-        pdom: {
-          text: snapshot.pdomText,
-          developmentText: snapshot.pdomDevelopmentText
-        },
-        visibleText: snapshot.visibleText,
-        edits: getEditedDescriptionPrescriptions()
+        stateContext: formatStateContext( snapshot ),
+        prescriptions: getEditedDescriptionPrescriptions()
       };
     }
 
     /**
-     * Creates a context-response design record from a response and before/after snapshots.
+     * Creates a response prescription record from a response and before/after snapshots.
      *
      * @param {Object|null} beforeSnapshot
      * @param {Object} afterSnapshot
-     * @param {string} responseText
+     * @param {string} beforeText
      * @param {string} category
+     * @param {string} operation
+     * @param {string} prescribedText
      * @returns {Object}
      */
-    function createContextResponseDesignRecord( beforeSnapshot, afterSnapshot, responseText, category ) {
+    function createContextResponsePrescriptionRecord( beforeSnapshot, afterSnapshot, beforeText, category, operation, prescribedText ) {
       return {
-        schemaVersion: 1,
-        type: 'contextResponseDesign',
+        schemaVersion: PRESCRIPTION_SCHEMA_VERSION,
+        type: 'contextResponsePrescription',
         timestamp: new Date().toISOString(),
         sim: getSimMetadata(),
-        before: formatResponseSnapshot( beforeSnapshot ),
-        after: formatResponseSnapshot( afterSnapshot ),
+        stateDelta: createStateDelta( beforeSnapshot, afterSnapshot ),
         response: {
+          operation: operation,
           category: category,
-          beforeText: responseText,
-          prescribedText: responseText
+          beforeText: beforeText,
+          prescribedText: prescribedText
         }
       };
     }
 
     /**
-     * Captures the wrapper's current design-relevant state.
+     * Captures the wrapper's current design-relevant state. This intentionally omits screenshots; daemon-backed disk
+     * capture can add those later without bloating Codex-ready prescriptions.
      *
      * @returns {Object|null}
      */
@@ -3205,7 +3545,6 @@
       }
 
       return {
-        screenshot: captureScreenshotDataURL( innerWindow ),
         accessibleViewState: getAccessibleViewStateValue( innerWindow ),
         pdomText: getElementTextSnapshot( pdomRoot ),
         pdomDevelopmentText: buildDevelopmentViewSnapshot( viewContainers[ VIEW_MODES.DEVELOPMENT ] ),
@@ -3213,40 +3552,6 @@
         focus: getFocusMetadata( innerWindow ),
         recentResponses: designState.recentResponses.slice( -10 )
       };
-    }
-
-    /**
-     * Captures the visible sim using Joist's ScreenshotGenerator when available.
-     *
-     * @param {Window} innerWindow
-     * @returns {string|null}
-     */
-    function captureScreenshotDataURL( innerWindow ) {
-      try {
-        const sim = getSim( innerWindow );
-        const generator = innerWindow &&
-                          innerWindow.phet &&
-                          innerWindow.phet.joist &&
-                          innerWindow.phet.joist.ScreenshotGenerator;
-        if ( sim && generator && typeof generator.generateScreenshot === 'function' ) {
-          return generator.generateScreenshot( sim );
-        }
-      }
-      catch( e ) {
-        // fall through to canvas fallback
-      }
-
-      try {
-        const canvas = innerWindow.document.querySelector( 'canvas' );
-        if ( canvas && typeof canvas.toDataURL === 'function' ) {
-          return canvas.toDataURL( 'image/png' );
-        }
-      }
-      catch( e ) {
-        // best-effort capture only
-      }
-
-      return null;
     }
 
     /**
@@ -3427,28 +3732,176 @@
     }
 
     /**
-     * Converts a full snapshot into the context response before/after shape.
+     * Formats a compact state context for state-description prescriptions.
      *
-     * @param {Object|null} snapshot
+     * @param {Object} snapshot
      * @returns {Object}
      */
-    function formatResponseSnapshot( snapshot ) {
-      if ( !snapshot ) {
-        return {
-          screenshot: null,
-          accessibleViewState: null,
-          pdomText: '',
-          visibleText: [],
-          focus: {}
-        };
+    function formatStateContext( snapshot ) {
+      return {
+        focus: snapshot.focus,
+        pdomText: truncateText( snapshot.pdomText || '', 4000 ),
+        developmentText: truncateText( snapshot.pdomDevelopmentText || '', 4000 ),
+        visibleText: snapshot.visibleText.slice( 0, 80 ),
+        accessibleViewStateSummary: createAccessibleViewStateSummary( snapshot.accessibleViewState )
+      };
+    }
+
+    /**
+     * Creates a compact before/after diff for context-response implementation.
+     *
+     * @param {Object|null} beforeSnapshot
+     * @param {Object|null} afterSnapshot
+     * @returns {Object}
+     */
+    function createStateDelta( beforeSnapshot, afterSnapshot ) {
+      return {
+        focus: {
+          before: beforeSnapshot ? beforeSnapshot.focus : {},
+          after: afterSnapshot ? afterSnapshot.focus : {}
+        },
+        accessibleViewStateChangedPaths: createObjectDiff( beforeSnapshot && beforeSnapshot.accessibleViewState, afterSnapshot && afterSnapshot.accessibleViewState, 80 ),
+        pdomTextAdded: diffTextTokens( beforeSnapshot ? beforeSnapshot.pdomText : '', afterSnapshot ? afterSnapshot.pdomText : '' ).added,
+        pdomTextRemoved: diffTextTokens( beforeSnapshot ? beforeSnapshot.pdomText : '', afterSnapshot ? afterSnapshot.pdomText : '' ).removed,
+        visibleTextAdded: diffVisibleText( beforeSnapshot ? beforeSnapshot.visibleText : [], afterSnapshot ? afterSnapshot.visibleText : [] ).added,
+        visibleTextRemoved: diffVisibleText( beforeSnapshot ? beforeSnapshot.visibleText : [], afterSnapshot ? afterSnapshot.visibleText : [] ).removed
+      };
+    }
+
+    /**
+     * Creates a shallow summary of accessible view state keys and short primitive values.
+     *
+     * @param {Object|null} accessibleViewState
+     * @returns {Object|null}
+     */
+    function createAccessibleViewStateSummary( accessibleViewState ) {
+      if ( !accessibleViewState || typeof accessibleViewState !== 'object' ) {
+        return accessibleViewState || null;
       }
 
+      const summary = {};
+      Object.keys( accessibleViewState ).slice( 0, 40 ).forEach( key => {
+        const value = accessibleViewState[ key ];
+        summary[ key ] = typeof value === 'string' ? truncateText( value, 240 ) :
+                         typeof value === 'number' || typeof value === 'boolean' || value === null ? value :
+                         Array.isArray( value ) ? `[array:${value.length}]` :
+                         typeof value === 'object' ? `[object:${Object.keys( value ).length}]` :
+                         String( value );
+      } );
+      return summary;
+    }
+
+    /**
+     * Computes changed primitive/object paths between two objects.
+     *
+     * @param {*} beforeValue
+     * @param {*} afterValue
+     * @param {number} limit
+     * @param {string} path
+     * @returns {Object[]}
+     */
+    function createObjectDiff( beforeValue, afterValue, limit, path = '' ) {
+      const diffs = [];
+      appendObjectDiffs( diffs, beforeValue, afterValue, limit, path );
+      return diffs;
+    }
+
+    /**
+     * Recursive implementation for createObjectDiff.
+     *
+     * @param {Object[]} diffs
+     * @param {*} beforeValue
+     * @param {*} afterValue
+     * @param {number} limit
+     * @param {string} path
+     */
+    function appendObjectDiffs( diffs, beforeValue, afterValue, limit, path ) {
+      if ( diffs.length >= limit ) {
+        return;
+      }
+      if ( JSON.stringify( beforeValue ) === JSON.stringify( afterValue ) ) {
+        return;
+      }
+      const beforeIsObject = beforeValue && typeof beforeValue === 'object';
+      const afterIsObject = afterValue && typeof afterValue === 'object';
+      if ( !beforeIsObject || !afterIsObject || Array.isArray( beforeValue ) || Array.isArray( afterValue ) ) {
+        diffs.push( {
+          path: path || '$',
+          before: compactDiffValue( beforeValue ),
+          after: compactDiffValue( afterValue )
+        } );
+        return;
+      }
+
+      const keys = Array.from( new Set( [ ...Object.keys( beforeValue ), ...Object.keys( afterValue ) ] ) ).sort();
+      keys.forEach( key => {
+        appendObjectDiffs( diffs, beforeValue[ key ], afterValue[ key ], limit, path ? `${path}.${key}` : key );
+      } );
+    }
+
+    /**
+     * Compacts a value for state diffs.
+     *
+     * @param {*} value
+     * @returns {*}
+     */
+    function compactDiffValue( value ) {
+      if ( typeof value === 'string' ) {
+        return truncateText( value, 300 );
+      }
+      if ( Array.isArray( value ) ) {
+        return value.slice( 0, 8 ).map( compactDiffValue );
+      }
+      if ( value && typeof value === 'object' ) {
+        return truncateText( JSON.stringify( value ), 500 );
+      }
+      return typeof value === 'undefined' ? null : value;
+    }
+
+    /**
+     * Computes added and removed sentence-like chunks between two text snapshots.
+     *
+     * @param {string} beforeText
+     * @param {string} afterText
+     * @returns {{ added: string[], removed: string[] }}
+     */
+    function diffTextTokens( beforeText, afterText ) {
+      const beforeTokens = tokenizeSnapshotText( beforeText );
+      const afterTokens = tokenizeSnapshotText( afterText );
+      const beforeSet = new Set( beforeTokens );
+      const afterSet = new Set( afterTokens );
       return {
-        screenshot: snapshot.screenshot,
-        accessibleViewState: snapshot.accessibleViewState,
-        pdomText: snapshot.pdomText,
-        visibleText: snapshot.visibleText,
-        focus: snapshot.focus
+        added: afterTokens.filter( token => !beforeSet.has( token ) ).slice( 0, 40 ),
+        removed: beforeTokens.filter( token => !afterSet.has( token ) ).slice( 0, 40 )
+      };
+    }
+
+    /**
+     * Splits snapshot text into reusable sentence-ish chunks.
+     *
+     * @param {string} text
+     * @returns {string[]}
+     */
+    function tokenizeSnapshotText( text ) {
+      return ( text || '' )
+        .split( /(?<=[.!?])\s+|\n+/ )
+        .map( token => token.replace( /\s+/g, ' ' ).trim() )
+        .filter( token => token.length > 0 && token.length < 500 );
+    }
+
+    /**
+     * Diffs visible Scenery text entries by their text.
+     *
+     * @param {Object[]} beforeVisibleText
+     * @param {Object[]} afterVisibleText
+     * @returns {{ added: Object[], removed: Object[] }}
+     */
+    function diffVisibleText( beforeVisibleText, afterVisibleText ) {
+      const beforeTexts = new Set( beforeVisibleText.map( entry => entry.text ) );
+      const afterTexts = new Set( afterVisibleText.map( entry => entry.text ) );
+      return {
+        added: afterVisibleText.filter( entry => !beforeTexts.has( entry.text ) ).slice( 0, 40 ),
+        removed: beforeVisibleText.filter( entry => !afterTexts.has( entry.text ) ).slice( 0, 40 )
       };
     }
 
@@ -3461,7 +3914,25 @@
       return Array.from( designState.editRegistry.values() )
         .filter( edit => edit.edited )
         .map( edit => {
+          if ( edit.operation === 'insertBefore' || edit.operation === 'insertAfter' ) {
+            return {
+              operation: edit.operation,
+              anchorLocator: edit.anchorLocator,
+              nearbyText: edit.anchorLocator && edit.anchorLocator.textExcerpt || '',
+              prescribedText: edit.prescribedText
+            };
+          }
+
+          if ( edit.operation === 'deleteText' ) {
+            return {
+              operation: 'deleteText',
+              locator: edit.locator,
+              beforeText: edit.beforeText
+            };
+          }
+
           return {
+            operation: 'replaceText',
             locator: edit.locator,
             beforeText: edit.beforeText,
             prescribedText: edit.prescribedText
@@ -3474,7 +3945,7 @@
      */
     function downloadDesignSessionJSONL() {
       const records = [
-        ...designState.capturedRecords,
+        ...designState.prescriptionRecords,
         ...designState.responseDesigns.map( design => design.record )
       ];
       const jsonl = records.map( record => JSON.stringify( record ) ).join( '\n' );
@@ -3487,6 +3958,107 @@
       link.click();
       document.body.removeChild( link );
       URL.revokeObjectURL( url );
+    }
+
+    /**
+     * Downloads a Markdown prompt suitable for Codex or codex exec.
+     */
+    function downloadCodexPrompt() {
+      const prompt = createCodexPrompt();
+      const blob = new Blob( [ prompt ], { type: 'text/markdown' } );
+      const url = URL.createObjectURL( blob );
+      const link = document.createElement( 'a' );
+      link.href = url;
+      link.download = `description-prescriptions-codex-${new Date().toISOString().replace( /[:.]/g, '-' )}.md`;
+      document.body.appendChild( link );
+      link.click();
+      document.body.removeChild( link );
+      URL.revokeObjectURL( url );
+    }
+
+    /**
+     * Creates a compact Codex implementation prompt from all captured prescriptions.
+     *
+     * @returns {string}
+     */
+    function createCodexPrompt() {
+      const records = [
+        ...designState.prescriptionRecords,
+        ...designState.responseDesigns.map( design => design.record )
+      ];
+      const simMetadata = getSimMetadata();
+      const lines = [
+        `Implement these accessibility description prescriptions in ${simMetadata.repo || 'the current sim'}.`,
+        '',
+        'Constraints:',
+        '- Preserve existing PhET i18n/string patterns.',
+        '- Add or update strings in the appropriate sim strings file.',
+        '- Use existing describer, Core Description, and accessible response patterns.',
+        '- For context responses, prefer component accessibleContextResponse options when appropriate; otherwise use addAccessibleContextResponse at the interaction point.',
+        '- Run npm run check -- --fix --skip-phet-io-compare-api.',
+        '',
+        'Prescriptions:'
+      ];
+
+      records.forEach( ( record, recordIndex ) => {
+        lines.push( '', `${recordIndex + 1}. ${formatRecordHeading( record )}` );
+
+        if ( record.type === 'stateDescriptionPrescriptions' ) {
+          record.prescriptions.forEach( ( prescription, prescriptionIndex ) => {
+            lines.push( `   ${recordIndex + 1}.${prescriptionIndex + 1}. Operation: ${prescription.operation}` );
+            appendPrescriptionLines( lines, prescription, '      ' );
+          } );
+        }
+        else if ( record.type === 'contextResponsePrescription' ) {
+          lines.push( `   Operation: ${record.response.operation}` );
+          lines.push( `   Category: ${record.response.category}` );
+          if ( record.response.beforeText ) {
+            lines.push( `   Current response: ${record.response.beforeText}` );
+          }
+          lines.push( `   Prescribed response: ${record.response.prescribedText}` );
+          lines.push( '   State delta:' );
+          lines.push( `      ${JSON.stringify( record.stateDelta, null, 2 ).replace( /\n/g, '\n      ' )}` );
+        }
+      } );
+
+      return `${lines.join( '\n' )}\n`;
+    }
+
+    /**
+     * Formats a record heading for the Codex prompt.
+     *
+     * @param {Object} record
+     * @returns {string}
+     */
+    function formatRecordHeading( record ) {
+      const sim = record.sim || {};
+      const screen = sim.screenName ? `${sim.screenName} (${sim.screenIndex})` : `screen ${sim.screenIndex === null ? '?' : sim.screenIndex}`;
+      return `${record.type} - ${sim.repo || 'unknown repo'} - ${screen}`;
+    }
+
+    /**
+     * Appends Markdown lines for one state-description prescription.
+     *
+     * @param {string[]} lines
+     * @param {Object} prescription
+     * @param {string} indent
+     */
+    function appendPrescriptionLines( lines, prescription, indent ) {
+      if ( prescription.locator ) {
+        lines.push( `${indent}Locator: ${JSON.stringify( prescription.locator )}` );
+      }
+      if ( prescription.anchorLocator ) {
+        lines.push( `${indent}Anchor locator: ${JSON.stringify( prescription.anchorLocator )}` );
+      }
+      if ( prescription.nearbyText ) {
+        lines.push( `${indent}Nearby text: ${prescription.nearbyText}` );
+      }
+      if ( prescription.beforeText ) {
+        lines.push( `${indent}Current text: ${prescription.beforeText}` );
+      }
+      if ( prescription.prescribedText ) {
+        lines.push( `${indent}Prescribed text: ${prescription.prescribedText}` );
+      }
     }
 
     /**
@@ -3636,7 +4208,7 @@
           return;
         }
 
-        const record = createContextResponseDesignRecord( beforeSnapshot, afterSnapshot, responseText, category );
+        const record = createContextResponsePrescriptionRecord( beforeSnapshot, afterSnapshot, responseText, category, 'replaceResponse', responseText );
         const design = {
           id: `response-design-${designState.responseDesigns.length + 1}`,
           record: record,
@@ -3878,7 +4450,7 @@
     /**
      * Collects frequently accessed DOM nodes for later use.
      *
-     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, captureDesignButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignList: HTMLElement|null }}
+     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, captureDesignButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
      */
     function createDomReferences() {
       return {
@@ -3895,9 +4467,15 @@
         designModeCheckbox: document.getElementById( 'design-mode-checkbox' ),
         captureDesignButton: document.getElementById( 'capture-design-button' ),
         downloadJsonlButton: document.getElementById( 'download-jsonl-button' ),
+        downloadCodexPromptButton: document.getElementById( 'download-codex-prompt-button' ),
         staleEditsContainer: document.getElementById( 'stale-edits-container' ),
         staleEditsList: document.getElementById( 'stale-edits-list' ),
-        responseDesignList: document.getElementById( 'response-design-list' )
+        responseDesignList: document.getElementById( 'response-design-list' ),
+        manualContextBeforeButton: document.getElementById( 'manual-context-before-button' ),
+        manualContextAfterButton: document.getElementById( 'manual-context-after-button' ),
+        manualContextAddButton: document.getElementById( 'manual-context-add-button' ),
+        manualContextResponseInput: document.getElementById( 'manual-context-response-input' ),
+        manualContextResponseStatus: document.getElementById( 'manual-context-response-status' )
       };
     }
 
