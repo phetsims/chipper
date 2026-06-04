@@ -975,6 +975,7 @@
       frozenPDOMRoot: null,
       frozenSnapshot: null,
       innerWindow: null,
+      simFreezeController: null,
       editRegistry: new Map(),
       activeLocatorKeys: new Set(),
       liveFormattedDocument: null,
@@ -1276,6 +1277,7 @@
         designState.isFrozen = false;
         designState.frozenPDOMRoot = null;
         designState.frozenSnapshot = null;
+        updateSimFreezeState();
         if ( designState.formattedDocumentDraft ) {
           designState.formattedDocumentDraft.active = false;
         }
@@ -1290,6 +1292,7 @@
       }
 
       designState.isFrozen = true;
+      updateSimFreezeState();
       designState.frozenPDOMRoot = designState.pdomRoot.cloneNode( true );
       rerenderCurrentPDOMViews();
       designState.frozenSnapshot = captureDesignSnapshot( designState.frozenPDOMRoot );
@@ -1298,6 +1301,84 @@
         domReferences.accessibleViewStateCode
       );
       updateFreezeControls();
+    }
+
+    /**
+     * Installs a wrapper-level freeze controller for the iframe sim. This freezes clock-driven sim updates without
+     * changing sim.activeProperty or sim-specific play/pause state, since those can affect the state descriptions being
+     * designed.
+     *
+     * @param {Object} sim
+     */
+    function installSimFreezeController( sim ) {
+      if ( !sim || typeof sim.stepOneFrame !== 'function' ) {
+        designState.simFreezeController = null;
+        return;
+      }
+
+      if ( sim.__descriptionWrapperFreezeController ) {
+        designState.simFreezeController = sim.__descriptionWrapperFreezeController;
+        updateSimFreezeState();
+        return;
+      }
+
+      const originalStepOneFrame = sim.stepOneFrame.bind( sim );
+      let frozen = false;
+      let previousDisplayInteractive = null;
+
+      const controller = {
+        setFrozen( frozenValue ) {
+          if ( frozen === frozenValue ) {
+            return;
+          }
+
+          frozen = frozenValue;
+
+          if ( frozen ) {
+            previousDisplayInteractive = sim.display ? sim.display.interactive : null;
+            if ( sim.display ) {
+              sim.display.interactive = false;
+            }
+          }
+          else {
+            if ( sim.display && previousDisplayInteractive !== null ) {
+              sim.display.interactive = previousDisplayInteractive;
+            }
+            previousDisplayInteractive = null;
+
+            // Avoid a large dt on the first live frame after unfreezing.
+            if ( 'lastStepTime' in sim ) {
+              sim.lastStepTime = null;
+            }
+          }
+        }
+      };
+
+      sim.stepOneFrame = function() {
+        if ( frozen ) {
+
+          // Keep Sim.stepOneFrame's private clock fresh while frozen so unfreezing resumes smoothly.
+          if ( 'lastStepTime' in sim ) {
+            sim.lastStepTime = Date.now();
+          }
+          return;
+        }
+
+        originalStepOneFrame();
+      };
+
+      sim.__descriptionWrapperFreezeController = controller;
+      designState.simFreezeController = controller;
+      updateSimFreezeState();
+    }
+
+    /**
+     * Synchronizes the iframe sim freeze with the design-mode frozen state.
+     */
+    function updateSimFreezeState() {
+      if ( designState.simFreezeController ) {
+        designState.simFreezeController.setFrozen( designState.isFrozen );
+      }
     }
 
     /**
@@ -4081,11 +4162,13 @@
         designState.frozenPDOMRoot = null;
         designState.frozenSnapshot = null;
         designState.liveFormattedDocument = null;
+        designState.simFreezeController = null;
         if ( designState.formattedDocumentDraft ) {
           designState.formattedDocumentDraft.active = false;
         }
         designState.pdomRoot = PDOMRoot;
         designState.innerWindow = innerWindow;
+        installSimFreezeController( phetNamespace.joist.sim );
         updateFreezeControls();
 
         const ariaLiveElementsContainer = phetNamespace.joist.sim.display.descriptionUtteranceQueue.announcer.ariaLiveContainer;
