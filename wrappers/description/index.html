@@ -246,7 +246,6 @@
     }
 
     .design-toolbar button,
-    .design-inline-actions button,
     .manual-context-response-controls button,
     .response-design-item button {
       border: 1px solid #8ca8c9;
@@ -260,8 +259,6 @@
 
     .design-toolbar button:hover,
     .design-toolbar button:focus-visible,
-    .design-inline-actions button:hover,
-    .design-inline-actions button:focus-visible,
     .manual-context-response-controls button:hover,
     .manual-context-response-controls button:focus-visible,
     .response-design-item button:hover,
@@ -304,14 +301,12 @@
     }
 
     .design-editable-text,
-    .design-inserted-text,
     .response-design-editable {
       border-radius: 0.25em;
       padding: 0.05em 0.15em;
     }
 
     .design-editable-text[contenteditable="true"],
-    .design-inserted-text[contenteditable="true"],
     .response-design-editable[contenteditable="true"] {
       background: #fffdf2;
       box-shadow: inset 0 0 0 1px rgba(196, 154, 38, 0.45);
@@ -330,34 +325,10 @@
       outline-offset: 2px;
     }
 
-    .design-prescription-unit {
-      display: inline;
-    }
-
-    .design-inline-actions {
-      display: inline-flex;
-      gap: 0.25em;
-      margin: 0 0.25em;
-      vertical-align: baseline;
-    }
-
-    .design-inline-actions button {
-      padding: 0.1em 0.35em;
-      font-size: 0.78em;
-      line-height: 1.2;
-    }
-
-    .design-inserted-text {
-      display: inline-block;
-      min-width: 8em;
-      margin: 0 0.2em;
-      background: #eef9e8;
-      box-shadow: inset 0 0 0 2px #71a95a;
-    }
-
-    .design-deleted-text {
-      text-decoration: line-through;
-      opacity: 0.65;
+    .dom-view[data-view="formatted"][contenteditable="true"] {
+      outline: 3px solid rgba(20, 110, 188, 0.32);
+      outline-offset: 0.25em;
+      cursor: text;
     }
 
     .stale-edits-container,
@@ -1151,13 +1122,13 @@
       innerWindow: null,
       editRegistry: new Map(),
       activeLocatorKeys: new Set(),
+      formattedDocumentDraft: null,
       responseDesigns: [],
       recentResponses: [],
       lastPreInteractionSnapshot: null,
       lastPreInteractionTimestamp: 0,
       manualContextBeforeSnapshot: null,
-      manualContextAfterSnapshot: null,
-      pendingFocusPrescriptionId: null
+      manualContextAfterSnapshot: null
     };
 
     const domReferences = createDomReferences();
@@ -1747,11 +1718,82 @@
         }
 
         container.appendChild( fragment );
+        configureFormattedDocumentEditor( container );
         updateStaleEditSection();
       }
       finally {
         relatedGroupWrappers = null;
       }
+    }
+
+    /**
+     * Configures the formatted view as a single document-editing surface and captures a baseline for diff export.
+     *
+     * @param {HTMLElement} container
+     */
+    function configureFormattedDocumentEditor( container ) {
+      const renderedHTML = container.innerHTML;
+      const renderedText = getFormattedDocumentText( container );
+      const draft = designState.formattedDocumentDraft;
+
+      if ( draft && draft.edited ) {
+        container.innerHTML = draft.editedHTML;
+      }
+      else {
+        designState.formattedDocumentDraft = {
+          baselineText: renderedText,
+          baselineHTML: renderedHTML,
+          editedText: renderedText,
+          editedHTML: renderedHTML,
+          edited: false
+        };
+      }
+
+      container.contentEditable = designState.designModeEnabled ? 'true' : 'false';
+      container.spellcheck = designState.designModeEnabled;
+      container.oninput = () => updateFormattedDocumentDraft( container );
+    }
+
+    /**
+     * Updates the document-level state-description draft after the designer edits the formatted view.
+     *
+     * @param {HTMLElement} container
+     */
+    function updateFormattedDocumentDraft( container ) {
+      let draft = designState.formattedDocumentDraft;
+      if ( !draft ) {
+        const text = getFormattedDocumentText( container );
+        draft = {
+          baselineText: text,
+          baselineHTML: container.innerHTML,
+          editedText: text,
+          editedHTML: container.innerHTML,
+          edited: false
+        };
+        designState.formattedDocumentDraft = draft;
+      }
+
+      draft.editedText = getFormattedDocumentText( container );
+      draft.editedHTML = container.innerHTML;
+      draft.edited = draft.editedText !== draft.baselineText;
+    }
+
+    /**
+     * Extracts normalized text from the formatted document editor.
+     *
+     * @param {HTMLElement|null} container
+     * @returns {string}
+     */
+    function getFormattedDocumentText( container ) {
+      if ( !container ) {
+        return '';
+      }
+      const text = container.innerText || container.textContent || '';
+      return text.replace( /\u00a0/g, ' ' )
+        .split( /\n+/ )
+        .map( line => line.replace( /\s+/g, ' ' ).trim() )
+        .filter( line => line.length > 0 )
+        .join( '\n' );
     }
 
     /**
@@ -2176,227 +2218,11 @@
       const locatorKey = getLocatorKey( locator );
       designState.activeLocatorKeys.add( locatorKey );
 
-      const editEntry = designState.editRegistry.get( locatorKey );
-      const displayedText = editEntry && editEntry.edited && editEntry.operation !== 'deleteText' ? editEntry.prescribedText : currentText;
       const span = document.createElement( 'span' );
       span.className = className;
-      span.textContent = displayedText;
+      span.textContent = currentText;
       span.dataset.locatorKey = locatorKey;
-      span.contentEditable = designState.designModeEnabled && !( editEntry && editEntry.operation === 'deleteText' ) ? 'true' : 'false';
-
-      if ( editEntry && editEntry.edited ) {
-        span.classList.add( 'design-edited' );
-      }
-      if ( editEntry && editEntry.operation === 'deleteText' ) {
-        span.classList.add( 'design-deleted-text' );
-      }
-
-      const freezeEdit = () => {
-        let entry = designState.editRegistry.get( locatorKey );
-        if ( !entry ) {
-          entry = {
-            operation: 'replaceText',
-            locator: locator,
-            beforeText: currentText,
-            prescribedText: span.textContent || '',
-            edited: true
-          };
-          designState.editRegistry.set( locatorKey, entry );
-        }
-        else {
-          entry.operation = 'replaceText';
-          entry.edited = true;
-          entry.prescribedText = span.textContent || '';
-        }
-        span.classList.add( 'design-edited' );
-        updateStaleEditSection();
-      };
-
-      span.addEventListener( 'focus', freezeEdit );
-      span.addEventListener( 'input', () => {
-        freezeEdit();
-        const entry = designState.editRegistry.get( locatorKey );
-        if ( entry ) {
-          entry.prescribedText = span.textContent || '';
-        }
-      } );
-
-      const insertionsBefore = getInsertionEntriesForAnchor( locatorKey, 'insertBefore' );
-      const insertionsAfter = getInsertionEntriesForAnchor( locatorKey, 'insertAfter' );
-      if ( !designState.designModeEnabled && insertionsBefore.length === 0 && insertionsAfter.length === 0 ) {
-        return span;
-      }
-
-      const unit = document.createElement( 'span' );
-      unit.className = 'design-prescription-unit';
-      appendInsertionEntries( unit, insertionsBefore );
-      if ( designState.designModeEnabled ) {
-        unit.appendChild( createInlineActions( locator, locatorKey, currentText, 'before' ) );
-      }
-      unit.appendChild( span );
-      if ( designState.designModeEnabled ) {
-        unit.appendChild( createInlineActions( locator, locatorKey, currentText, 'after' ) );
-      }
-      appendInsertionEntries( unit, insertionsAfter );
-      return unit;
-    }
-
-    /**
-     * Creates inline controls for adding or deleting text prescriptions around an anchor.
-     *
-     * @param {Object} locator
-     * @param {string} locatorKey
-     * @param {string} currentText
-     * @param {string} position
-     * @returns {HTMLElement}
-     */
-    function createInlineActions( locator, locatorKey, currentText, position ) {
-      const actions = document.createElement( 'span' );
-      actions.className = 'design-inline-actions';
-
-      const addButton = document.createElement( 'button' );
-      addButton.type = 'button';
-      addButton.textContent = '+';
-      addButton.title = position === 'before' ? 'Insert text before' : 'Insert text after';
-      addButton.setAttribute( 'aria-label', addButton.title );
-      addButton.addEventListener( 'click', event => {
-        event.preventDefault();
-        createInsertionPrescription( locator, locatorKey, position === 'before' ? 'insertBefore' : 'insertAfter' );
-      } );
-      actions.appendChild( addButton );
-
-      if ( position === 'after' ) {
-        const deleteButton = document.createElement( 'button' );
-        deleteButton.type = 'button';
-        deleteButton.textContent = '⌫';
-        deleteButton.title = 'Delete text';
-        deleteButton.setAttribute( 'aria-label', deleteButton.title );
-        deleteButton.addEventListener( 'click', event => {
-          event.preventDefault();
-          toggleDeletePrescription( locator, locatorKey, currentText );
-        } );
-        actions.appendChild( deleteButton );
-      }
-
-      return actions;
-    }
-
-    /**
-     * Creates a new insertion prescription anchored to an existing PDOM locator.
-     *
-     * @param {Object} anchorLocator
-     * @param {string} anchorLocatorKey
-     * @param {string} operation
-     */
-    function createInsertionPrescription( anchorLocator, anchorLocatorKey, operation ) {
-      const prescriptionId = `${operation}:${anchorLocatorKey}:${Date.now()}`;
-      designState.editRegistry.set( prescriptionId, {
-        id: prescriptionId,
-        operation: operation,
-        anchorLocator: anchorLocator,
-        anchorLocatorKey: anchorLocatorKey,
-        beforeText: '',
-        prescribedText: 'New text',
-        edited: true
-      } );
-      designState.pendingFocusPrescriptionId = prescriptionId;
-      rerenderCurrentPDOMViews();
-    }
-
-    /**
-     * Toggles a delete prescription for an existing PDOM locator.
-     *
-     * @param {Object} locator
-     * @param {string} locatorKey
-     * @param {string} currentText
-     */
-    function toggleDeletePrescription( locator, locatorKey, currentText ) {
-      const existing = designState.editRegistry.get( locatorKey );
-      if ( existing && existing.operation === 'deleteText' ) {
-        designState.editRegistry.delete( locatorKey );
-      }
-      else {
-        designState.editRegistry.set( locatorKey, {
-          operation: 'deleteText',
-          locator: locator,
-          beforeText: currentText,
-          prescribedText: '',
-          edited: true
-        } );
-      }
-      rerenderCurrentPDOMViews();
-    }
-
-    /**
-     * Returns insertion prescriptions for a rendered anchor.
-     *
-     * @param {string} anchorLocatorKey
-     * @param {string} operation
-     * @returns {Object[]}
-     */
-    function getInsertionEntriesForAnchor( anchorLocatorKey, operation ) {
-      return Array.from( designState.editRegistry.values() ).filter( entry => {
-        return entry.edited && entry.operation === operation && entry.anchorLocatorKey === anchorLocatorKey;
-      } );
-    }
-
-    /**
-     * Appends rendered insertion prescriptions to a prescription unit.
-     *
-     * @param {HTMLElement} parent
-     * @param {Object[]} entries
-     */
-    function appendInsertionEntries( parent, entries ) {
-      entries.forEach( entry => {
-        const inserted = document.createElement( 'span' );
-        inserted.className = 'design-inserted-text design-edited';
-        inserted.contentEditable = designState.designModeEnabled ? 'true' : 'false';
-        inserted.textContent = entry.prescribedText;
-        inserted.addEventListener( 'input', () => {
-          entry.prescribedText = inserted.textContent || '';
-        } );
-        parent.appendChild( inserted );
-
-        if ( designState.pendingFocusPrescriptionId === entry.id ) {
-          setTimeout( () => {
-            inserted.focus();
-            selectElementContents( inserted );
-            designState.pendingFocusPrescriptionId = null;
-          }, 0 );
-        }
-
-        if ( designState.designModeEnabled ) {
-          const removeButton = document.createElement( 'button' );
-          removeButton.type = 'button';
-          removeButton.textContent = 'Remove';
-          removeButton.addEventListener( 'click', event => {
-            event.preventDefault();
-            designState.editRegistry.delete( entry.id );
-            rerenderCurrentPDOMViews();
-          } );
-
-          const actions = document.createElement( 'span' );
-          actions.className = 'design-inline-actions';
-          actions.appendChild( removeButton );
-          parent.appendChild( actions );
-        }
-      } );
-    }
-
-    /**
-     * Selects all text in a contenteditable element.
-     *
-     * @param {HTMLElement} element
-     */
-    function selectElementContents( element ) {
-      const selection = window.getSelection();
-      if ( !selection ) {
-        return;
-      }
-      const range = document.createRange();
-      range.selectNodeContents( element );
-      selection.removeAllRanges();
-      selection.addRange( range );
+      return span;
     }
 
     /**
@@ -3660,6 +3486,7 @@
         timestamp: new Date().toISOString(),
         sim: getSimMetadata(),
         stateContext: formatStateContext( snapshot ),
+        formattedViewEdit: getFormattedViewEditForExport(),
         prescriptions: getEditedDescriptionPrescriptions()
       };
     }
@@ -4084,6 +3911,125 @@
     }
 
     /**
+     * Gets the document-level formatted-view edit for export.
+     *
+     * @returns {Object|null}
+     */
+    function getFormattedViewEditForExport() {
+      const draft = designState.formattedDocumentDraft;
+      if ( !draft || !draft.edited ) {
+        return null;
+      }
+
+      return {
+        beforeText: truncateText( draft.baselineText, 12000 ),
+        afterText: truncateText( draft.editedText, 12000 ),
+        diff: createOrderedTextDiff( draft.baselineText, draft.editedText, 120 )
+      };
+    }
+
+    /**
+     * Creates an ordered text diff suitable for implementation prompts.
+     *
+     * @param {string} beforeText
+     * @param {string} afterText
+     * @param {number} limit
+     * @returns {Object[]}
+     */
+    function createOrderedTextDiff( beforeText, afterText, limit ) {
+      const beforeUnits = splitDocumentDiffUnits( beforeText );
+      const afterUnits = splitDocumentDiffUnits( afterText );
+
+      if ( beforeUnits.length * afterUnits.length > 40000 ) {
+        const tokenDiff = diffTextTokens( beforeText, afterText );
+        return [
+          ...tokenDiff.removed.map( text => ( { operation: 'remove', text: text } ) ),
+          ...tokenDiff.added.map( text => ( { operation: 'add', text: text } ) )
+        ].slice( 0, limit );
+      }
+
+      const table = [];
+      for ( let i = 0; i <= beforeUnits.length; i++ ) {
+        table[ i ] = new Array( afterUnits.length + 1 ).fill( 0 );
+      }
+
+      for ( let i = beforeUnits.length - 1; i >= 0; i-- ) {
+        for ( let j = afterUnits.length - 1; j >= 0; j-- ) {
+          table[ i ][ j ] = beforeUnits[ i ] === afterUnits[ j ] ?
+                            table[ i + 1 ][ j + 1 ] + 1 :
+                            Math.max( table[ i + 1 ][ j ], table[ i ][ j + 1 ] );
+        }
+      }
+
+      const diff = [];
+      let beforeIndex = 0;
+      let afterIndex = 0;
+      while ( beforeIndex < beforeUnits.length || afterIndex < afterUnits.length ) {
+        if ( beforeIndex < beforeUnits.length &&
+             afterIndex < afterUnits.length &&
+             beforeUnits[ beforeIndex ] === afterUnits[ afterIndex ] ) {
+          beforeIndex++;
+          afterIndex++;
+          continue;
+        }
+
+        if ( afterIndex >= afterUnits.length ||
+             ( beforeIndex < beforeUnits.length &&
+               table[ beforeIndex + 1 ][ afterIndex ] >= table[ beforeIndex ][ afterIndex + 1 ] ) ) {
+          appendDiffUnit( diff, 'remove', beforeUnits[ beforeIndex ] );
+          beforeIndex++;
+        }
+        else {
+          appendDiffUnit( diff, 'add', afterUnits[ afterIndex ] );
+          afterIndex++;
+        }
+
+        if ( diff.length >= limit ) {
+          break;
+        }
+      }
+
+      return diff;
+    }
+
+    /**
+     * Splits document text into stable diff units, preferring rendered lines and falling back to sentence-like chunks.
+     *
+     * @param {string} text
+     * @returns {string[]}
+     */
+    function splitDocumentDiffUnits( text ) {
+      const lines = ( text || '' )
+        .split( /\n+/ )
+        .map( line => line.replace( /\s+/g, ' ' ).trim() )
+        .filter( line => line.length > 0 );
+      return lines.length > 1 ? lines : tokenizeSnapshotText( text );
+    }
+
+    /**
+     * Adds a unit to a diff, merging adjacent operations of the same type.
+     *
+     * @param {Object[]} diff
+     * @param {string} operation
+     * @param {string} text
+     */
+    function appendDiffUnit( diff, operation, text ) {
+      if ( !text ) {
+        return;
+      }
+      const previous = diff[ diff.length - 1 ];
+      if ( previous && previous.operation === operation ) {
+        previous.text = `${previous.text}\n${text}`;
+      }
+      else {
+        diff.push( {
+          operation: operation,
+          text: text
+        } );
+      }
+    }
+
+    /**
      * Gets all edited state-description prescriptions for capture/export.
      *
      * @returns {Object[]}
@@ -4127,7 +4073,8 @@
       const records = [];
 
       const stateDescriptionRecord = createStateDescriptionPrescriptionRecord();
-      if ( stateDescriptionRecord && stateDescriptionRecord.prescriptions.length > 0 ) {
+      if ( stateDescriptionRecord &&
+           ( stateDescriptionRecord.prescriptions.length > 0 || stateDescriptionRecord.formattedViewEdit ) ) {
         records.push( stateDescriptionRecord );
       }
 
@@ -4183,10 +4130,12 @@
         '- Preserve existing PhET i18n/string patterns.',
         '- Add or update strings in the appropriate sim strings file.',
         '- Use existing describer, Core Description, and accessible response patterns.',
+        '- For formatted view edits, treat the edited rendered text and diff as the designer prescription for state descriptions.',
         '- For context responses, prefer component accessibleContextResponse options when appropriate; otherwise use addAccessibleContextResponse at the interaction point.',
         '- Run npm run check -- --fix --skip-phet-io-compare-api.',
         '- Generalize beyond what is provided -- the designer probably just specified one data point but it is your job to understand the intent and represent it in a way that covers similar cases.',
         '- Do not be fooled by "noise" in the state delta, other things may have happened, pay attention to the thing that relates to the prescribed message',
+        '- Ignore the directionaly markers ‪ and ‬ or <0x202a> or <0x202c>, they will be added automatically downstream.',
         '',
         'Prescriptions:'
       ];
@@ -4195,10 +4144,22 @@
         lines.push( '', `${recordIndex + 1}. ${formatRecordHeading( record )}` );
 
         if ( record.type === 'stateDescriptionPrescriptions' ) {
-          record.prescriptions.forEach( ( prescription, prescriptionIndex ) => {
-            lines.push( `   ${recordIndex + 1}.${prescriptionIndex + 1}. Operation: ${prescription.operation}` );
-            appendPrescriptionLines( lines, prescription, '      ' );
-          } );
+          if ( record.formattedViewEdit ) {
+            lines.push( '   Formatted view edit:' );
+            lines.push( '      Original rendered text:' );
+            lines.push( `      ${record.formattedViewEdit.beforeText.replace( /\n/g, '\n      ' )}` );
+            lines.push( '      Edited rendered text:' );
+            lines.push( `      ${record.formattedViewEdit.afterText.replace( /\n/g, '\n      ' )}` );
+            lines.push( '      Diff:' );
+            lines.push( `      ${JSON.stringify( record.formattedViewEdit.diff, null, 2 ).replace( /\n/g, '\n      ' )}` );
+          }
+
+          if ( record.prescriptions.length > 0 ) {
+            record.prescriptions.forEach( ( prescription, prescriptionIndex ) => {
+              lines.push( `   ${recordIndex + 1}.${prescriptionIndex + 1}. Operation: ${prescription.operation}` );
+              appendPrescriptionLines( lines, prescription, '      ' );
+            } );
+          }
         }
         else if ( record.type === 'contextResponsePrescription' ) {
           lines.push( `   Operation: ${record.response.operation}` );
@@ -4551,6 +4512,7 @@
         designState.isFrozen = false;
         designState.frozenPDOMRoot = null;
         designState.frozenSnapshot = null;
+        designState.formattedDocumentDraft = null;
         designState.pdomRoot = PDOMRoot;
         designState.innerWindow = innerWindow;
         updateFreezeControls();
