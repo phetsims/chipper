@@ -271,6 +271,38 @@
       outline-offset: 1px;
     }
 
+    .design-toolbar button[aria-pressed="true"] {
+      background: #173d66;
+      color: #ffffff;
+      border-color: #173d66;
+    }
+
+    .freeze-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
+      color: #526578;
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+
+    .freeze-status::before {
+      content: "";
+      display: inline-block;
+      width: 0.65em;
+      height: 0.65em;
+      border-radius: 50%;
+      background: #7a8793;
+    }
+
+    .freeze-status[data-frozen="true"] {
+      color: #173d66;
+    }
+
+    .freeze-status[data-frozen="true"]::before {
+      background: #146ebc;
+    }
+
     .design-editable-text,
     .design-inserted-text,
     .response-design-editable {
@@ -805,12 +837,13 @@
         <div id="pdom">
           <h3>State Descriptions</h3>
           <div class="dom_copy_container" role="presentation">
-            <div class="design-toolbar" role="group" aria-label="Design capture controls">
+            <div class="design-toolbar" role="group" aria-label="Design authoring controls">
               <label>
                 <input type="checkbox" id="design-mode-checkbox">
                 Design Mode
               </label>
-              <button id="capture-design-button" type="button">Capture Design</button>
+              <button id="freeze-design-button" type="button" aria-pressed="false">Freeze</button>
+              <span id="freeze-status" class="freeze-status" data-frozen="false">Live</span>
               <button id="download-jsonl-button" type="button">Download JSONL</button>
               <button id="download-codex-prompt-button" type="button">Download Codex Prompt</button>
             </div>
@@ -921,15 +954,15 @@
      */
     function formatRelationshipValue( value, element ) {
 
-      // Prefer the live PDOM root when available so we can resolve IDs even after sanitization in the development view.
-      const doc = RELATIONSHIP_LOOKUP_ROOT || ( element ? element.ownerDocument : document );
+      // Prefer the current PDOM root so frozen clones resolve relationships within the same frozen state.
+      const lookupRoot = RELATIONSHIP_LOOKUP_ROOT || ( element ? element.ownerDocument : document );
 
       return value.split( /\s+/ ).map( idref => {
         if ( !idref ) {
           return RELATIONSHIP_PLACEHOLDER;
         }
 
-        const target = doc.getElementById( idref );
+        const target = getElementByIdFromLookupRoot( lookupRoot, idref );
         if ( !target ) {
           return 'Missing!';
         }
@@ -943,6 +976,23 @@
 
         return RELATIONSHIP_PLACEHOLDER;
       } ).join( ' ' );
+    }
+
+    /**
+     * Finds an element by id in either a Document or a detached PDOM root clone.
+     *
+     * @param {Document|HTMLElement} lookupRoot
+     * @param {string} id
+     * @returns {HTMLElement|null}
+     */
+    function getElementByIdFromLookupRoot( lookupRoot, id ) {
+      if ( lookupRoot && typeof lookupRoot.getElementById === 'function' ) {
+        return lookupRoot.getElementById( id );
+      }
+      if ( lookupRoot && typeof lookupRoot.querySelector === 'function' ) {
+        return lookupRoot.querySelector( `[id="${id.replace( /\\/g, '\\\\' ).replace( /"/g, '\\"' )}"]` );
+      }
+      return null;
     }
 
     /**
@@ -1094,11 +1144,13 @@
     let currentFocusedElement = null;
     const designState = {
       designModeEnabled: false,
+      isFrozen: false,
       pdomRoot: null,
+      frozenPDOMRoot: null,
+      frozenSnapshot: null,
       innerWindow: null,
       editRegistry: new Map(),
       activeLocatorKeys: new Set(),
-      prescriptionRecords: [],
       responseDesigns: [],
       recentResponses: [],
       lastPreInteractionSnapshot: null,
@@ -1143,9 +1195,9 @@
      */
 
     /**
-     * Initializes Design Mode controls for editable descriptions, state capture, and JSONL export.
+     * Initializes Design Mode controls for editable descriptions, freeze, and export.
      *
-     * @param {{ designModeCheckbox: HTMLInputElement|null, captureDesignButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null }} domRefs
+     * @param {{ designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null }} domRefs
      */
     function initializeDesignControls( domRefs ) {
       designState.designModeEnabled = loadBooleanPreference( DESIGN_MODE_STORAGE_KEY, false );
@@ -1159,15 +1211,10 @@
         } );
       }
 
-      if ( domRefs.captureDesignButton ) {
-        domRefs.captureDesignButton.addEventListener( 'click', () => {
-          const record = createStateDescriptionPrescriptionRecord();
-          if ( record ) {
-            designState.prescriptionRecords.push( record );
-            console.log( JSON.stringify( record ) );
-          }
-        } );
+      if ( domRefs.freezeDesignButton ) {
+        domRefs.freezeDesignButton.addEventListener( 'click', toggleFreezeState );
       }
+      updateFreezeControls();
 
       if ( domRefs.downloadJsonlButton ) {
         domRefs.downloadJsonlButton.addEventListener( 'click', downloadDesignSessionJSONL );
@@ -1222,10 +1269,66 @@
      * Re-renders the mirrored PDOM views if a sim PDOM has already been connected.
      */
     function rerenderCurrentPDOMViews() {
-      if ( designState.pdomRoot ) {
-        renderViews( designState.pdomRoot, viewContainers, viewRenderers );
+      const renderedPDOMRoot = getRenderedPDOMRoot();
+      if ( renderedPDOMRoot ) {
+        renderViews( renderedPDOMRoot, viewContainers, viewRenderers );
         updateStaleEditSection();
       }
+    }
+
+    /**
+     * Toggles frozen rendering for state descriptions and accessible view state.
+     */
+    function toggleFreezeState() {
+      if ( designState.isFrozen ) {
+        designState.isFrozen = false;
+        designState.frozenPDOMRoot = null;
+        designState.frozenSnapshot = null;
+        updateFreezeControls();
+        rerenderCurrentPDOMViews();
+        renderAccessibleViewState( designState.innerWindow, domReferences.accessibleViewStateCode );
+        return;
+      }
+
+      if ( !designState.pdomRoot || !designState.innerWindow ) {
+        return;
+      }
+
+      designState.isFrozen = true;
+      designState.frozenPDOMRoot = designState.pdomRoot.cloneNode( true );
+      rerenderCurrentPDOMViews();
+      designState.frozenSnapshot = captureDesignSnapshot( designState.frozenPDOMRoot );
+      renderAccessibleViewStateValue(
+        designState.frozenSnapshot ? designState.frozenSnapshot.accessibleViewState : null,
+        domReferences.accessibleViewStateCode
+      );
+      updateFreezeControls();
+    }
+
+    /**
+     * Updates the freeze toggle label, pressed state, and compact status indicator.
+     */
+    function updateFreezeControls() {
+      const freezeButton = domReferences.freezeDesignButton;
+      if ( freezeButton ) {
+        freezeButton.textContent = designState.isFrozen ? 'Unfreeze' : 'Freeze';
+        freezeButton.setAttribute( 'aria-pressed', designState.isFrozen ? 'true' : 'false' );
+      }
+
+      const freezeStatus = domReferences.freezeStatus;
+      if ( freezeStatus ) {
+        freezeStatus.textContent = designState.isFrozen ? 'Frozen' : 'Live';
+        freezeStatus.setAttribute( 'data-frozen', designState.isFrozen ? 'true' : 'false' );
+      }
+    }
+
+    /**
+     * Gets the PDOM root that should currently drive state-description rendering and locator generation.
+     *
+     * @returns {HTMLElement|null}
+     */
+    function getRenderedPDOMRoot() {
+      return designState.frozenPDOMRoot || designState.pdomRoot;
     }
 
     /**
@@ -2492,7 +2595,8 @@
     function getElementPath( element ) {
       const parts = [];
       let current = element;
-      while ( current && current.nodeType === Node.ELEMENT_NODE && current !== designState.pdomRoot ) {
+      const pdomRoot = getRenderedPDOMRoot();
+      while ( current && current.nodeType === Node.ELEMENT_NODE && current !== pdomRoot ) {
         const parent = current.parentElement;
         const tagName = current.tagName.toLowerCase();
         const sameTagIndex = parent ?
@@ -2545,7 +2649,7 @@
     }
 
     /**
-     * Updates the stale edits section with frozen edits whose source locator is no longer in the live PDOM view.
+     * Updates the stale edits section with frozen edits whose source locator is no longer in the rendered PDOM view.
      */
     function updateStaleEditSection() {
       const container = domReferences.staleEditsContainer;
@@ -2959,6 +3063,37 @@
     }
 
     /**
+     * Builds a development-view text snapshot directly from a PDOM root without replacing the rendered pane.
+     *
+     * @param {HTMLElement} pdomRoot
+     * @returns {string}
+     */
+    function buildDevelopmentViewSnapshotForPDOMRoot( pdomRoot ) {
+      if ( !pdomRoot ) {
+        return '';
+      }
+
+      const previousDevelopmentLineLookup = developmentLineLookup;
+      const previousRelationshipLookupRoot = RELATIONSHIP_LOOKUP_ROOT;
+      const wrapper = document.createElement( 'div' );
+      wrapper.className = 'development-container';
+
+      RELATIONSHIP_LOOKUP_ROOT = pdomRoot;
+      developmentLineLookup = new Map();
+      try {
+        const workingCopy = pdomRoot.cloneNode( true );
+        annotateDevelopmentClone( pdomRoot, workingCopy );
+        sanitizeForDevelopmentView( workingCopy );
+        Array.from( workingCopy.children ).forEach( element => renderDevelopmentNode( element, wrapper, 0 ) );
+        return buildDevelopmentViewSnapshot( wrapper );
+      }
+      finally {
+        developmentLineLookup = previousDevelopmentLineLookup;
+        RELATIONSHIP_LOOKUP_ROOT = previousRelationshipLookupRoot;
+      }
+    }
+
+    /**
      * Converts the inline padding on development view rows to a text indentation depth.
      *
      * @param {HTMLElement} line
@@ -3325,8 +3460,8 @@
         return;
       }
 
-      // Make the live PDOM root available to relationship formatters while we render all views.
-      RELATIONSHIP_LOOKUP_ROOT = pdomRoot ? pdomRoot.ownerDocument : null;
+      // Make the current PDOM root available to relationship formatters while we render all views.
+      RELATIONSHIP_LOOKUP_ROOT = pdomRoot || null;
       try {
         const formattedRenderer = renderers[ VIEW_MODES.FORMATTED ];
         if ( typeof formattedRenderer === 'function' ) {
@@ -3378,14 +3513,7 @@
             if ( accessibleViewState === null || typeof accessibleViewState === 'undefined' ) {
               continue;
             }
-
-            const formattedState = JSON.stringify( accessibleViewState, null, 2 );
-            if ( typeof formattedState === 'string' ) {
-              container.innerHTML = syntaxHighlightJSON( formattedState );
-            }
-            else {
-              container.textContent = NO_ACCESSIBLE_VIEW_STATE_MESSAGE;
-            }
+            renderAccessibleViewStateValue( accessibleViewState, container );
             return;
           }
           catch( e ) {
@@ -3399,6 +3527,28 @@
       }
       catch( e ) {
         container.textContent = `Error reading accessible view state: ${e && e.message ? e.message : e}`;
+      }
+    }
+
+    /**
+     * Renders an accessible view state object as formatted JSON.
+     *
+     * @param {*} accessibleViewState
+     * @param {HTMLElement|null} container
+     */
+    function renderAccessibleViewStateValue( accessibleViewState, container ) {
+      if ( !container ) {
+        return;
+      }
+
+      const formattedState = accessibleViewState === null || typeof accessibleViewState === 'undefined' ?
+                             null :
+                             JSON.stringify( accessibleViewState, null, 2 );
+      if ( typeof formattedState === 'string' ) {
+        container.innerHTML = syntaxHighlightJSON( formattedState );
+      }
+      else {
+        container.textContent = NO_ACCESSIBLE_VIEW_STATE_MESSAGE;
       }
     }
 
@@ -3497,7 +3647,9 @@
      * @returns {Object|null}
      */
     function createStateDescriptionPrescriptionRecord() {
-      const snapshot = captureDesignSnapshot();
+      const snapshot = designState.isFrozen && designState.frozenSnapshot ?
+                       designState.frozenSnapshot :
+                       captureDesignSnapshot();
       if ( !snapshot ) {
         return null;
       }
@@ -3545,21 +3697,39 @@
      *
      * @returns {Object|null}
      */
-    function captureDesignSnapshot() {
-      const pdomRoot = designState.pdomRoot;
+    function captureDesignSnapshot( pdomRoot = designState.pdomRoot ) {
       const innerWindow = designState.innerWindow;
       if ( !pdomRoot || !innerWindow ) {
         return null;
       }
 
       return {
-        accessibleViewState: getAccessibleViewStateValue( innerWindow ),
+        accessibleViewState: cloneSnapshotValue( getAccessibleViewStateValue( innerWindow ) ),
         pdomText: getElementTextSnapshot( pdomRoot ),
-        pdomDevelopmentText: buildDevelopmentViewSnapshot( viewContainers[ VIEW_MODES.DEVELOPMENT ] ),
-        visibleText: collectVisibleSceneryText( innerWindow ),
-        focus: getFocusMetadata( innerWindow ),
+        pdomDevelopmentText: buildDevelopmentViewSnapshotForPDOMRoot( pdomRoot ),
+        visibleText: cloneSnapshotValue( collectVisibleSceneryText( innerWindow ) ),
+        focus: cloneSnapshotValue( getFocusMetadata( innerWindow ) ),
         recentResponses: designState.recentResponses.slice( -10 )
       };
+    }
+
+    /**
+     * Clones JSON-compatible snapshot content so frozen snapshots do not track later live mutations.
+     *
+     * @param {*} value
+     * @returns {*}
+     */
+    function cloneSnapshotValue( value ) {
+      if ( value === null || typeof value === 'undefined' ) {
+        return value;
+      }
+
+      try {
+        return JSON.parse( JSON.stringify( value ) );
+      }
+      catch( e ) {
+        return value;
+      }
     }
 
     /**
@@ -3949,21 +4119,16 @@
     }
 
     /**
-     * Gets all records that should be exported, including live state-description edits that have not been captured
-     * explicitly with Capture Design.
+     * Gets all records that should be exported, including current state-description edits.
      *
      * @returns {Object[]}
      */
     function getPrescriptionRecordsForExport() {
-      const records = [
-        ...designState.prescriptionRecords
-      ];
+      const records = [];
 
-      const liveStateDescriptionRecord = createStateDescriptionPrescriptionRecord();
-      if ( liveStateDescriptionRecord &&
-           liveStateDescriptionRecord.prescriptions.length > 0 &&
-           !hasMatchingStateDescriptionRecord( records, liveStateDescriptionRecord ) ) {
-        records.push( liveStateDescriptionRecord );
+      const stateDescriptionRecord = createStateDescriptionPrescriptionRecord();
+      if ( stateDescriptionRecord && stateDescriptionRecord.prescriptions.length > 0 ) {
+        records.push( stateDescriptionRecord );
       }
 
       records.push( ...designState.responseDesigns.map( design => design.record ) );
@@ -3971,22 +4136,7 @@
     }
 
     /**
-     * Determines whether a matching state-description prescription record is already included for export.
-     *
-     * @param {Object[]} records
-     * @param {Object} liveRecord
-     * @returns {boolean}
-     */
-    function hasMatchingStateDescriptionRecord( records, liveRecord ) {
-      const livePrescriptions = JSON.stringify( liveRecord.prescriptions );
-      return records.some( record => {
-        return record.type === 'stateDescriptionPrescriptions' &&
-               JSON.stringify( record.prescriptions ) === livePrescriptions;
-      } );
-    }
-
-    /**
-     * Downloads all captured records as line-delimited JSON.
+     * Downloads all current records as line-delimited JSON.
      */
     function downloadDesignSessionJSONL() {
       const records = getPrescriptionRecordsForExport();
@@ -4122,8 +4272,11 @@
           return;
         }
         renderTimeoutId = setTimeout( () => {
-          renderViews( pdomRoot, viewContainers, renderers );
-          renderAccessibleViewState( innerWindow, accessibleViewStateContainer );
+          if ( !designState.isFrozen ) {
+            renderViews( pdomRoot, viewContainers, renderers );
+            renderAccessibleViewState( innerWindow, accessibleViewStateContainer );
+            updateStaleEditSection();
+          }
           dirty = false;
           renderTimeoutId = null;
         }, 10 );
@@ -4395,8 +4548,12 @@
         if ( !PDOMRoot ) {
           return;
         }
+        designState.isFrozen = false;
+        designState.frozenPDOMRoot = null;
+        designState.frozenSnapshot = null;
         designState.pdomRoot = PDOMRoot;
         designState.innerWindow = innerWindow;
+        updateFreezeControls();
 
         const ariaLiveElementsContainer = phetNamespace.joist.sim.display.descriptionUtteranceQueue.announcer.ariaLiveContainer;
         const globalContainer = phetNamespace.scenery.globalDescriptionQueue.announcer.ariaLiveContainer;
@@ -4491,7 +4648,7 @@
     /**
      * Collects frequently accessed DOM nodes for later use.
      *
-     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, captureDesignButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
+     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
      */
     function createDomReferences() {
       return {
@@ -4506,7 +4663,8 @@
         splitPanes: Array.from( document.querySelectorAll( '.split-pane' ) ),
         splitResizers: Array.from( document.querySelectorAll( '.split-resizer' ) ),
         designModeCheckbox: document.getElementById( 'design-mode-checkbox' ),
-        captureDesignButton: document.getElementById( 'capture-design-button' ),
+        freezeDesignButton: document.getElementById( 'freeze-design-button' ),
+        freezeStatus: document.getElementById( 'freeze-status' ),
         downloadJsonlButton: document.getElementById( 'download-jsonl-button' ),
         downloadCodexPromptButton: document.getElementById( 'download-codex-prompt-button' ),
         staleEditsContainer: document.getElementById( 'stale-edits-container' ),
