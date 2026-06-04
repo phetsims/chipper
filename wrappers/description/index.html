@@ -508,70 +508,6 @@
       font-size: 1.17em;
     }
 
-    .view-mode-controls {
-      display: flex;
-      gap: 0.75em;
-      flex-wrap: wrap;
-      padding: 0.75em 1em 0.5em;
-      background: #ecf4fb;
-      border-radius: 0.75em;
-      margin-bottom: 1em;
-    }
-
-    .view-mode-option {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      font-size: 0.95em;
-      cursor: pointer;
-    }
-
-    .view-mode-option input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .view-mode-option-label {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.45em 1.1em;
-      border-radius: 999px;
-      border: 1px solid #b9cdea;
-      background: #fff;
-      color: #1b5fa7;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      box-shadow: inset 0 0 0 1px rgba(19, 69, 117, 0.08), 0 1px 2px rgba(10, 60, 110, 0.12);
-      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .view-mode-option:hover .view-mode-option-label {
-      border-color: #8fb3de;
-      box-shadow: inset 0 0 0 1px rgba(19, 69, 117, 0.12), 0 2px 4px rgba(10, 60, 110, 0.15);
-    }
-
-    .view-mode-option input[type="radio"]:checked + .view-mode-option-label {
-      background: linear-gradient(135deg, #1b7ed7, #0a63b1);
-      color: #fff;
-      border-color: #0a63b1;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28), 0 4px 10px rgba(10, 63, 126, 0.25);
-    }
-
-    .view-mode-option input[type="radio"]:focus-visible + .view-mode-option-label {
-      outline: 3px solid rgba(20, 110, 188, 0.45);
-      outline-offset: 2px;
-    }
-
-    .dom-view {
-      display: none;
-    }
-
-    .dom-view[data-active="true"] {
-      display: block;
-    }
-
     .dom-view[data-view="formatted"] {
       background: #fdfefe;
       border-radius: 0.75em;
@@ -685,49 +621,6 @@
 
     .formatted-group > *:last-child {
       margin-bottom: 0;
-    }
-
-    .development-container {
-      font-family: "Courier New", Courier, monospace;
-      background: #f7f9fc;
-      color: #4b5f79;
-      padding: 0.75em 1em;
-      border-radius: 0.75em;
-      box-shadow: inset 0 0 0 1px rgba(19, 69, 117, 0.08);
-      overflow-x: auto;
-      line-height: 1.45;
-    }
-
-    .development-line {
-      white-space: pre;
-      margin: 0;
-      padding-left: 0;
-    }
-
-    .development-tag {
-      color: #0033b3;
-      font-weight: 600;
-    }
-
-    .development-attribute {
-      color: #c1571a;
-      font-weight: 600;
-    }
-
-    .development-attribute-value {
-      color: #2c536d;
-      font-weight: 400;
-    }
-
-    .development-text-node {
-      color: #0b1726;
-      font-weight: 600;
-    }
-
-    .development-focus-highlight {
-      background: #ffe9b5;
-      border-radius: 0.4em;
-      box-shadow: inset 0 0 0 1px rgba(220, 157, 16, 0.6);
     }
 
     div.accessible_view_state_container {
@@ -858,20 +751,8 @@
               <button id="download-jsonl-button" type="button">Download JSONL</button>
               <button id="download-codex-prompt-button" type="button">Download Codex Prompt</button>
             </div>
-            <fieldset id="view-mode-controls" class="view-mode-controls" role="radiogroup" aria-label="View mode">
-              <legend class="sr-only">Select view mode</legend>
-              <label class="view-mode-option">
-                <input type="radio" name="a11y-view-mode" value="formatted">
-                <span class="view-mode-option-label">Formatted view</span>
-              </label>
-              <label class="view-mode-option">
-                <input type="radio" name="a11y-view-mode" value="development">
-                <span class="view-mode-option-label">Development view</span>
-              </label>
-            </fieldset>
             <div id="dom-copy-container">
               <div class="dom-view" data-view="formatted"></div>
-              <div class="dom-view" data-view="development"></div>
             </div>
             <div id="stale-edits-container" class="stale-edits-container" hidden>
               <h3>Stale Edits</h3>
@@ -1076,13 +957,6 @@
       { name: 'aria-busy', shouldDisplay: DISPLAY_WHEN_TRUE }
     ];
 
-    const VIEW_MODES = {
-      FORMATTED: 'formatted',
-      DEVELOPMENT: 'development'
-    };
-
-    const VIEW_MODE_STORAGE_KEY = 'a11y-view-mode';
-    const DEFAULT_VIEW_MODE = VIEW_MODES.FORMATTED;
     const NO_ACCESSIBLE_VIEW_STATE_MESSAGE = 'No accessible view state available.';
     const COLUMN_WIDTHS_STORAGE_KEY = 'a11y-view-column-widths';
     const DEFAULT_COLUMN_WIDTHS = [ 100 / 3, 100 / 3, 100 / 3 ];
@@ -1094,65 +968,6 @@
     const PRESCRIPTION_SCHEMA_VERSION = 2;
 
     const queryParameters = new URLSearchParams( window.location.search );
-    const SHOULD_PRINT_DEVELOPMENT_VIEW = queryParameters.has( 'printA11yView' );
-    let hasPrintedDevelopmentView = false;
-
-    const DEVELOPMENT_ALLOWED_ATTRIBUTES = new Set( [
-      'role',
-      'type',
-      'name',
-      'value',
-      'checked',
-      'disabled',
-      'required',
-      'hidden',
-      'tabindex',
-      'title',
-      'alt',
-      'lang',
-      'for',
-      'placeholder',
-      'min',
-      'max',
-      'step'
-    ] );
-
-    const VOID_ELEMENTS = new Set( [
-      'area',
-      'base',
-      'br',
-      'col',
-      'embed',
-      'hr',
-      'img',
-      'input',
-      'link',
-      'meta',
-      'param',
-      'source',
-      'track',
-      'wbr'
-    ] );
-
-    const DEVELOPMENT_INDENT_SIZE_EM = 1.25;
-    const INLINE_SINGLE_LINE_TAGS = new Set( [
-      'a',
-      'abbr',
-      'button',
-      'code',
-      'em',
-      'label',
-      'small',
-      'span',
-      'strong'
-    ] );
-    const DEVELOPMENT_INLINE_TEXT_LIMIT = 80;
-    const DEVELOPMENT_SOURCE_ID_SYMBOL = Symbol( 'a11yViewSourceNodeId' );
-    let developmentSourceIdCounter = 0;
-    let developmentLineLookup = new Map();
-    let developmentFocusLines = [];
-    const DEVELOPMENT_FOCUS_CLASS = 'development-focus-highlight';
-    let currentFocusedElement = null;
     const designState = {
       designModeEnabled: false,
       isFrozen: false,
@@ -1175,8 +990,7 @@
     const domReferences = createDomReferences();
     const viewContainers = createViewContainers( domReferences.domCopyContainer );
     const viewRenderers = {
-      [ VIEW_MODES.FORMATTED ]: renderFormattedView,
-      [ VIEW_MODES.DEVELOPMENT ]: renderDevelopmentView
+      formatted: renderFormattedView
     };
 
     const MUTATION_OBSERVER_CONFIG = {
@@ -1196,7 +1010,6 @@
     };
 
     initializeDesignControls( domReferences );
-    initializeViewModeControls( domReferences.viewModeControls, viewContainers );
     initializeActivityLogButton( domReferences.clearActivityLogButton, domReferences.alertList );
     initializeColumnResizers( domReferences.splitLayout, domReferences.splitPanes, domReferences.splitResizers );
     setupMessageListener( domReferences, viewContainers, viewRenderers, MUTATION_OBSERVER_CONFIG );
@@ -1445,7 +1258,7 @@
     }
 
     /**
-     * Re-renders the mirrored PDOM views if a sim PDOM has already been connected.
+     * Re-renders the mirrored PDOM view if a sim PDOM has already been connected.
      */
     function rerenderCurrentPDOMViews() {
       const renderedPDOMRoot = getRenderedPDOMRoot();
@@ -1610,59 +1423,6 @@
                            hasBefore ? 'Before captured. Capture after state.' :
                            hasAfter ? 'After captured. Capture before state.' :
                            'No manual response in progress.';
-    }
-
-    /**
-     * Updates the data-active attribute for view containers so that only the selected view is marked active.
-     *
-     * @param {Object.<string, HTMLElement|null>} viewContainers
-     * @param {string} viewMode
-     */
-    function setActiveView( viewContainers, viewMode ) {
-      Object.keys( viewContainers ).forEach( key => {
-        const container = viewContainers[ key ];
-        if ( !container ) {
-          return;
-        }
-        if ( key === viewMode ) {
-          container.setAttribute( 'data-active', 'true' );
-        }
-        else {
-          container.removeAttribute( 'data-active' );
-        }
-      } );
-    }
-
-    /**
-     * Loads the persisted view mode preference from localStorage, falling back to the default on failure.
-     *
-     * @returns {string}
-     */
-    function loadViewMode() {
-      try {
-        const value = localStorage.getItem( VIEW_MODE_STORAGE_KEY );
-        if ( value && Object.values( VIEW_MODES ).includes( value ) ) {
-          return value;
-        }
-      }
-      catch( e ) {
-        // ignore storage errors, fall back to default
-      }
-      return DEFAULT_VIEW_MODE;
-    }
-
-    /**
-     * Persists the current view mode selection to localStorage, intentionally ignoring storage failures.
-     *
-     * @param {string} viewMode
-     */
-    function storeViewMode( viewMode ) {
-      try {
-        localStorage.setItem( VIEW_MODE_STORAGE_KEY, viewMode );
-      }
-      catch( e ) {
-        // ignore storage failures
-      }
     }
 
     /**
@@ -1875,47 +1635,6 @@
      */
     function clampNumber( value, min, max ) {
       return Math.max( min, Math.min( max, value ) );
-    }
-
-    /**
-     * Wires up the view mode radio group so that selections update the active DOM view and persisted preference.
-     *
-     * @param {HTMLElement|null} controls
-     * @param {Object.<string, HTMLElement|null>} viewContainers
-     * @returns {string} The mode that is active after initialization.
-     */
-    function initializeViewModeControls( controls, viewContainers ) {
-      if ( !controls ) {
-        return DEFAULT_VIEW_MODE;
-      }
-
-      const radioButtons = controls.querySelectorAll( 'input[name="a11y-view-mode"]' );
-      let currentMode = loadViewMode();
-
-      radioButtons.forEach( radio => {
-        if ( radio.value === currentMode ) {
-          radio.checked = true;
-        }
-
-        radio.addEventListener( 'change', event => {
-          if ( event.target.checked ) {
-            currentMode = event.target.value;
-            storeViewMode( currentMode );
-            setActiveView( viewContainers, currentMode );
-          }
-        } );
-      } );
-
-      if ( !Array.from( radioButtons ).some( radio => radio.checked ) ) {
-        const firstRadio = Array.from( radioButtons )[ 0 ];
-        if ( firstRadio ) {
-          currentMode = firstRadio.value;
-          firstRadio.checked = true;
-        }
-      }
-
-      setActiveView( viewContainers, currentMode );
-      return currentMode;
     }
 
     // Elements that exist purely for document structure; we flatten them when building the formatted view.
@@ -3112,495 +2831,22 @@
     }
 
     /**
-     * Renders a sanitized, code-like representation of the PDOM structure for development analysis.
+     * Renders the formatted state-description view with up-to-date content.
      *
      * @param {HTMLElement} pdomRoot
-     * @param {HTMLElement|null} container
-     */
-    function renderDevelopmentView( pdomRoot, container ) {
-      if ( !container ) {
-        return;
-      }
-      clearDevelopmentFocusHighlight();
-      container.innerHTML = '';
-
-      const wrapper = document.createElement( 'div' );
-      wrapper.className = 'development-container';
-
-      const workingCopy = pdomRoot.cloneNode( true );
-      annotateDevelopmentClone( pdomRoot, workingCopy );
-      sanitizeForDevelopmentView( workingCopy );
-
-      developmentLineLookup = new Map();
-
-      const topLevelElements = Array.from( workingCopy.children );
-      topLevelElements.forEach( element => renderDevelopmentNode( element, wrapper, 0 ) );
-
-      if ( wrapper.childNodes.length === 0 ) {
-        wrapper.textContent = 'No accessible markup available.';
-      }
-
-      container.appendChild( wrapper );
-      refreshDevelopmentFocusHighlight();
-      maybePrintDevelopmentView( container );
-    }
-
-    /**
-     * Logs the development view snapshot to the console when requested via query parameter.
-     *
-     * @param {HTMLElement|null} container
-     */
-    function maybePrintDevelopmentView( container ) {
-      if ( !SHOULD_PRINT_DEVELOPMENT_VIEW || hasPrintedDevelopmentView ) {
-        return;
-      }
-      const snapshot = buildDevelopmentViewSnapshot( container );
-      if ( !snapshot ) {
-        return;
-      }
-      console.log( `[A11y View] Development view snapshot:\n${snapshot}` );
-      hasPrintedDevelopmentView = true;
-    }
-
-    /**
-     * Builds a textual snapshot of the rendered development view lines.
-     *
-     * @param {HTMLElement|null} container
-     * @returns {string}
-     */
-    function buildDevelopmentViewSnapshot( container ) {
-      if ( !container ) {
-        return '';
-      }
-      const lines = Array.from( container.querySelectorAll( '.development-line' ) );
-      if ( lines.length === 0 ) {
-        return '';
-      }
-      return lines
-        .map( line => {
-          const content = ( line.innerText || line.textContent || '' ).trim();
-          if ( !content ) {
-            return '';
-          }
-          const depth = getDevelopmentLineDepth( line );
-          const indent = depth > 0 ? '  '.repeat( depth ) : '';
-          return `${indent}${content}`;
-        } )
-        .filter( Boolean )
-        .join( '\n' )
-        .trim();
-    }
-
-    /**
-     * Builds a development-view text snapshot directly from a PDOM root without replacing the rendered pane.
-     *
-     * @param {HTMLElement} pdomRoot
-     * @returns {string}
-     */
-    function buildDevelopmentViewSnapshotForPDOMRoot( pdomRoot ) {
-      if ( !pdomRoot ) {
-        return '';
-      }
-
-      const previousDevelopmentLineLookup = developmentLineLookup;
-      const previousRelationshipLookupRoot = RELATIONSHIP_LOOKUP_ROOT;
-      const wrapper = document.createElement( 'div' );
-      wrapper.className = 'development-container';
-
-      RELATIONSHIP_LOOKUP_ROOT = pdomRoot;
-      developmentLineLookup = new Map();
-      try {
-        const workingCopy = pdomRoot.cloneNode( true );
-        annotateDevelopmentClone( pdomRoot, workingCopy );
-        sanitizeForDevelopmentView( workingCopy );
-        Array.from( workingCopy.children ).forEach( element => renderDevelopmentNode( element, wrapper, 0 ) );
-        return buildDevelopmentViewSnapshot( wrapper );
-      }
-      finally {
-        developmentLineLookup = previousDevelopmentLineLookup;
-        RELATIONSHIP_LOOKUP_ROOT = previousRelationshipLookupRoot;
-      }
-    }
-
-    /**
-     * Converts the inline padding on development view rows to a text indentation depth.
-     *
-     * @param {HTMLElement} line
-     * @returns {number}
-     */
-    function getDevelopmentLineDepth( line ) {
-      if ( !( line instanceof HTMLElement ) ) {
-        return 0;
-      }
-      const paddingValue = line.style ? line.style.paddingLeft : '';
-      if ( !paddingValue ) {
-        return 0;
-      }
-      const numericPadding = parseFloat( paddingValue );
-      if ( Number.isNaN( numericPadding ) ) {
-        return 0;
-      }
-      return Math.max( 0, Math.round( numericPadding / DEVELOPMENT_INDENT_SIZE_EM ) );
-    }
-
-    /**
-     * Copies source node metadata onto clone nodes so the development view can trace back to the live PDOM.
-     *
-     * @param {Node} sourceRoot
-     * @param {Node} cloneRoot
-     */
-    function annotateDevelopmentClone( sourceRoot, cloneRoot ) {
-      if ( !sourceRoot || !cloneRoot ) {
-        return;
-      }
-      if ( sourceRoot.nodeType !== Node.ELEMENT_NODE || cloneRoot.nodeType !== Node.ELEMENT_NODE ) {
-        return;
-      }
-
-      const sourceElements = [ sourceRoot, ...sourceRoot.getElementsByTagName( '*' ) ];
-      const cloneElements = [ cloneRoot, ...cloneRoot.getElementsByTagName( '*' ) ];
-      const count = Math.min( sourceElements.length, cloneElements.length );
-
-      for ( let i = 0; i < count; i++ ) {
-        const sourceElement = sourceElements[ i ];
-        const cloneElement = cloneElements[ i ];
-        if ( !sourceElement || !cloneElement ) {
-          continue;
-        }
-        const id = generateDevelopmentSourceId( sourceElement );
-        cloneElement[ DEVELOPMENT_SOURCE_ID_SYMBOL ] = id;
-      }
-    }
-
-    /**
-     * Generates or retrieves a stable ID used to associate development view lines with source elements.
-     *
-     * @param {HTMLElement} element
-     * @returns {string|null}
-     */
-    function generateDevelopmentSourceId( element ) {
-      if ( !element ) {
-        return null;
-      }
-      let id = element[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
-      if ( !id ) {
-        developmentSourceIdCounter += 1;
-        id = `a11y-node-${developmentSourceIdCounter}`;
-        element[ DEVELOPMENT_SOURCE_ID_SYMBOL ] = id;
-      }
-      return id;
-    }
-
-    /**
-     * Tracks rendered development lines so they can be highlighted in response to focus changes.
-     *
-     * @param {string|null} sourceId
-     * @param {HTMLElement} line
-     */
-    function registerDevelopmentLine( sourceId, line ) {
-      if ( !sourceId || !line ) {
-        return;
-      }
-      let lines = developmentLineLookup.get( sourceId );
-      if ( !lines ) {
-        lines = [];
-        developmentLineLookup.set( sourceId, lines );
-      }
-      lines.push( line );
-    }
-
-    /**
-     * Removes the visual highlight from any development view lines that are currently emphasized.
-     */
-    function clearDevelopmentFocusHighlight() {
-      if ( developmentFocusLines.length === 0 ) {
-        return;
-      }
-      developmentFocusLines.forEach( line => line.classList.remove( DEVELOPMENT_FOCUS_CLASS ) );
-      developmentFocusLines = [];
-    }
-
-    /**
-     * Highlights the development view lines that correspond to the provided source node ID.
-     *
-     * @param {string|null} sourceId
-     */
-    function applyDevelopmentFocusHighlight( sourceId ) {
-      clearDevelopmentFocusHighlight();
-      if ( !sourceId ) {
-        return;
-      }
-      const lines = developmentLineLookup.get( sourceId );
-      if ( !lines || lines.length === 0 ) {
-        return;
-      }
-      lines.forEach( line => line.classList.add( DEVELOPMENT_FOCUS_CLASS ) );
-      developmentFocusLines = lines.slice();
-    }
-
-    /**
-     * Reapplies focus highlighting based on the iframe's currently focused element.
-     */
-    function refreshDevelopmentFocusHighlight() {
-      if ( !currentFocusedElement ) {
-        clearDevelopmentFocusHighlight();
-        return;
-      }
-      const sourceId = currentFocusedElement[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
-      if ( !sourceId ) {
-        clearDevelopmentFocusHighlight();
-        return;
-      }
-      applyDevelopmentFocusHighlight( sourceId );
-    }
-
-    /**
-     * Cleans and normalizes the cloned PDOM so that the development view focuses on semantic markup.
-     *
-     * @param {HTMLElement} root
-     */
-    function sanitizeForDevelopmentView( root ) {
-
-      // Remove hidden elements entirely from the view.
-      Array.from( root.querySelectorAll( '[hidden]' ) ).forEach( element => {
-        if ( element.parentNode ) {
-          element.parentNode.removeChild( element );
-        }
-      } );
-
-      const walker = document.createTreeWalker( root, NodeFilter.SHOW_ELEMENT, null );
-      while ( walker.nextNode() ) {
-        sanitizeElement( walker.currentNode );
-      }
-    }
-
-    /**
-     * Removes non-essential attributes and masks sensitive references on a cloned element.
-     *
-     * @param {HTMLElement} element
-     */
-    function sanitizeElement( element ) {
-      Array.from( element.attributes ).forEach( attribute => {
-        const name = attribute.name;
-        const value = attribute.value;
-
-        if ( name === 'class' || name === 'style' || name.startsWith( 'data-' ) ) {
-          element.removeAttribute( name );
-          return;
-        }
-
-        if ( name === 'id' || name === 'hidden' ) {
-          element.removeAttribute( name );
-          return;
-        }
-
-        if ( name.startsWith( 'aria-' ) || DEVELOPMENT_ALLOWED_ATTRIBUTES.has( name ) ) {
-          if ( ( name === 'aria-describedby' || name === 'aria-labelledby' || name === 'aria-controls' || name === 'aria-owns' || name === 'aria-activedescendant' || name === 'for' ) && value ) {
-
-            // Show readable relationship targets in the development view too; fall back to placeholder for non-text nodes.
-            element.setAttribute( name, formatRelationshipValue( value, element ) );
-          }
-          return;
-        }
-
-        element.removeAttribute( name );
-      } );
-    }
-
-    /**
-     * Renders a single DOM element (and its descendants) into the development view line-by-line.
-     *
-     * @param {HTMLElement} element
-     * @param {HTMLElement} container
-     * @param {number} depth
-     */
-    function renderDevelopmentNode( element, container, depth ) {
-      const tagName = element.tagName.toLowerCase();
-      const indent = `${depth * DEVELOPMENT_INDENT_SIZE_EM}em`;
-
-      const openLine = document.createElement( 'div' );
-      openLine.className = 'development-line';
-      openLine.style.paddingLeft = indent;
-      openLine.appendChild( createTagSpan( `<${tagName}` ) );
-
-      const attributes = Array.from( element.attributes ).sort( ( a, b ) => a.name.localeCompare( b.name ) );
-      attributes.forEach( attribute => appendAttributeTokens( openLine, attribute ) );
-
-      const sourceId = element[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
-      if ( sourceId ) {
-        openLine.dataset.sourceNodeId = sourceId;
-        registerDevelopmentLine( sourceId, openLine );
-      }
-
-      if ( VOID_ELEMENTS.has( tagName ) ) {
-        openLine.appendChild( createTagSpan( ' />' ) );
-        container.appendChild( openLine );
-        return;
-      }
-
-      const inlineTextContent = getCollapsedTextContent( element );
-      if ( shouldRenderInlineElement( element, inlineTextContent ) ) {
-        openLine.appendChild( createTagSpan( '>' ) );
-
-        const textSpan = document.createElement( 'span' );
-        textSpan.className = 'development-text-node';
-        textSpan.textContent = inlineTextContent;
-        openLine.appendChild( textSpan );
-
-        openLine.appendChild( createTagSpan( `</${tagName}>` ) );
-        container.appendChild( openLine );
-        return;
-      }
-
-      openLine.appendChild( createTagSpan( '>' ) );
-      container.appendChild( openLine );
-
-      Array.from( element.childNodes ).forEach( node => {
-        if ( node.nodeType === Node.ELEMENT_NODE ) {
-          renderDevelopmentNode( node, container, depth + 1 );
-        }
-        else if ( node.nodeType === Node.TEXT_NODE ) {
-          renderDevelopmentTextNode( node, container, depth );
-        }
-      } );
-
-      const closeLine = document.createElement( 'div' );
-      closeLine.className = 'development-line';
-      closeLine.style.paddingLeft = indent;
-      closeLine.appendChild( createTagSpan( `</${tagName}>` ) );
-      if ( sourceId ) {
-        closeLine.dataset.sourceNodeId = sourceId;
-        registerDevelopmentLine( sourceId, closeLine );
-      }
-      container.appendChild( closeLine );
-    }
-
-    /**
-     * Builds a span element styled as a markup tag for the development view.
-     *
-     * @param {string} text
-     * @returns {HTMLSpanElement}
-     */
-    function createTagSpan( text ) {
-      const span = document.createElement( 'span' );
-      span.className = 'development-tag';
-      span.textContent = text;
-      return span;
-    }
-
-    /**
-     * Appends styled attribute tokens (name/value) to the provided development line.
-     *
-     * @param {HTMLElement} line
-     * @param {Attr} attribute
-     */
-    function appendAttributeTokens( line, attribute ) {
-      line.appendChild( document.createTextNode( ' ' ) );
-
-      const nameSpan = document.createElement( 'span' );
-      nameSpan.className = 'development-attribute';
-      nameSpan.textContent = attribute.name;
-      line.appendChild( nameSpan );
-
-      if ( attribute.value ) {
-        const equalsSpan = document.createElement( 'span' );
-        equalsSpan.className = 'development-tag';
-        equalsSpan.textContent = '=';
-        line.appendChild( equalsSpan );
-
-        const valueSpan = document.createElement( 'span' );
-        valueSpan.className = 'development-attribute-value';
-        valueSpan.textContent = `"${attribute.value}"`;
-        line.appendChild( valueSpan );
-      }
-    }
-
-    /**
-     * Renders a text node in the development view, collapsing whitespace for readability.
-     *
-     * @param {Text} node
-     * @param {HTMLElement} container
-     * @param {number} depth
-     */
-    function renderDevelopmentTextNode( node, container, depth ) {
-      const content = node.textContent.replace( /\s+/g, ' ' ).trim();
-      if ( !content ) {
-        return;
-      }
-
-      const textLine = document.createElement( 'div' );
-      textLine.className = 'development-line';
-      textLine.style.paddingLeft = `${( depth + 1 ) * DEVELOPMENT_INDENT_SIZE_EM}em`;
-
-      const span = document.createElement( 'span' );
-      span.className = 'development-text-node';
-      span.textContent = content;
-      textLine.appendChild( span );
-      container.appendChild( textLine );
-    }
-
-    /**
-     * Returns the whitespace-collapsed text content of an element's immediate text children.
-     *
-     * @param {HTMLElement} element
-     * @returns {string}
-     */
-    function getCollapsedTextContent( element ) {
-      const text = Array.from( element.childNodes )
-        .filter( node => node.nodeType === Node.TEXT_NODE )
-        .map( node => node.textContent || '' )
-        .join( ' ' )
-        .replace( /\s+/g, ' ' )
-        .trim();
-      return text;
-    }
-
-    /**
-     * Determines whether an element should be rendered inline (opening tag, text, closing tag on one line).
-     *
-     * @param {HTMLElement} element
-     * @param {string} textContent
-     * @returns {boolean}
-     */
-    function shouldRenderInlineElement( element, textContent ) {
-      if ( element.childElementCount > 0 ) {
-        return false;
-      }
-      if ( !textContent ) {
-        return false;
-      }
-      if ( textContent.length > DEVELOPMENT_INLINE_TEXT_LIMIT ) {
-        return false;
-      }
-
-      const tagName = element.tagName.toLowerCase();
-      return INLINE_SINGLE_LINE_TAGS.has( tagName ) || element.childNodes.length === 1;
-    }
-
-    /**
-     * Executes each registered renderer to populate the DOM view containers with up-to-date content.
-     *
-     * @param {HTMLElement} pdomRoot
-     * @param {Object.<string, HTMLElement|null>} viewContainers
-     * @param {Object.<string, Function>} renderers
+     * @param {{ formatted: HTMLElement|null }} viewContainers
+     * @param {{ formatted: Function }} renderers
      */
     function renderViews( pdomRoot, viewContainers, renderers ) {
-      if ( !renderers ) {
+      const formattedRenderer = renderers && renderers.formatted;
+      if ( typeof formattedRenderer !== 'function' ) {
         return;
       }
 
-      // Make the current PDOM root available to relationship formatters while we render all views.
+      // Make the current PDOM root available to relationship formatters while we render the view.
       RELATIONSHIP_LOOKUP_ROOT = pdomRoot || null;
       try {
-        const formattedRenderer = renderers[ VIEW_MODES.FORMATTED ];
-        if ( typeof formattedRenderer === 'function' ) {
-          formattedRenderer( pdomRoot, viewContainers[ VIEW_MODES.FORMATTED ] );
-        }
-
-        const developmentRenderer = renderers[ VIEW_MODES.DEVELOPMENT ];
-        if ( typeof developmentRenderer === 'function' ) {
-          developmentRenderer( pdomRoot, viewContainers[ VIEW_MODES.DEVELOPMENT ] );
-        }
+        formattedRenderer( pdomRoot, viewContainers.formatted );
       }
       finally {
         RELATIONSHIP_LOOKUP_ROOT = null;
@@ -3836,7 +3082,6 @@
       return {
         accessibleViewState: cloneSnapshotValue( getAccessibleViewStateValue( innerWindow ) ),
         pdomText: getElementTextSnapshot( pdomRoot ),
-        pdomDevelopmentText: buildDevelopmentViewSnapshotForPDOMRoot( pdomRoot ),
         visibleText: cloneSnapshotValue( collectVisibleSceneryText( innerWindow ) ),
         focus: cloneSnapshotValue( getFocusMetadata( innerWindow ) ),
         recentResponses: designState.recentResponses.slice( -10 )
@@ -4049,7 +3294,6 @@
       return {
         focus: snapshot.focus,
         pdomText: truncateText( snapshot.pdomText || '', 4000 ),
-        developmentText: truncateText( snapshot.pdomDevelopmentText || '', 4000 ),
         visibleText: snapshot.visibleText.slice( 0, 80 ),
         accessibleViewStateSummary: createAccessibleViewStateSummary( snapshot.accessibleViewState )
       };
@@ -4522,12 +3766,12 @@
     }
 
     /**
-     * Observes the PDOM for changes and throttles re-rendering of the various DOM views.
+     * Observes the PDOM for changes and throttles re-rendering of the formatted DOM view.
      *
      * @param {HTMLElement} pdomRoot
-     * @param {Object.<string, HTMLElement|null>} viewContainers
+     * @param {{ formatted: HTMLElement|null }} viewContainers
      * @param {MutationObserverInit} mutationConfig
-     * @param {Object.<string, Function>} renderers
+     * @param {{ formatted: Function }} renderers
      * @param {HTMLElement|null} accessibleViewStateContainer
      * @returns {Function} Function that triggers a re-render on demand.
      */
@@ -4791,9 +4035,9 @@
     /**
      * Subscribes to iframe load events, wiring DOM observers and view renderers once the sim is ready.
      *
-     * @param {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null }} domRefs
-     * @param {Object.<string, HTMLElement|null>} viewContainers
-     * @param {Object.<string, Function>} renderers
+     * @param {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null }} domRefs
+     * @param {{ formatted: HTMLElement|null }} viewContainers
+     * @param {{ formatted: Function }} renderers
      * @param {MutationObserverInit} mutationConfig
      */
     function setupMessageListener( domRefs, viewContainers, renderers, mutationConfig ) {
@@ -4925,8 +4169,6 @@
           if ( activeElement && !isDocumentBody && typeof activeElement.classList !== 'undefined' ) {
             activeElement.classList.add( 'highlight' );
           }
-          currentFocusedElement = !isDocumentBody ? activeElement : null;
-          refreshDevelopmentFocusHighlight();
         };
 
         iframeDocument.addEventListener( 'focusin', handleIframeFocus );
@@ -4937,7 +4179,7 @@
     /**
      * Collects frequently accessed DOM nodes for later use.
      *
-     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignsContainer: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
+     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignsContainer: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
      */
     function createDomReferences() {
       return {
@@ -4945,7 +4187,6 @@
         alertList: document.getElementById( 'alert-list' ),
         alertContainer: document.getElementById( 'polite-element-container' ),
         clearActivityLogButton: document.getElementById( 'clear-activity-log-button' ),
-        viewModeControls: document.getElementById( 'view-mode-controls' ),
         domCopyContainer: document.getElementById( 'dom-copy-container' ),
         accessibleViewStateCode: document.getElementById( 'accessible-view-state-code' ),
         splitLayout: document.getElementById( 'split-layout' ),
@@ -4974,19 +4215,17 @@
      * Resolves the specific DOM view containers under the provided root element.
      *
      * @param {HTMLElement|null} root
-     * @returns {{ formatted: HTMLElement|null, development: HTMLElement|null }}
+     * @returns {{ formatted: HTMLElement|null }}
      */
     function createViewContainers( root ) {
       if ( !root ) {
         return {
-          formatted: null,
-          development: null
+          formatted: null
         };
       }
 
       return {
-        formatted: root.querySelector( '[data-view="formatted"]' ),
-        development: root.querySelector( '[data-view="development"]' )
+        formatted: root.querySelector( '[data-view="formatted"]' )
       };
     }
 
