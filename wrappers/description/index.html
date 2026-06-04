@@ -257,6 +257,23 @@
       cursor: pointer;
     }
 
+    .design-toolbar button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
+    }
+
+    .toolbar-button-icon {
+      width: 1em;
+      height: 1em;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .design-toolbar button:hover,
     .design-toolbar button:focus-visible,
     .manual-context-response-controls button:hover,
@@ -326,6 +343,16 @@
       color: #173d66;
       background: #ffffff;
       border: 1px solid #b9cdea;
+    }
+
+    .codex-clipboard-status {
+      color: #0f6b45;
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+
+    .codex-clipboard-status[hidden] {
+      display: none;
     }
 
     .design-editable-text,
@@ -747,9 +774,28 @@
               <button id="freeze-design-button" type="button" aria-pressed="false">Freeze</button>
               <span id="freeze-status" class="freeze-status" data-frozen="false">Live</span>
               <span id="prompt-status" class="prompt-status" aria-live="polite"></span>
-              <button id="clear-prompt-button" type="button">Clear Prompt</button>
-              <button id="download-jsonl-button" type="button">Download JSONL</button>
-              <button id="download-codex-prompt-button" type="button">Download Codex Prompt</button>
+              <button id="download-codex-prompt-button" type="button">
+                <svg class="toolbar-button-icon" aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <path d="M14 2v6h6"></path>
+                  <path d="M8 13h4"></path>
+                  <path d="M8 17h8"></path>
+                  <path d="M15 11v6"></path>
+                  <path d="M12 14l3 3 3-3"></path>
+                </svg>
+                <span>Codex</span>
+              </button>
+              <button id="clear-prompt-button" type="button">
+                <svg class="toolbar-button-icon" aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M3 6h18"></path>
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                  <path d="M10 11v6"></path>
+                  <path d="M14 11v6"></path>
+                </svg>
+                <span>Clear</span>
+              </button>
+              <span id="codex-clipboard-status" class="codex-clipboard-status" aria-live="polite" hidden></span>
             </div>
             <div id="dom-copy-container">
               <div class="dom-view" data-view="formatted"></div>
@@ -966,6 +1012,8 @@
     const PRE_INTERACTION_SNAPSHOT_MAX_AGE = 5000;
     const RESPONSE_AFTER_SNAPSHOT_DELAY = 150;
     const PRESCRIPTION_SCHEMA_VERSION = 2;
+    const CODEX_CLIPBOARD_MESSAGE_DURATION = 5000;
+    let codexClipboardMessageTimeoutId = null;
 
     const queryParameters = new URLSearchParams( window.location.search );
     const designState = {
@@ -1021,9 +1069,9 @@
      */
 
     /**
-     * Initializes Design Mode controls for editable descriptions, freeze, and export.
+     * Initializes Design Mode controls for editable descriptions, freeze, and Codex prompt creation.
      *
-     * @param {{ designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null }} domRefs
+     * @param {{ designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, codexClipboardStatus: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null }} domRefs
      */
     function initializeDesignControls( domRefs ) {
       designState.designModeEnabled = loadBooleanPreference( DESIGN_MODE_STORAGE_KEY, false );
@@ -1045,10 +1093,6 @@
         domRefs.freezeDesignButton.addEventListener( 'click', toggleFreezeState );
       }
       updateFreezeControls();
-
-      if ( domRefs.downloadJsonlButton ) {
-        domRefs.downloadJsonlButton.addEventListener( 'click', downloadDesignSessionJSONL );
-      }
 
       if ( domRefs.downloadCodexPromptButton ) {
         domRefs.downloadCodexPromptButton.addEventListener( 'click', downloadCodexPrompt );
@@ -1130,7 +1174,7 @@
     }
 
     /**
-     * Clears all accumulated prompt/export prescriptions without affecting the live response activity log.
+     * Clears all accumulated Codex prompt prescriptions without affecting the live response activity log.
      */
     function clearPromptPrescriptions() {
       designState.editRegistry.clear();
@@ -1155,7 +1199,7 @@
     }
 
     /**
-     * Updates the toolbar summary of prompt/export prescriptions.
+     * Updates the toolbar summary of Codex prompt prescriptions.
      */
     function updatePromptStatus() {
       const status = domReferences.promptStatus;
@@ -1180,7 +1224,16 @@
     }
 
     /**
-     * Computes the compact prescription counts shown in the toolbar and prompt export.
+     * Gets response designs that have been reviewed or manually authored and should be included in the Codex prompt.
+     *
+     * @returns {{ id: string, record: Object, edited: boolean }[]}
+     */
+    function getEditedResponseDesigns() {
+      return designState.responseDesigns.filter( design => design.edited );
+    }
+
+    /**
+     * Computes the compact prescription counts shown in the toolbar and Codex prompt.
      *
      * @returns {{ stateDescriptionAdditions: number, stateDescriptionReplacements: number, stateDescriptionDeletions: number, responsePrescriptions: number }}
      */
@@ -1189,10 +1242,10 @@
         stateDescriptionAdditions: 0,
         stateDescriptionReplacements: 0,
         stateDescriptionDeletions: 0,
-        responsePrescriptions: designState.responseDesigns.length
+        responsePrescriptions: getEditedResponseDesigns().length
       };
 
-      const formattedViewEdit = getFormattedViewEditForExport();
+      const formattedViewEdit = getFormattedViewEditForCodexPrompt();
       if ( formattedViewEdit ) {
         const diffCounts = countOrderedTextDiffOperations( formattedViewEdit.diff );
         counts.stateDescriptionAdditions += diffCounts.additions;
@@ -1756,7 +1809,7 @@
     }
 
     /**
-     * Configures the formatted view as a single document-editing surface and captures a baseline for diff export.
+     * Configures the formatted view as a single document-editing surface and captures a baseline for Codex prompt diffs.
      *
      * @param {HTMLElement} container
      */
@@ -3116,8 +3169,8 @@
         timestamp: new Date().toISOString(),
         sim: getSimMetadata(),
         stateContext: formatStateContext( snapshot ),
-        formattedViewEdit: getFormattedViewEditForExport(),
-        prescriptions: getEditedDescriptionPrescriptions()
+        formattedViewEdit: getFormattedViewEditForCodexPrompt(),
+        prescriptions: getCodexPromptDescriptionPrescriptions()
       };
     }
 
@@ -3234,7 +3287,7 @@
     }
 
     /**
-     * Captures basic sim/screen metadata for exported prescriptions.
+     * Captures basic sim/screen metadata for Codex prompt prescriptions.
      *
      * @returns {Object}
      */
@@ -3539,11 +3592,11 @@
     }
 
     /**
-     * Gets the document-level formatted-view edit for export.
+     * Gets the document-level formatted-view edit for the Codex prompt.
      *
      * @returns {Object|null}
      */
-    function getFormattedViewEditForExport() {
+    function getFormattedViewEditForCodexPrompt() {
       const draft = designState.formattedDocumentDraft;
       if ( !draft || !draft.edited ) {
         return null;
@@ -3658,11 +3711,11 @@
     }
 
     /**
-     * Gets all edited state-description prescriptions for capture/export.
+     * Gets all edited state-description prescriptions for the Codex prompt.
      *
      * @returns {Object[]}
      */
-    function getEditedDescriptionPrescriptions() {
+    function getCodexPromptDescriptionPrescriptions() {
       return Array.from( designState.editRegistry.values() )
         .filter( edit => edit.edited )
         .map( edit => {
@@ -3693,11 +3746,11 @@
     }
 
     /**
-     * Gets all records that should be exported, including current state-description edits.
+     * Gets all records that should be included in the Codex prompt, including current state-description edits.
      *
      * @returns {Object[]}
      */
-    function getPrescriptionRecordsForExport() {
+    function getCodexPromptPrescriptionRecords() {
       const records = [];
 
       const stateDescriptionRecord = createStateDescriptionPrescriptionRecord();
@@ -3706,32 +3759,28 @@
         records.push( stateDescriptionRecord );
       }
 
-      records.push( ...designState.responseDesigns.map( design => design.record ) );
+      records.push( ...getEditedResponseDesigns().map( design => design.record ) );
       return records;
     }
 
     /**
-     * Downloads all current records as line-delimited JSON.
+     * Downloads and copies a Markdown prompt suitable for Codex or codex exec.
+     *
+     * @returns {Promise<void>}
      */
-    function downloadDesignSessionJSONL() {
-      const records = getPrescriptionRecordsForExport();
-      const jsonl = records.map( record => JSON.stringify( record ) ).join( '\n' );
-      const blob = new Blob( [ jsonl ? `${jsonl}\n` : '' ], { type: 'application/jsonl' } );
-      const url = URL.createObjectURL( blob );
-      const link = document.createElement( 'a' );
-      link.href = url;
-      link.download = `description-design-${new Date().toISOString().replace( /[:.]/g, '-' )}.jsonl`;
-      document.body.appendChild( link );
-      link.click();
-      document.body.removeChild( link );
-      URL.revokeObjectURL( url );
+    async function downloadCodexPrompt() {
+      const prompt = createCodexPrompt();
+      downloadCodexPromptText( prompt );
+      await copyCodexPromptToClipboard( prompt );
+      showCodexClipboardStatus();
     }
 
     /**
-     * Downloads a Markdown prompt suitable for Codex or codex exec.
+     * Downloads the supplied Codex prompt text.
+     *
+     * @param {string} prompt
      */
-    function downloadCodexPrompt() {
-      const prompt = createCodexPrompt();
+    function downloadCodexPromptText( prompt ) {
       const blob = new Blob( [ prompt ], { type: 'text/markdown' } );
       const url = URL.createObjectURL( blob );
       const link = document.createElement( 'a' );
@@ -3744,12 +3793,62 @@
     }
 
     /**
+     * Copies the supplied Codex prompt text to the clipboard.
+     *
+     * @param {string} prompt
+     * @returns {Promise<void>}
+     */
+    async function copyCodexPromptToClipboard( prompt ) {
+      if ( navigator.clipboard && typeof navigator.clipboard.writeText === 'function' ) {
+        try {
+          await navigator.clipboard.writeText( prompt );
+          return;
+        }
+        catch( e ) {
+          // Fall back to the legacy copy path below.
+        }
+      }
+
+      const textArea = document.createElement( 'textarea' );
+      textArea.value = prompt;
+      textArea.setAttribute( 'readonly', '' );
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      document.body.appendChild( textArea );
+      textArea.select();
+      document.execCommand( 'copy' );
+      document.body.removeChild( textArea );
+    }
+
+    /**
+     * Shows a transient confirmation that the Codex prompt was copied to the clipboard.
+     */
+    function showCodexClipboardStatus() {
+      const status = domReferences.codexClipboardStatus;
+      if ( !status ) {
+        return;
+      }
+
+      if ( codexClipboardMessageTimeoutId !== null ) {
+        clearTimeout( codexClipboardMessageTimeoutId );
+      }
+
+      status.textContent = 'Copied to clipboard';
+      status.hidden = false;
+      codexClipboardMessageTimeoutId = setTimeout( () => {
+        status.hidden = true;
+        status.textContent = '';
+        codexClipboardMessageTimeoutId = null;
+      }, CODEX_CLIPBOARD_MESSAGE_DURATION );
+    }
+
+    /**
      * Creates a compact Codex implementation prompt from all captured prescriptions.
      *
      * @returns {string}
      */
     function createCodexPrompt() {
-      const records = getPrescriptionRecordsForExport();
+      const records = getCodexPromptPrescriptionRecords();
       const simMetadata = getSimMetadata();
       const counts = getPromptPrescriptionCounts();
       const lines = [
@@ -4034,6 +4133,9 @@
 
       const editable = document.createElement( 'span' );
       editable.className = 'response-design-editable';
+      if ( design.edited ) {
+        editable.classList.add( 'design-edited' );
+      }
       editable.contentEditable = designState.designModeEnabled ? 'true' : 'false';
       editable.textContent = design.record.response.prescribedText;
       editable.addEventListener( 'focus', () => {
@@ -4042,6 +4144,7 @@
         }
         design.edited = true;
         editable.classList.add( 'design-edited' );
+        updatePromptStatus();
       } );
       editable.addEventListener( 'input', () => {
         if ( !designState.designModeEnabled ) {
@@ -4262,7 +4365,7 @@
     /**
      * Collects frequently accessed DOM nodes for later use.
      *
-     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignsContainer: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
+     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, codexClipboardStatus: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignsContainer: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
      */
     function createDomReferences() {
       return {
@@ -4280,8 +4383,8 @@
         freezeStatus: document.getElementById( 'freeze-status' ),
         promptStatus: document.getElementById( 'prompt-status' ),
         clearPromptButton: document.getElementById( 'clear-prompt-button' ),
-        downloadJsonlButton: document.getElementById( 'download-jsonl-button' ),
         downloadCodexPromptButton: document.getElementById( 'download-codex-prompt-button' ),
+        codexClipboardStatus: document.getElementById( 'codex-clipboard-status' ),
         staleEditsContainer: document.getElementById( 'stale-edits-container' ),
         staleEditsList: document.getElementById( 'stale-edits-list' ),
         responseDesignsContainer: document.getElementById( 'response-designs-container' ),
