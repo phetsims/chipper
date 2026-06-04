@@ -300,6 +300,34 @@
       background: #146ebc;
     }
 
+    .freeze-status[data-state="editing"] {
+      color: #7a4b00;
+    }
+
+    .freeze-status[data-state="editing"]::before {
+      background: #d69200;
+    }
+
+    .prompt-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
+      flex-wrap: wrap;
+      color: #263c54;
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+
+    .prompt-status-count {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.12em 0.45em;
+      border-radius: 999px;
+      color: #173d66;
+      background: #ffffff;
+      border: 1px solid #b9cdea;
+    }
+
     .design-editable-text,
     .response-design-editable {
       border-radius: 0.25em;
@@ -331,6 +359,12 @@
       cursor: text;
     }
 
+    .formatted-document-change-highlight {
+      background: #fff0a6;
+      box-shadow: inset 0 0 0 2px rgba(198, 145, 22, 0.55);
+      border-radius: 0.35em;
+    }
+
     .stale-edits-container,
     .manual-context-response-container,
     .response-designs-container {
@@ -342,6 +376,10 @@
     }
 
     .stale-edits-container[hidden] {
+      display: none;
+    }
+
+    .response-designs-container[hidden] {
       display: none;
     }
 
@@ -771,7 +809,7 @@
               <ul class='alert_copy' id='alert-list'></ul>
             </div>
           </div>
-          <div class="response-designs-container" role="presentation">
+          <div id="response-designs-container" class="response-designs-container" role="presentation">
             <h3>Response Designs</h3>
             <div class="manual-context-response-container" role="presentation">
               <h3>Add Context Response</h3>
@@ -815,6 +853,8 @@
               </label>
               <button id="freeze-design-button" type="button" aria-pressed="false">Freeze</button>
               <span id="freeze-status" class="freeze-status" data-frozen="false">Live</span>
+              <span id="prompt-status" class="prompt-status" aria-live="polite"></span>
+              <button id="clear-prompt-button" type="button">Clear Prompt</button>
               <button id="download-jsonl-button" type="button">Download JSONL</button>
               <button id="download-codex-prompt-button" type="button">Download Codex Prompt</button>
             </div>
@@ -1122,6 +1162,7 @@
       innerWindow: null,
       editRegistry: new Map(),
       activeLocatorKeys: new Set(),
+      liveFormattedDocument: null,
       formattedDocumentDraft: null,
       responseDesigns: [],
       recentResponses: [],
@@ -1168,7 +1209,7 @@
     /**
      * Initializes Design Mode controls for editable descriptions, freeze, and export.
      *
-     * @param {{ designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null }} domRefs
+     * @param {{ designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null }} domRefs
      */
     function initializeDesignControls( domRefs ) {
       designState.designModeEnabled = loadBooleanPreference( DESIGN_MODE_STORAGE_KEY, false );
@@ -1178,6 +1219,10 @@
         domRefs.designModeCheckbox.addEventListener( 'change', () => {
           designState.designModeEnabled = domRefs.designModeCheckbox.checked;
           storeBooleanPreference( DESIGN_MODE_STORAGE_KEY, designState.designModeEnabled );
+          if ( !designState.designModeEnabled && designState.formattedDocumentDraft ) {
+            designState.formattedDocumentDraft.active = false;
+          }
+          updateDesignModeUI();
           rerenderCurrentPDOMViews();
         } );
       }
@@ -1195,7 +1240,13 @@
         domRefs.downloadCodexPromptButton.addEventListener( 'click', downloadCodexPrompt );
       }
 
+      if ( domRefs.clearPromptButton ) {
+        domRefs.clearPromptButton.addEventListener( 'click', clearPromptPrescriptions );
+      }
+
       initializeManualContextResponseControls( domRefs );
+      updateDesignModeUI();
+      updatePromptStatus();
     }
 
     /**
@@ -1237,6 +1288,163 @@
     }
 
     /**
+     * Updates controls whose availability or visibility depends on Design Mode.
+     */
+    function updateDesignModeUI() {
+      if ( domReferences.responseDesignsContainer ) {
+        domReferences.responseDesignsContainer.hidden = !designState.designModeEnabled;
+      }
+
+      [
+        domReferences.manualContextBeforeButton,
+        domReferences.manualContextAfterButton,
+        domReferences.manualContextAddButton,
+        domReferences.manualContextResponseInput
+      ].forEach( control => {
+        if ( control ) {
+          control.disabled = !designState.designModeEnabled;
+        }
+      } );
+
+      if ( domReferences.responseDesignList ) {
+        Array.from( domReferences.responseDesignList.querySelectorAll( '.response-design-editable' ) ).forEach( editable => {
+          editable.contentEditable = designState.designModeEnabled ? 'true' : 'false';
+        } );
+      }
+
+      updateFreezeControls();
+    }
+
+    /**
+     * Clears all accumulated prompt/export prescriptions without affecting the live response activity log.
+     */
+    function clearPromptPrescriptions() {
+      designState.editRegistry.clear();
+      designState.liveFormattedDocument = null;
+      designState.formattedDocumentDraft = null;
+      designState.responseDesigns = [];
+      designState.lastPreInteractionSnapshot = null;
+      designState.lastPreInteractionTimestamp = 0;
+      designState.manualContextBeforeSnapshot = null;
+      designState.manualContextAfterSnapshot = null;
+
+      if ( domReferences.responseDesignList ) {
+        domReferences.responseDesignList.innerHTML = '';
+      }
+      if ( domReferences.manualContextResponseInput ) {
+        domReferences.manualContextResponseInput.value = '';
+      }
+
+      updateManualContextResponseStatus();
+      updatePromptStatus();
+      rerenderCurrentPDOMViews();
+    }
+
+    /**
+     * Updates the toolbar summary of prompt/export prescriptions.
+     */
+    function updatePromptStatus() {
+      const status = domReferences.promptStatus;
+      if ( !status ) {
+        return;
+      }
+
+      const counts = getPromptPrescriptionCounts();
+      status.innerHTML = '';
+      status.appendChild( document.createTextNode( 'Prompt:' ) );
+      [
+        { label: 'Add', value: counts.stateDescriptionAdditions },
+        { label: 'Replace', value: counts.stateDescriptionReplacements },
+        { label: 'Delete', value: counts.stateDescriptionDeletions },
+        { label: 'Responses', value: counts.responsePrescriptions }
+      ].forEach( item => {
+        const badge = document.createElement( 'span' );
+        badge.className = 'prompt-status-count';
+        badge.textContent = `${item.label} ${item.value}`;
+        status.appendChild( badge );
+      } );
+    }
+
+    /**
+     * Computes the compact prescription counts shown in the toolbar and prompt export.
+     *
+     * @returns {{ stateDescriptionAdditions: number, stateDescriptionReplacements: number, stateDescriptionDeletions: number, responsePrescriptions: number }}
+     */
+    function getPromptPrescriptionCounts() {
+      const counts = {
+        stateDescriptionAdditions: 0,
+        stateDescriptionReplacements: 0,
+        stateDescriptionDeletions: 0,
+        responsePrescriptions: designState.responseDesigns.length
+      };
+
+      const formattedViewEdit = getFormattedViewEditForExport();
+      if ( formattedViewEdit ) {
+        const diffCounts = countOrderedTextDiffOperations( formattedViewEdit.diff );
+        counts.stateDescriptionAdditions += diffCounts.additions;
+        counts.stateDescriptionReplacements += diffCounts.replacements;
+        counts.stateDescriptionDeletions += diffCounts.deletions;
+      }
+
+      designState.editRegistry.forEach( edit => {
+        if ( !edit.edited ) {
+          return;
+        }
+        if ( edit.operation === 'insertBefore' || edit.operation === 'insertAfter' ) {
+          counts.stateDescriptionAdditions++;
+        }
+        else if ( edit.operation === 'deleteText' ) {
+          counts.stateDescriptionDeletions++;
+        }
+        else {
+          counts.stateDescriptionReplacements++;
+        }
+      } );
+
+      return counts;
+    }
+
+    /**
+     * Counts document-level diff operations as additions, replacements, and deletions.
+     *
+     * @param {Object[]} diff
+     * @returns {{ additions: number, replacements: number, deletions: number }}
+     */
+    function countOrderedTextDiffOperations( diff ) {
+      let addedUnits = 0;
+      let removedUnits = 0;
+      ( diff || [] ).forEach( entry => {
+        const unitCount = countDiffTextUnits( entry.text );
+        if ( entry.operation === 'add' ) {
+          addedUnits += unitCount;
+        }
+        else if ( entry.operation === 'remove' ) {
+          removedUnits += unitCount;
+        }
+      } );
+
+      const replacements = Math.min( addedUnits, removedUnits );
+      return {
+        additions: Math.max( 0, addedUnits - replacements ),
+        replacements: replacements,
+        deletions: Math.max( 0, removedUnits - replacements )
+      };
+    }
+
+    /**
+     * Counts line-like units represented by one diff entry.
+     *
+     * @param {string} text
+     * @returns {number}
+     */
+    function countDiffTextUnits( text ) {
+      return ( text || '' )
+        .split( /\n+/ )
+        .map( line => line.trim() )
+        .filter( line => line.length > 0 ).length;
+    }
+
+    /**
      * Re-renders the mirrored PDOM views if a sim PDOM has already been connected.
      */
     function rerenderCurrentPDOMViews() {
@@ -1255,6 +1463,9 @@
         designState.isFrozen = false;
         designState.frozenPDOMRoot = null;
         designState.frozenSnapshot = null;
+        if ( designState.formattedDocumentDraft ) {
+          designState.formattedDocumentDraft.active = false;
+        }
         updateFreezeControls();
         rerenderCurrentPDOMViews();
         renderAccessibleViewState( designState.innerWindow, domReferences.accessibleViewStateCode );
@@ -1288,8 +1499,14 @@
 
       const freezeStatus = domReferences.freezeStatus;
       if ( freezeStatus ) {
-        freezeStatus.textContent = designState.isFrozen ? 'Frozen' : 'Live';
+        const isEditingDraft = !!( designState.formattedDocumentDraft &&
+                                   designState.formattedDocumentDraft.edited &&
+                                   designState.formattedDocumentDraft.active );
+        freezeStatus.textContent = isEditingDraft ? 'Editing draft' :
+                                   designState.isFrozen ? 'Frozen' : 'Live';
         freezeStatus.setAttribute( 'data-frozen', designState.isFrozen ? 'true' : 'false' );
+        freezeStatus.setAttribute( 'data-state', isEditingDraft ? 'editing' :
+                                                 designState.isFrozen ? 'frozen' : 'live' );
       }
     }
 
@@ -1310,6 +1527,9 @@
     function initializeManualContextResponseControls( domRefs ) {
       if ( domRefs.manualContextBeforeButton ) {
         domRefs.manualContextBeforeButton.addEventListener( 'click', () => {
+          if ( !designState.designModeEnabled ) {
+            return;
+          }
           designState.manualContextBeforeSnapshot = captureDesignSnapshot();
           updateManualContextResponseStatus();
         } );
@@ -1317,6 +1537,9 @@
 
       if ( domRefs.manualContextAfterButton ) {
         domRefs.manualContextAfterButton.addEventListener( 'click', () => {
+          if ( !designState.designModeEnabled ) {
+            return;
+          }
           designState.manualContextAfterSnapshot = captureDesignSnapshot();
           updateManualContextResponseStatus();
         } );
@@ -1335,6 +1558,11 @@
      * Adds a manual context-response prescription from the captured before/after snapshots and typed text.
      */
     function addManualContextResponsePrescription() {
+      if ( !designState.designModeEnabled ) {
+        updateManualContextResponseStatus();
+        return;
+      }
+
       const input = domReferences.manualContextResponseInput;
       const responseText = input ? input.value.trim() : '';
       if ( !responseText || !designState.manualContextBeforeSnapshot || !designState.manualContextAfterSnapshot ) {
@@ -1358,6 +1586,7 @@
       designState.responseDesigns.push( design );
       renderResponseDesignItem( design );
       console.log( JSON.stringify( record ) );
+      updatePromptStatus();
 
       if ( input ) {
         input.value = '';
@@ -1735,23 +1964,31 @@
       const renderedHTML = container.innerHTML;
       const renderedText = getFormattedDocumentText( container );
       const draft = designState.formattedDocumentDraft;
+      designState.liveFormattedDocument = {
+        baselineText: renderedText,
+        baselineHTML: renderedHTML
+      };
 
-      if ( draft && draft.edited ) {
+      if ( draft && draft.edited && draft.active && designState.designModeEnabled ) {
         container.innerHTML = draft.editedHTML;
       }
       else {
-        designState.formattedDocumentDraft = {
-          baselineText: renderedText,
-          baselineHTML: renderedHTML,
-          editedText: renderedText,
-          editedHTML: renderedHTML,
-          edited: false
-        };
+        if ( !draft || !draft.edited ) {
+          designState.formattedDocumentDraft = {
+            baselineText: renderedText,
+            baselineHTML: renderedHTML,
+            editedText: renderedText,
+            editedHTML: renderedHTML,
+            edited: false,
+            active: false
+          };
+        }
       }
 
       container.contentEditable = designState.designModeEnabled ? 'true' : 'false';
       container.spellcheck = designState.designModeEnabled;
       container.oninput = () => updateFormattedDocumentDraft( container );
+      highlightFormattedDocumentChanges( container );
     }
 
     /**
@@ -1762,20 +1999,86 @@
     function updateFormattedDocumentDraft( container ) {
       let draft = designState.formattedDocumentDraft;
       if ( !draft ) {
-        const text = getFormattedDocumentText( container );
+        const liveDocument = designState.liveFormattedDocument;
+        const text = liveDocument ? liveDocument.baselineText : getFormattedDocumentText( container );
         draft = {
           baselineText: text,
-          baselineHTML: container.innerHTML,
+          baselineHTML: liveDocument ? liveDocument.baselineHTML : container.innerHTML,
           editedText: text,
-          editedHTML: container.innerHTML,
-          edited: false
+          editedHTML: liveDocument ? liveDocument.baselineHTML : container.innerHTML,
+          edited: false,
+          active: false
         };
         designState.formattedDocumentDraft = draft;
+      }
+
+      if ( !draft.active ) {
+        const liveDocument = designState.liveFormattedDocument;
+        draft.baselineText = liveDocument ? liveDocument.baselineText : draft.baselineText;
+        draft.baselineHTML = liveDocument ? liveDocument.baselineHTML : draft.baselineHTML;
       }
 
       draft.editedText = getFormattedDocumentText( container );
       draft.editedHTML = container.innerHTML;
       draft.edited = draft.editedText !== draft.baselineText;
+      draft.active = draft.edited;
+      highlightFormattedDocumentChanges( container );
+      updateFreezeControls();
+      updatePromptStatus();
+    }
+
+    /**
+     * Highlights rendered blocks whose current text is edited or added relative to the draft baseline.
+     *
+     * @param {HTMLElement} container
+     */
+    function highlightFormattedDocumentChanges( container ) {
+      if ( !container ) {
+        return;
+      }
+      Array.from( container.querySelectorAll( '.formatted-document-change-highlight' ) ).forEach( element => {
+        element.classList.remove( 'formatted-document-change-highlight' );
+      } );
+
+      const draft = designState.formattedDocumentDraft;
+      if ( !draft || !draft.edited || !draft.active || !designState.designModeEnabled ) {
+        return;
+      }
+
+      const baselineLines = new Set( splitDocumentDiffUnits( draft.baselineText ) );
+      getFormattedChangeHighlightBlocks( container ).forEach( block => {
+        const blockText = normalizeFormattedBlockText( block );
+        if ( blockText && !baselineLines.has( blockText ) ) {
+          block.classList.add( 'formatted-document-change-highlight' );
+        }
+      } );
+    }
+
+    /**
+     * Gets block-level candidates for formatted document highlighting.
+     *
+     * @param {HTMLElement} container
+     * @returns {HTMLElement[]}
+     */
+    function getFormattedChangeHighlightBlocks( container ) {
+      const selector = 'p, li, h1, h2, h3, h4, h5, h6, button, label, .formatted-related-group, .formatted-group, .formatted-aria-block, .aria-chip';
+      const candidates = Array.from( container.querySelectorAll( selector ) )
+        .filter( element => normalizeFormattedBlockText( element ).length > 0 );
+
+      return candidates.filter( element => !candidates.some( other => other !== element && element.contains( other ) ) );
+    }
+
+    /**
+     * Normalizes text from a formatted-view block for baseline comparison.
+     *
+     * @param {HTMLElement} element
+     * @returns {string}
+     */
+    function normalizeFormattedBlockText( element ) {
+      return ( element.innerText || element.textContent || '' )
+        .replace( /\u00a0/g, ' ' )
+        .replace( /\s+/g, ' ' )
+        .trim();
     }
 
     /**
@@ -4123,19 +4426,24 @@
     function createCodexPrompt() {
       const records = getPrescriptionRecordsForExport();
       const simMetadata = getSimMetadata();
+      const counts = getPromptPrescriptionCounts();
       const lines = [
         `Implement these accessibility description prescriptions in ${simMetadata.repo || 'the current sim'}.`,
+        '',
+        `Prescription summary: ${counts.stateDescriptionAdditions} state-description additions, ${counts.stateDescriptionReplacements} replacements, ${counts.stateDescriptionDeletions} deletions, ${counts.responsePrescriptions} response prescriptions.`,
         '',
         'Constraints:',
         '- Preserve existing PhET i18n/string patterns.',
         '- Add or update strings in the appropriate sim strings file.',
         '- Use existing describer, Core Description, and accessible response patterns.',
         '- For formatted view edits, treat the edited rendered text and diff as the designer prescription for state descriptions.',
-        '- For context responses, prefer component accessibleContextResponse options when appropriate; otherwise use addAccessibleContextResponse at the interaction point.',
-        '- Run npm run check -- --fix --skip-phet-io-compare-api.',
-        '- Generalize beyond what is provided -- the designer probably just specified one data point but it is your job to understand the intent and represent it in a way that covers similar cases.',
-        '- Do not be fooled by "noise" in the state delta, other things may have happened, pay attention to the thing that relates to the prescribed message',
-        '- Ignore the directionaly markers ‪ and ‬ or <0x202a> or <0x202c>, they will be added automatically downstream.',
+        '- Treat accessible view state as the semantic comparison artifact for designing responses; Axon Properties and interaction listeners should still own live implementation triggers.',
+        '- For new accessible-state contracts, prefer component objects shaped like { visible: false } or { visible: true, ...screenReaderRelevantSemanticFields }.',
+        '- For context responses, prefer component accessibleContextResponse options when available; use addAccessibleContextResponse at the interaction point for custom interactions, and dedicated describer/transition classes only for complex state comparisons.',
+        '- Run ./bin/check --fix --skip-phet-io-compare-api.',
+        '- Generalize beyond what is provided -- across screens, across scenes, and across parameters. The designer probably specified one data point; implement the reusable intent.',
+        '- State deltas can be noisy. Implement the designer\'s intent, not every incidental state delta.',
+        '- Ignore the directional markers ‪ and ‬ or <0x202a> or <0x202c>, they will be added automatically downstream.',
         '',
         'Prescriptions:'
       ];
@@ -4353,6 +4661,10 @@
      * @param {string} category
      */
     function captureContextResponseDesign( responseText, category ) {
+      if ( !designState.designModeEnabled ) {
+        return;
+      }
+
       const beforeSnapshot = Date.now() - designState.lastPreInteractionTimestamp <= PRE_INTERACTION_SNAPSHOT_MAX_AGE ?
                              designState.lastPreInteractionSnapshot :
                              null;
@@ -4372,6 +4684,7 @@
         designState.responseDesigns.push( design );
         renderResponseDesignItem( design );
         console.log( JSON.stringify( record ) );
+        updatePromptStatus();
       }, RESPONSE_AFTER_SNAPSHOT_DELAY );
     }
 
@@ -4396,16 +4709,23 @@
 
       const editable = document.createElement( 'span' );
       editable.className = 'response-design-editable';
-      editable.contentEditable = 'true';
+      editable.contentEditable = designState.designModeEnabled ? 'true' : 'false';
       editable.textContent = design.record.response.prescribedText;
       editable.addEventListener( 'focus', () => {
+        if ( !designState.designModeEnabled ) {
+          return;
+        }
         design.edited = true;
         editable.classList.add( 'design-edited' );
       } );
       editable.addEventListener( 'input', () => {
+        if ( !designState.designModeEnabled ) {
+          return;
+        }
         design.edited = true;
         editable.classList.add( 'design-edited' );
         design.record.response.prescribedText = editable.textContent || '';
+        updatePromptStatus();
       } );
       item.appendChild( editable );
 
@@ -4428,6 +4748,10 @@
      */
     function installPreInteractionSnapshotListeners( iframeDocument ) {
       const captureBeforeInteraction = () => {
+        if ( !designState.designModeEnabled ) {
+          return;
+        }
+
         const snapshot = captureDesignSnapshot();
         if ( snapshot ) {
           designState.lastPreInteractionSnapshot = snapshot;
@@ -4512,7 +4836,10 @@
         designState.isFrozen = false;
         designState.frozenPDOMRoot = null;
         designState.frozenSnapshot = null;
-        designState.formattedDocumentDraft = null;
+        designState.liveFormattedDocument = null;
+        if ( designState.formattedDocumentDraft ) {
+          designState.formattedDocumentDraft.active = false;
+        }
         designState.pdomRoot = PDOMRoot;
         designState.innerWindow = innerWindow;
         updateFreezeControls();
@@ -4610,7 +4937,7 @@
     /**
      * Collects frequently accessed DOM nodes for later use.
      *
-     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
+     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadJsonlButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignsContainer: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
      */
     function createDomReferences() {
       return {
@@ -4627,10 +4954,13 @@
         designModeCheckbox: document.getElementById( 'design-mode-checkbox' ),
         freezeDesignButton: document.getElementById( 'freeze-design-button' ),
         freezeStatus: document.getElementById( 'freeze-status' ),
+        promptStatus: document.getElementById( 'prompt-status' ),
+        clearPromptButton: document.getElementById( 'clear-prompt-button' ),
         downloadJsonlButton: document.getElementById( 'download-jsonl-button' ),
         downloadCodexPromptButton: document.getElementById( 'download-codex-prompt-button' ),
         staleEditsContainer: document.getElementById( 'stale-edits-container' ),
         staleEditsList: document.getElementById( 'stale-edits-list' ),
+        responseDesignsContainer: document.getElementById( 'response-designs-container' ),
         responseDesignList: document.getElementById( 'response-design-list' ),
         manualContextBeforeButton: document.getElementById( 'manual-context-before-button' ),
         manualContextAfterButton: document.getElementById( 'manual-context-after-button' ),
