@@ -9,19 +9,19 @@
  */
 
 import { readFileSync } from 'fs';
-import { Repo } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
+import { Runnable } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import { gitImmutableExecute } from '../../../perennial-alias/js/common/git/gitMutex.js';
 
 export const getCompatibleDependenciesJSON = async (
-  repo: Repo,
+  runnable: Runnable,
   includeBabel = false
 ): Promise<object> => {
 
-  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
+  const packageObject = JSON.parse( readFileSync( `../${runnable}/package.json`, 'utf8' ) );
   const version = packageObject.version;
 
   const dependenciesInfo: Record<string, unknown> = {
-    comment: `# ${repo} ${version} ${new Date().toString()}`,
+    comment: `# ${runnable} ${version} ${new Date().toString()}`,
     totality: {
       sha: ( await gitImmutableExecute( [ 'rev-parse', 'HEAD' ], '..' ) ).trim(),
       branch: 'HEAD'

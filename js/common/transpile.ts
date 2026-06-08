@@ -11,7 +11,7 @@ import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
-import { Repo } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
+import { Dependency } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
 import { getActiveRepos } from '../../../perennial-alias/js/common/repos/getActiveRepos.js';
@@ -34,7 +34,7 @@ export type TranspileOptions = {
   live?: boolean;
 
   // List of repos to transpile, if not doing all
-  repos?: Repo[];
+  repos?: Dependency[];
 
   // suppress any logging output.
   silent?: boolean;

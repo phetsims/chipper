@@ -7,21 +7,21 @@
  */
 
 import path from 'path';
-import { Repo } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
+import { Dependency } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../../perennial-alias/js/common/execute.js';
 import { tsxCommand } from '../../../../perennial-alias/js/common/tsxCommand.js';
 
-export default async function preCommitOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<boolean> {
+export default async function preCommitOnRepos( dependencies: Dependency[], outputToConsole: boolean ): Promise<boolean> {
   const startTime = Date.now();
 
   let success = true;
 
   // This is done sequentially so we don't spawn a bunch of uncached type-check at once, but in the future we may want to optimize
   // to run one sequentially then the rest in parallel
-  for ( let i = 0; i < repos.length; i++ ) {
+  for ( let i = 0; i < dependencies.length; i++ ) {
 
-    process.stdout.write( repos[ i ] + ': ' );
+    process.stdout.write( dependencies[ i ] + ': ' );
 
     // get all argv, but drop out --all and --changed
     const args = process.argv.slice( 2 ).filter( arg => ![ '--all', '--changed' ].includes( arg ) );
@@ -31,7 +31,7 @@ export default async function preCommitOnRepos( repos: Repo[], outputToConsole: 
     const __dirname = dirname( import.meta.url );
 
     // get the cwd to the repo, ../../../../repo
-    const cwd = path.resolve( __dirname, '../../../../', repos[ i ] );
+    const cwd = path.resolve( __dirname, '../../../../', dependencies[ i ] );
 
     const result = await execute( tsxCommand, [ '../chipper/js/grunt/tasks/pre-commit.ts', ...args ], cwd, {
 
