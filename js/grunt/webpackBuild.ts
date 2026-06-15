@@ -62,9 +62,10 @@ const getRelativeModules = ( modules: string[] ) => {
     // Get the relative path to the root, like "joist/js/Sim.js" or, on Windows, "joist\js\Sim.js"
     .map( m => path.relative( root, m ) )
 
-    // Some developers check in a package.json to the root of the checkouts, as described in https://github.com/phetsims/chipper/issues/494#issuecomment-821292542
-    // like: /Users/samreid/apache-document-root/package.json. This powers grunt only and should not be included in the modules
-    .filter( m => m !== '../package.json' && m !== '..\\package.json' );
+    // package.json or other files that are outside of the root need to be excluded, so that it doesn't error out when
+    // doing operations on worktrees. See https://github.com/phetsims/totality/issues/140. Additionally, this continues
+    // to filter out package.json at the totality level, see https://github.com/phetsims/chipper/issues/494#issuecomment-821292542.
+    .filter( m => !m.startsWith( '..' ) );
 };
 
 type WebpackBuildOptions = {
