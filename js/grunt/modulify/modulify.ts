@@ -108,8 +108,11 @@ const getModulifiedSVGImage = async ( repo: string, relativePath: string ): Prom
   const abspath = path.resolve( `../${repo}`, relativePath );
   const fileContents = await fsPromises.readFile( abspath, 'utf-8' );
 
-  if ( !fileContents.includes( 'width="' ) || !fileContents.includes( 'height="' ) ) {
-    throw new Error( `SVG file ${abspath} does not contain width and height attributes` );
+  const svgTag = fileContents.match( /<svg\b[\s\S]*?>/i )?.[ 0 ];
+  const rootAttributes = svgTag ? new Set( [ ...svgTag.matchAll( /\s([^\s=]+)\s*=/g ) ].map( match => match[ 1 ] ) ) : new Set<string>();
+
+  if ( !rootAttributes.has( 'width' ) || !rootAttributes.has( 'height' ) ) {
+    throw new Error( `SVG file ${abspath} does not contain root width and height attributes` );
   }
 
   // Use SVGO to optimize the SVG contents, see https://github.com/phetsims/arithmetic/issues/201
