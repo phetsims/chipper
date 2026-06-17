@@ -4,6 +4,7 @@
     // Gruntfile and eslint.config.mjs
     "../../*",
     "../../js/**/*",
+    "../../wrappers/description-editor/**/*.ts",
     /////////////////////////////////////////
     // Dependencies outside of chipper
     "../../../perennial-alias/js/common/**/*",

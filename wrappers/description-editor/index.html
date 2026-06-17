@@ -246,7 +246,6 @@
     }
 
     .design-toolbar button,
-    .manual-context-response-controls button,
     .response-design-item button {
       border: 1px solid #8ca8c9;
       border-radius: 0.45em;
@@ -263,21 +262,8 @@
       gap: 0.35em;
     }
 
-    .toolbar-button-icon {
-      width: 1em;
-      height: 1em;
-      flex: 0 0 auto;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
     .design-toolbar button:hover,
     .design-toolbar button:focus-visible,
-    .manual-context-response-controls button:hover,
-    .manual-context-response-controls button:focus-visible,
     .response-design-item button:hover,
     .response-design-item button:focus-visible {
       background: #dfefff;
@@ -325,34 +311,38 @@
       background: #d69200;
     }
 
-    .prompt-status {
+    .editor-server-status {
       display: inline-flex;
       align-items: center;
       gap: 0.35em;
-      flex-wrap: wrap;
-      color: #263c54;
+      color: #526578;
       font-size: 0.9em;
       font-weight: 600;
     }
 
-    .prompt-status-count {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.12em 0.45em;
-      border-radius: 999px;
-      color: #173d66;
-      background: #ffffff;
-      border: 1px solid #b9cdea;
+    .editor-server-status::before {
+      content: "";
+      display: inline-block;
+      width: 0.65em;
+      height: 0.65em;
+      border-radius: 50%;
+      background: #7a8793;
     }
 
-    .codex-clipboard-status {
+    .editor-server-status[data-connected="true"] {
       color: #0f6b45;
-      font-size: 0.9em;
-      font-weight: 600;
     }
 
-    .codex-clipboard-status[hidden] {
-      display: none;
+    .editor-server-status[data-connected="true"]::before {
+      background: #19a974;
+    }
+
+    .editor-server-status[data-error="true"] {
+      color: #8d2f23;
+    }
+
+    .editor-server-status[data-error="true"]::before {
+      background: #d0452f;
     }
 
     .design-editable-text,
@@ -368,12 +358,6 @@
       cursor: text;
     }
 
-    .design-editable-text.design-edited,
-    .response-design-editable.design-edited {
-      background: #fff0b8;
-      box-shadow: inset 0 0 0 2px #c69116;
-    }
-
     .design-editable-text:focus-visible,
     .response-design-editable:focus-visible {
       outline: 3px solid rgba(20, 110, 188, 0.5);
@@ -386,14 +370,6 @@
       cursor: text;
     }
 
-    .formatted-document-change-highlight {
-      background: #fff0a6;
-      box-shadow: inset 0 0 0 2px rgba(198, 145, 22, 0.55);
-      border-radius: 0.35em;
-    }
-
-    .stale-edits-container,
-    .manual-context-response-container,
     .response-designs-container {
       margin-top: 1em;
       padding: 0.75em;
@@ -402,15 +378,10 @@
       border: 1px solid #cbd6e4;
     }
 
-    .stale-edits-container[hidden] {
-      display: none;
-    }
-
     .response-designs-container[hidden] {
       display: none;
     }
 
-    .stale-edit-item,
     .response-design-item {
       margin-top: 0.55em;
       padding: 0.55em 0.7em;
@@ -419,50 +390,11 @@
       border: 1px solid #d6deea;
     }
 
-    .stale-edit-label,
-    .response-design-meta {
-      display: block;
-      color: #526578;
-      font-size: 0.82em;
-      margin-bottom: 0.25em;
-      word-break: break-word;
-    }
-
     .response-design-editable {
       display: block;
       min-height: 2.5em;
       line-height: 1.35;
       white-space: pre-wrap;
-    }
-
-    .manual-context-response-controls {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      flex-wrap: wrap;
-      margin: 0.4em 0 0.6em;
-    }
-
-    .manual-context-response-input {
-      box-sizing: border-box;
-      width: 100%;
-      min-height: 5.5em;
-      resize: vertical;
-      border: 1px solid #b9cdea;
-      border-radius: 0.45em;
-      padding: 0.45em 0.55em;
-      font: inherit;
-    }
-
-    .manual-context-response-status {
-      color: #526578;
-      font-size: 0.86em;
-    }
-
-    .response-design-actions {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 0.45em;
     }
 
     p.alert_copy {
@@ -730,18 +662,7 @@
             </div>
           </div>
           <div id="response-designs-container" class="response-designs-container" role="presentation">
-            <h3>Response Designs</h3>
-            <div class="manual-context-response-container" role="presentation">
-              <h3>Add Context Response</h3>
-              <div class="manual-context-response-controls">
-                <button id="manual-context-before-button" type="button">Capture Before</button>
-                <button id="manual-context-after-button" type="button">Capture After</button>
-                <button id="manual-context-add-button" type="button">Add Response</button>
-                <span id="manual-context-response-status" class="manual-context-response-status">No manual response in progress.</span>
-              </div>
-              <textarea id="manual-context-response-input" class="manual-context-response-input"
-                        placeholder="Type the context response that should be added."></textarea>
-            </div>
+            <h3>Context Responses</h3>
             <div id="response-design-list"></div>
           </div>
         </div>
@@ -773,36 +694,11 @@
               </label>
               <button id="freeze-design-button" type="button" aria-pressed="false">Freeze</button>
               <span id="freeze-status" class="freeze-status" data-frozen="false">Live</span>
-              <span id="prompt-status" class="prompt-status" aria-live="polite"></span>
-              <button id="download-codex-prompt-button" type="button">
-                <svg class="toolbar-button-icon" aria-hidden="true" viewBox="0 0 24 24">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <path d="M14 2v6h6"></path>
-                  <path d="M8 13h4"></path>
-                  <path d="M8 17h8"></path>
-                  <path d="M15 11v6"></path>
-                  <path d="M12 14l3 3 3-3"></path>
-                </svg>
-                <span>Codex</span>
-              </button>
-              <button id="clear-prompt-button" type="button">
-                <svg class="toolbar-button-icon" aria-hidden="true" viewBox="0 0 24 24">
-                  <path d="M3 6h18"></path>
-                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-                  <path d="M10 11v6"></path>
-                  <path d="M14 11v6"></path>
-                </svg>
-                <span>Clear</span>
-              </button>
-              <span id="codex-clipboard-status" class="codex-clipboard-status" aria-live="polite" hidden></span>
+              <span id="editor-server-status" class="editor-server-status" data-connected="false" aria-live="polite">Editor: offline</span>
+              <button id="undo-edit-button" type="button" hidden>Undo Edit</button>
             </div>
             <div id="dom-copy-container">
               <div class="dom-view" data-view="formatted"></div>
-            </div>
-            <div id="stale-edits-container" class="stale-edits-container" hidden>
-              <h3>Stale Edits</h3>
-              <div id="stale-edits-list"></div>
             </div>
           </div>
         </div>
@@ -1009,11 +905,6 @@
     const MIN_COLUMN_WIDTH_PERCENT = 15;
     const RESIZER_KEYBOARD_STEP_PERCENT = 2;
     const DESIGN_MODE_STORAGE_KEY = 'a11y-design-mode';
-    const PRE_INTERACTION_SNAPSHOT_MAX_AGE = 5000;
-    const RESPONSE_AFTER_SNAPSHOT_DELAY = 150;
-    const PRESCRIPTION_SCHEMA_VERSION = 2;
-    const CODEX_CLIPBOARD_MESSAGE_DURATION = 5000;
-    let codexClipboardMessageTimeoutId = null;
 
     const queryParameters = new URLSearchParams( window.location.search );
     const designState = {
@@ -1024,16 +915,28 @@
       frozenSnapshot: null,
       innerWindow: null,
       simFreezeController: null,
-      editRegistry: new Map(),
       activeLocatorKeys: new Set(),
       liveFormattedDocument: null,
       formattedDocumentDraft: null,
-      responseDesigns: [],
-      recentResponses: [],
-      lastPreInteractionSnapshot: null,
-      lastPreInteractionTimestamp: 0,
-      manualContextBeforeSnapshot: null,
-      manualContextAfterSnapshot: null
+      recentResponses: []
+    };
+
+    // State for the Description Editor server connection. When connected, Design Mode edits commit straight to the
+    // strings YAML on disk and changed values are live-injected into the running sim without a reload.
+    const editorState = {
+      serverUrl: queryParameters.get( 'editorServer' ) || 'http://localhost:4621',
+      simRepo: queryParameters.get( 'sim' ),
+      connected: false,
+      provenanceDocument: null,
+
+      // One entry per message: { message, segments, regex } — the reverse-lookup index from rendered text back to
+      // (message, segment, valueOffset) provenance.
+      foldIndex: [],
+      fluentIdToDotKey: new Map(),
+
+      // Stack of inverse edits ({ dotKey, oldText, newText, valueOffset }) for committed edits, newest last
+      undoJournal: [],
+      statusResetTimeoutId: null
     };
 
     const domReferences = createDomReferences();
@@ -1063,15 +966,16 @@
     initializeColumnResizers( domReferences.splitLayout, domReferences.splitPanes, domReferences.splitResizers );
     setupMessageListener( domReferences, viewContainers, viewRenderers, MUTATION_OBSERVER_CONFIG );
     initializeLiveReload();
+    initializeEditorServerConnection();
 
     /*******************************************************************************
      * Helper Functions
      */
 
     /**
-     * Initializes Design Mode controls for editable descriptions, freeze, and Codex prompt creation.
+     * Initializes Design Mode controls for editable descriptions and freeze.
      *
-     * @param {{ designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, codexClipboardStatus: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null }} domRefs
+     * @param {{ designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null }} domRefs
      */
     function initializeDesignControls( domRefs ) {
       designState.designModeEnabled = loadBooleanPreference( DESIGN_MODE_STORAGE_KEY, false );
@@ -1094,17 +998,7 @@
       }
       updateFreezeControls();
 
-      if ( domRefs.downloadCodexPromptButton ) {
-        domRefs.downloadCodexPromptButton.addEventListener( 'click', downloadCodexPrompt );
-      }
-
-      if ( domRefs.clearPromptButton ) {
-        domRefs.clearPromptButton.addEventListener( 'click', clearPromptPrescriptions );
-      }
-
-      initializeManualContextResponseControls( domRefs );
       updateDesignModeUI();
-      updatePromptStatus();
     }
 
     /**
@@ -1153,17 +1047,6 @@
         domReferences.responseDesignsContainer.hidden = !designState.designModeEnabled;
       }
 
-      [
-        domReferences.manualContextBeforeButton,
-        domReferences.manualContextAfterButton,
-        domReferences.manualContextAddButton,
-        domReferences.manualContextResponseInput
-      ].forEach( control => {
-        if ( control ) {
-          control.disabled = !designState.designModeEnabled;
-        }
-      } );
-
       if ( domReferences.responseDesignList ) {
         Array.from( domReferences.responseDesignList.querySelectorAll( '.response-design-editable' ) ).forEach( editable => {
           editable.contentEditable = designState.designModeEnabled ? 'true' : 'false';
@@ -1174,151 +1057,12 @@
     }
 
     /**
-     * Clears all accumulated Codex prompt prescriptions without affecting the live response activity log.
-     */
-    function clearPromptPrescriptions() {
-      designState.editRegistry.clear();
-      designState.liveFormattedDocument = null;
-      designState.formattedDocumentDraft = null;
-      designState.responseDesigns = [];
-      designState.lastPreInteractionSnapshot = null;
-      designState.lastPreInteractionTimestamp = 0;
-      designState.manualContextBeforeSnapshot = null;
-      designState.manualContextAfterSnapshot = null;
-
-      if ( domReferences.responseDesignList ) {
-        domReferences.responseDesignList.innerHTML = '';
-      }
-      if ( domReferences.manualContextResponseInput ) {
-        domReferences.manualContextResponseInput.value = '';
-      }
-
-      updateManualContextResponseStatus();
-      updatePromptStatus();
-      rerenderCurrentPDOMViews();
-    }
-
-    /**
-     * Updates the toolbar summary of Codex prompt prescriptions.
-     */
-    function updatePromptStatus() {
-      const status = domReferences.promptStatus;
-      if ( !status ) {
-        return;
-      }
-
-      const counts = getPromptPrescriptionCounts();
-      status.innerHTML = '';
-      status.appendChild( document.createTextNode( 'Prompt:' ) );
-      [
-        { label: 'Add', value: counts.stateDescriptionAdditions },
-        { label: 'Replace', value: counts.stateDescriptionReplacements },
-        { label: 'Delete', value: counts.stateDescriptionDeletions },
-        { label: 'Responses', value: counts.responsePrescriptions }
-      ].forEach( item => {
-        const badge = document.createElement( 'span' );
-        badge.className = 'prompt-status-count';
-        badge.textContent = `${item.label} ${item.value}`;
-        status.appendChild( badge );
-      } );
-    }
-
-    /**
-     * Gets response designs that have been reviewed or manually authored and should be included in the Codex prompt.
-     *
-     * @returns {{ id: string, record: Object, edited: boolean }[]}
-     */
-    function getEditedResponseDesigns() {
-      return designState.responseDesigns.filter( design => design.edited );
-    }
-
-    /**
-     * Computes the compact prescription counts shown in the toolbar and Codex prompt.
-     *
-     * @returns {{ stateDescriptionAdditions: number, stateDescriptionReplacements: number, stateDescriptionDeletions: number, responsePrescriptions: number }}
-     */
-    function getPromptPrescriptionCounts() {
-      const counts = {
-        stateDescriptionAdditions: 0,
-        stateDescriptionReplacements: 0,
-        stateDescriptionDeletions: 0,
-        responsePrescriptions: getEditedResponseDesigns().length
-      };
-
-      const formattedViewEdit = getFormattedViewEditForCodexPrompt();
-      if ( formattedViewEdit ) {
-        const diffCounts = countOrderedTextDiffOperations( formattedViewEdit.diff );
-        counts.stateDescriptionAdditions += diffCounts.additions;
-        counts.stateDescriptionReplacements += diffCounts.replacements;
-        counts.stateDescriptionDeletions += diffCounts.deletions;
-      }
-
-      designState.editRegistry.forEach( edit => {
-        if ( !edit.edited ) {
-          return;
-        }
-        if ( edit.operation === 'insertBefore' || edit.operation === 'insertAfter' ) {
-          counts.stateDescriptionAdditions++;
-        }
-        else if ( edit.operation === 'deleteText' ) {
-          counts.stateDescriptionDeletions++;
-        }
-        else {
-          counts.stateDescriptionReplacements++;
-        }
-      } );
-
-      return counts;
-    }
-
-    /**
-     * Counts document-level diff operations as additions, replacements, and deletions.
-     *
-     * @param {Object[]} diff
-     * @returns {{ additions: number, replacements: number, deletions: number }}
-     */
-    function countOrderedTextDiffOperations( diff ) {
-      let addedUnits = 0;
-      let removedUnits = 0;
-      ( diff || [] ).forEach( entry => {
-        const unitCount = countDiffTextUnits( entry.text );
-        if ( entry.operation === 'add' ) {
-          addedUnits += unitCount;
-        }
-        else if ( entry.operation === 'remove' ) {
-          removedUnits += unitCount;
-        }
-      } );
-
-      const replacements = Math.min( addedUnits, removedUnits );
-      return {
-        additions: Math.max( 0, addedUnits - replacements ),
-        replacements: replacements,
-        deletions: Math.max( 0, removedUnits - replacements )
-      };
-    }
-
-    /**
-     * Counts line-like units represented by one diff entry.
-     *
-     * @param {string} text
-     * @returns {number}
-     */
-    function countDiffTextUnits( text ) {
-      return ( text || '' )
-        .split( /\n+/ )
-        .map( line => line.trim() )
-        .filter( line => line.length > 0 ).length;
-    }
-
-    /**
      * Re-renders the mirrored PDOM view if a sim PDOM has already been connected.
      */
     function rerenderCurrentPDOMViews() {
       const renderedPDOMRoot = getRenderedPDOMRoot();
       if ( renderedPDOMRoot ) {
         renderViews( renderedPDOMRoot, viewContainers, viewRenderers );
-        updateStaleEditSection();
       }
     }
 
@@ -1464,99 +1208,6 @@
      */
     function getRenderedPDOMRoot() {
       return designState.frozenPDOMRoot || designState.pdomRoot;
-    }
-
-    /**
-     * Initializes the manual add-context-response workflow.
-     *
-     * @param {{ manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null }} domRefs
-     */
-    function initializeManualContextResponseControls( domRefs ) {
-      if ( domRefs.manualContextBeforeButton ) {
-        domRefs.manualContextBeforeButton.addEventListener( 'click', () => {
-          if ( !designState.designModeEnabled ) {
-            return;
-          }
-          designState.manualContextBeforeSnapshot = captureDesignSnapshot();
-          updateManualContextResponseStatus();
-        } );
-      }
-
-      if ( domRefs.manualContextAfterButton ) {
-        domRefs.manualContextAfterButton.addEventListener( 'click', () => {
-          if ( !designState.designModeEnabled ) {
-            return;
-          }
-          designState.manualContextAfterSnapshot = captureDesignSnapshot();
-          updateManualContextResponseStatus();
-        } );
-      }
-
-      if ( domRefs.manualContextAddButton ) {
-        domRefs.manualContextAddButton.addEventListener( 'click', () => {
-          addManualContextResponsePrescription();
-        } );
-      }
-
-      updateManualContextResponseStatus();
-    }
-
-    /**
-     * Adds a manual context-response prescription from the captured before/after snapshots and typed text.
-     */
-    function addManualContextResponsePrescription() {
-      if ( !designState.designModeEnabled ) {
-        updateManualContextResponseStatus();
-        return;
-      }
-
-      const input = domReferences.manualContextResponseInput;
-      const responseText = input ? input.value.trim() : '';
-      if ( !responseText || !designState.manualContextBeforeSnapshot || !designState.manualContextAfterSnapshot ) {
-        updateManualContextResponseStatus();
-        return;
-      }
-
-      const record = createContextResponsePrescriptionRecord(
-        designState.manualContextBeforeSnapshot,
-        designState.manualContextAfterSnapshot,
-        '',
-        'context',
-        'insertResponse',
-        responseText
-      );
-      const design = {
-        id: `manual-response-design-${designState.responseDesigns.length + 1}`,
-        record: record,
-        edited: true
-      };
-      designState.responseDesigns.push( design );
-      renderResponseDesignItem( design );
-      console.log( JSON.stringify( record ) );
-      updatePromptStatus();
-
-      if ( input ) {
-        input.value = '';
-      }
-      designState.manualContextBeforeSnapshot = null;
-      designState.manualContextAfterSnapshot = null;
-      updateManualContextResponseStatus();
-    }
-
-    /**
-     * Updates the manual context-response workflow status text.
-     */
-    function updateManualContextResponseStatus() {
-      const status = domReferences.manualContextResponseStatus;
-      if ( !status ) {
-        return;
-      }
-      const hasBefore = !!designState.manualContextBeforeSnapshot;
-      const hasAfter = !!designState.manualContextAfterSnapshot;
-      status.textContent = hasBefore && hasAfter ? 'Before and after captured.' :
-                           hasBefore ? 'Before captured. Capture after state.' :
-                           hasAfter ? 'After captured. Capture before state.' :
-                           'No manual response in progress.';
     }
 
     /**
@@ -1801,7 +1452,6 @@
 
         container.appendChild( fragment );
         configureFormattedDocumentEditor( container );
-        updateStaleEditSection();
       }
       finally {
         relatedGroupWrappers = null;
@@ -1809,7 +1459,7 @@
     }
 
     /**
-     * Configures the formatted view as a single document-editing surface and captures a baseline for Codex prompt diffs.
+     * Configures the formatted view as a single document-editing surface and captures a baseline for the editing draft.
      *
      * @param {HTMLElement} container
      */
@@ -1841,7 +1491,15 @@
       container.contentEditable = designState.designModeEnabled ? 'true' : 'false';
       container.spellcheck = designState.designModeEnabled;
       container.oninput = () => updateFormattedDocumentDraft( container );
-      highlightFormattedDocumentChanges( container );
+
+      // When the Description Editor server is connected, Enter commits pending span edits straight to the strings
+      // YAML and Escape discards them.
+      container.onkeydown = event => handleFormattedEditorKeydown( event, container );
+      container.onblur = () => {
+        if ( editorState.connected && designState.designModeEnabled ) {
+          commitFormattedViewEdits( container );
+        }
+      };
     }
 
     /**
@@ -1875,63 +1533,7 @@
       draft.editedHTML = container.innerHTML;
       draft.edited = draft.editedText !== draft.baselineText;
       draft.active = draft.edited;
-      highlightFormattedDocumentChanges( container );
       updateFreezeControls();
-      updatePromptStatus();
-    }
-
-    /**
-     * Highlights rendered blocks whose current text is edited or added relative to the draft baseline.
-     *
-     * @param {HTMLElement} container
-     */
-    function highlightFormattedDocumentChanges( container ) {
-      if ( !container ) {
-        return;
-      }
-      Array.from( container.querySelectorAll( '.formatted-document-change-highlight' ) ).forEach( element => {
-        element.classList.remove( 'formatted-document-change-highlight' );
-      } );
-
-      const draft = designState.formattedDocumentDraft;
-      if ( !draft || !draft.edited || !draft.active || !designState.designModeEnabled ) {
-        return;
-      }
-
-      const baselineLines = new Set( splitDocumentDiffUnits( draft.baselineText ) );
-      getFormattedChangeHighlightBlocks( container ).forEach( block => {
-        const blockText = normalizeFormattedBlockText( block );
-        if ( blockText && !baselineLines.has( blockText ) ) {
-          block.classList.add( 'formatted-document-change-highlight' );
-        }
-      } );
-    }
-
-    /**
-     * Gets block-level candidates for formatted document highlighting.
-     *
-     * @param {HTMLElement} container
-     * @returns {HTMLElement[]}
-     */
-    function getFormattedChangeHighlightBlocks( container ) {
-      const selector = 'p, li, h1, h2, h3, h4, h5, h6, button, label, .formatted-related-group, .formatted-group, .formatted-aria-block, .aria-chip';
-      const candidates = Array.from( container.querySelectorAll( selector ) )
-        .filter( element => normalizeFormattedBlockText( element ).length > 0 );
-
-      return candidates.filter( element => !candidates.some( other => other !== element && element.contains( other ) ) );
-    }
-
-    /**
-     * Normalizes text from a formatted-view block for baseline comparison.
-     *
-     * @param {HTMLElement} element
-     * @returns {string}
-     */
-    function normalizeFormattedBlockText( element ) {
-      return ( element.innerText || element.textContent || '' )
-        .replace( /\u00a0/g, ' ' )
-        .replace( /\s+/g, ' ' )
-        .trim();
     }
 
     /**
@@ -2363,7 +1965,7 @@
     }
 
     /**
-     * Creates an editable span for design prescriptions, keyed by a stable locator.
+     * Creates an editable span for design edits, keyed by a stable locator.
      *
      * @param {Object} locator
      * @param {string} currentText
@@ -2378,6 +1980,9 @@
       span.className = className;
       span.textContent = currentText;
       span.dataset.locatorKey = locatorKey;
+
+      // Capture the rendered text so the Description Editor can detect and resolve span-level edits on commit.
+      span.dataset.baselineText = currentText;
       return span;
     }
 
@@ -2550,7 +2155,7 @@
     }
 
     /**
-     * Creates metadata that can help map a prescription back to a live PDOM element.
+     * Creates metadata that can help map an edit back to a live PDOM element.
      *
      * @param {HTMLElement} element
      * @returns {Object}
@@ -2628,43 +2233,6 @@
      */
     function truncateText( text, length ) {
       return text.length <= length ? text : `${text.slice( 0, length - 1 )}...`;
-    }
-
-    /**
-     * Updates the stale edits section with frozen edits whose source locator is no longer in the rendered PDOM view.
-     */
-    function updateStaleEditSection() {
-      const container = domReferences.staleEditsContainer;
-      const list = domReferences.staleEditsList;
-      if ( !container || !list ) {
-        return;
-      }
-
-      list.innerHTML = '';
-      const staleEntries = Array.from( designState.editRegistry.entries() ).filter( entry => {
-        const locatorKey = entry[ 0 ];
-        const edit = entry[ 1 ];
-        const activeKey = edit.anchorLocatorKey || locatorKey;
-        return edit.edited && !designState.activeLocatorKeys.has( activeKey );
-      } );
-
-      container.hidden = staleEntries.length === 0;
-      staleEntries.forEach( entry => {
-        const edit = entry[ 1 ];
-        const item = document.createElement( 'div' );
-        item.className = 'stale-edit-item';
-
-        const label = document.createElement( 'span' );
-        label.className = 'stale-edit-label';
-        const locator = edit.locator || edit.anchorLocator || {};
-        label.textContent = `${edit.operation} ${locator.kind || ''} ${locator.tagName || ''} ${locator.id || locator.path || ''}`;
-        item.appendChild( label );
-
-        const text = document.createElement( 'div' );
-        text.textContent = edit.prescribedText;
-        item.appendChild( text );
-        list.appendChild( item );
-      } );
     }
 
     /**
@@ -3151,59 +2719,8 @@
     }
 
     /**
-     * Creates an implementation-ready prescription record from the current state-description edits.
-     *
-     * @returns {Object|null}
-     */
-    function createStateDescriptionPrescriptionRecord() {
-      const snapshot = designState.isFrozen && designState.frozenSnapshot ?
-                       designState.frozenSnapshot :
-                       captureDesignSnapshot();
-      if ( !snapshot ) {
-        return null;
-      }
-
-      return {
-        schemaVersion: PRESCRIPTION_SCHEMA_VERSION,
-        type: 'stateDescriptionPrescriptions',
-        timestamp: new Date().toISOString(),
-        sim: getSimMetadata(),
-        stateContext: formatStateContext( snapshot ),
-        formattedViewEdit: getFormattedViewEditForCodexPrompt(),
-        prescriptions: getCodexPromptDescriptionPrescriptions()
-      };
-    }
-
-    /**
-     * Creates a response prescription record from a response and before/after snapshots.
-     *
-     * @param {Object|null} beforeSnapshot
-     * @param {Object} afterSnapshot
-     * @param {string} beforeText
-     * @param {string} category
-     * @param {string} operation
-     * @param {string} prescribedText
-     * @returns {Object}
-     */
-    function createContextResponsePrescriptionRecord( beforeSnapshot, afterSnapshot, beforeText, category, operation, prescribedText ) {
-      return {
-        schemaVersion: PRESCRIPTION_SCHEMA_VERSION,
-        type: 'contextResponsePrescription',
-        timestamp: new Date().toISOString(),
-        sim: getSimMetadata(),
-        stateDelta: createStateDelta( beforeSnapshot, afterSnapshot ),
-        response: {
-          operation: operation,
-          category: category,
-          beforeText: beforeText,
-          prescribedText: prescribedText
-        }
-      };
-    }
-
-    /**
-     * Captures the wrapper's current design-relevant state. This intentionally omits screenshots; daemon-backed disk
-     * capture can add those later without bloating Codex-ready prescriptions.
+     * Captures the wrapper's current design-relevant state, used as the frozen snapshot for the Freeze feature. This
+     * intentionally omits screenshots.
      *
      * @returns {Object|null}
      */
@@ -3284,42 +2801,6 @@
              innerWindow.phet.joist.sim ?
              innerWindow.phet.joist.sim :
              null;
-    }
-
-    /**
-     * Captures basic sim/screen metadata for Codex prompt prescriptions.
-     *
-     * @returns {Object}
-     */
-    function getSimMetadata() {
-      const innerWindow = designState.innerWindow;
-      const sim = getSim( innerWindow );
-      const screens = sim && Array.isArray( sim.screens ) ? sim.screens : [];
-      const selectedScreen = sim && sim.selectedScreenProperty ? sim.selectedScreenProperty.value : null;
-      const screenIndex = selectedScreen ? screens.indexOf( selectedScreen ) : -1;
-      const screenName = selectedScreen && selectedScreen.nameProperty ? selectedScreen.nameProperty.value :
-                         selectedScreen && selectedScreen.name ? selectedScreen.name :
-                         null;
-
-      return {
-        repo: queryParameters.get( 'sim' ) || getRepoFromIframeURL(),
-        url: domReferences.iframe ? domReferences.iframe.src : '',
-        screenIndex: screenIndex >= 0 ? screenIndex : null,
-        screenName: screenName
-      };
-    }
-
-    /**
-     * Best-effort repository name extraction for built wrappers or missing query parameters.
-     *
-     * @returns {string|null}
-     */
-    function getRepoFromIframeURL() {
-      if ( !domReferences.iframe || !domReferences.iframe.src ) {
-        return null;
-      }
-      const match = domReferences.iframe.src.match( /\/([^/?#]+)\/\1_(?:en|all)(?:_phet)?\.html/ );
-      return match ? match[ 1 ] : null;
     }
 
     /**
@@ -3419,533 +2900,6 @@
     }
 
     /**
-     * Formats a compact state context for state-description prescriptions.
-     *
-     * @param {Object} snapshot
-     * @returns {Object}
-     */
-    function formatStateContext( snapshot ) {
-      return {
-        focus: snapshot.focus,
-        pdomText: truncateText( snapshot.pdomText || '', 4000 ),
-        visibleText: snapshot.visibleText.slice( 0, 80 ),
-        accessibleViewStateSummary: createAccessibleViewStateSummary( snapshot.accessibleViewState )
-      };
-    }
-
-    /**
-     * Creates a compact before/after diff for context-response implementation.
-     *
-     * @param {Object|null} beforeSnapshot
-     * @param {Object|null} afterSnapshot
-     * @returns {Object}
-     */
-    function createStateDelta( beforeSnapshot, afterSnapshot ) {
-      return {
-        focus: {
-          before: beforeSnapshot ? beforeSnapshot.focus : {},
-          after: afterSnapshot ? afterSnapshot.focus : {}
-        },
-        accessibleViewStateChangedPaths: createObjectDiff( beforeSnapshot && beforeSnapshot.accessibleViewState, afterSnapshot && afterSnapshot.accessibleViewState, 80 ),
-        pdomTextAdded: diffTextTokens( beforeSnapshot ? beforeSnapshot.pdomText : '', afterSnapshot ? afterSnapshot.pdomText : '' ).added,
-        pdomTextRemoved: diffTextTokens( beforeSnapshot ? beforeSnapshot.pdomText : '', afterSnapshot ? afterSnapshot.pdomText : '' ).removed,
-        visibleTextAdded: diffVisibleText( beforeSnapshot ? beforeSnapshot.visibleText : [], afterSnapshot ? afterSnapshot.visibleText : [] ).added,
-        visibleTextRemoved: diffVisibleText( beforeSnapshot ? beforeSnapshot.visibleText : [], afterSnapshot ? afterSnapshot.visibleText : [] ).removed
-      };
-    }
-
-    /**
-     * Creates a shallow summary of accessible view state keys and short primitive values.
-     *
-     * @param {Object|null} accessibleViewState
-     * @returns {Object|null}
-     */
-    function createAccessibleViewStateSummary( accessibleViewState ) {
-      if ( !accessibleViewState || typeof accessibleViewState !== 'object' ) {
-        return accessibleViewState || null;
-      }
-
-      const summary = {};
-      Object.keys( accessibleViewState ).slice( 0, 40 ).forEach( key => {
-        const value = accessibleViewState[ key ];
-        summary[ key ] = typeof value === 'string' ? truncateText( value, 240 ) :
-                         typeof value === 'number' || typeof value === 'boolean' || value === null ? value :
-                         Array.isArray( value ) ? `[array:${value.length}]` :
-                         typeof value === 'object' ? `[object:${Object.keys( value ).length}]` :
-                         String( value );
-      } );
-      return summary;
-    }
-
-    /**
-     * Computes changed primitive/object paths between two objects.
-     *
-     * @param {*} beforeValue
-     * @param {*} afterValue
-     * @param {number} limit
-     * @param {string} path
-     * @returns {Object[]}
-     */
-    function createObjectDiff( beforeValue, afterValue, limit, path = '' ) {
-      const diffs = [];
-      appendObjectDiffs( diffs, beforeValue, afterValue, limit, path );
-      return diffs;
-    }
-
-    /**
-     * Recursive implementation for createObjectDiff.
-     *
-     * @param {Object[]} diffs
-     * @param {*} beforeValue
-     * @param {*} afterValue
-     * @param {number} limit
-     * @param {string} path
-     */
-    function appendObjectDiffs( diffs, beforeValue, afterValue, limit, path ) {
-      if ( diffs.length >= limit ) {
-        return;
-      }
-      if ( JSON.stringify( beforeValue ) === JSON.stringify( afterValue ) ) {
-        return;
-      }
-      const beforeIsObject = beforeValue && typeof beforeValue === 'object';
-      const afterIsObject = afterValue && typeof afterValue === 'object';
-      if ( !beforeIsObject || !afterIsObject || Array.isArray( beforeValue ) || Array.isArray( afterValue ) ) {
-        diffs.push( {
-          path: path || '$',
-          before: compactDiffValue( beforeValue ),
-          after: compactDiffValue( afterValue )
-        } );
-        return;
-      }
-
-      const keys = Array.from( new Set( [ ...Object.keys( beforeValue ), ...Object.keys( afterValue ) ] ) ).sort();
-      keys.forEach( key => {
-        appendObjectDiffs( diffs, beforeValue[ key ], afterValue[ key ], limit, path ? `${path}.${key}` : key );
-      } );
-    }
-
-    /**
-     * Compacts a value for state diffs.
-     *
-     * @param {*} value
-     * @returns {*}
-     */
-    function compactDiffValue( value ) {
-      if ( typeof value === 'string' ) {
-        return truncateText( value, 300 );
-      }
-      if ( Array.isArray( value ) ) {
-        return value.slice( 0, 8 ).map( compactDiffValue );
-      }
-      if ( value && typeof value === 'object' ) {
-        return truncateText( JSON.stringify( value ), 500 );
-      }
-      return typeof value === 'undefined' ? null : value;
-    }
-
-    /**
-     * Computes added and removed sentence-like chunks between two text snapshots.
-     *
-     * @param {string} beforeText
-     * @param {string} afterText
-     * @returns {{ added: string[], removed: string[] }}
-     */
-    function diffTextTokens( beforeText, afterText ) {
-      const beforeTokens = tokenizeSnapshotText( beforeText );
-      const afterTokens = tokenizeSnapshotText( afterText );
-      const beforeSet = new Set( beforeTokens );
-      const afterSet = new Set( afterTokens );
-      return {
-        added: afterTokens.filter( token => !beforeSet.has( token ) ).slice( 0, 40 ),
-        removed: beforeTokens.filter( token => !afterSet.has( token ) ).slice( 0, 40 )
-      };
-    }
-
-    /**
-     * Splits snapshot text into reusable sentence-ish chunks.
-     *
-     * @param {string} text
-     * @returns {string[]}
-     */
-    function tokenizeSnapshotText( text ) {
-      return ( text || '' )
-        .split( /(?<=[.!?])\s+|\n+/ )
-        .map( token => token.replace( /\s+/g, ' ' ).trim() )
-        .filter( token => token.length > 0 && token.length < 500 );
-    }
-
-    /**
-     * Diffs visible Scenery text entries by their text.
-     *
-     * @param {Object[]} beforeVisibleText
-     * @param {Object[]} afterVisibleText
-     * @returns {{ added: Object[], removed: Object[] }}
-     */
-    function diffVisibleText( beforeVisibleText, afterVisibleText ) {
-      const beforeTexts = new Set( beforeVisibleText.map( entry => entry.text ) );
-      const afterTexts = new Set( afterVisibleText.map( entry => entry.text ) );
-      return {
-        added: afterVisibleText.filter( entry => !beforeTexts.has( entry.text ) ).slice( 0, 40 ),
-        removed: beforeVisibleText.filter( entry => !afterTexts.has( entry.text ) ).slice( 0, 40 )
-      };
-    }
-
-    /**
-     * Gets the document-level formatted-view edit for the Codex prompt.
-     *
-     * @returns {Object|null}
-     */
-    function getFormattedViewEditForCodexPrompt() {
-      const draft = designState.formattedDocumentDraft;
-      if ( !draft || !draft.edited ) {
-        return null;
-      }
-
-      return {
-        beforeText: truncateText( draft.baselineText, 12000 ),
-        afterText: truncateText( draft.editedText, 12000 ),
-        diff: createOrderedTextDiff( draft.baselineText, draft.editedText, 120 )
-      };
-    }
-
-    /**
-     * Creates an ordered text diff suitable for implementation prompts.
-     *
-     * @param {string} beforeText
-     * @param {string} afterText
-     * @param {number} limit
-     * @returns {Object[]}
-     */
-    function createOrderedTextDiff( beforeText, afterText, limit ) {
-      const beforeUnits = splitDocumentDiffUnits( beforeText );
-      const afterUnits = splitDocumentDiffUnits( afterText );
-
-      if ( beforeUnits.length * afterUnits.length > 40000 ) {
-        const tokenDiff = diffTextTokens( beforeText, afterText );
-        return [
-          ...tokenDiff.removed.map( text => ( { operation: 'remove', text: text } ) ),
-          ...tokenDiff.added.map( text => ( { operation: 'add', text: text } ) )
-        ].slice( 0, limit );
-      }
-
-      const table = [];
-      for ( let i = 0; i <= beforeUnits.length; i++ ) {
-        table[ i ] = new Array( afterUnits.length + 1 ).fill( 0 );
-      }
-
-      for ( let i = beforeUnits.length - 1; i >= 0; i-- ) {
-        for ( let j = afterUnits.length - 1; j >= 0; j-- ) {
-          table[ i ][ j ] = beforeUnits[ i ] === afterUnits[ j ] ?
-                            table[ i + 1 ][ j + 1 ] + 1 :
-                            Math.max( table[ i + 1 ][ j ], table[ i ][ j + 1 ] );
-        }
-      }
-
-      const diff = [];
-      let beforeIndex = 0;
-      let afterIndex = 0;
-      while ( beforeIndex < beforeUnits.length || afterIndex < afterUnits.length ) {
-        if ( beforeIndex < beforeUnits.length &&
-             afterIndex < afterUnits.length &&
-             beforeUnits[ beforeIndex ] === afterUnits[ afterIndex ] ) {
-          beforeIndex++;
-          afterIndex++;
-          continue;
-        }
-
-        if ( afterIndex >= afterUnits.length ||
-             ( beforeIndex < beforeUnits.length &&
-               table[ beforeIndex + 1 ][ afterIndex ] >= table[ beforeIndex ][ afterIndex + 1 ] ) ) {
-          appendDiffUnit( diff, 'remove', beforeUnits[ beforeIndex ] );
-          beforeIndex++;
-        }
-        else {
-          appendDiffUnit( diff, 'add', afterUnits[ afterIndex ] );
-          afterIndex++;
-        }
-
-        if ( diff.length >= limit ) {
-          break;
-        }
-      }
-
-      return diff;
-    }
-
-    /**
-     * Splits document text into stable diff units, preferring rendered lines and falling back to sentence-like chunks.
-     *
-     * @param {string} text
-     * @returns {string[]}
-     */
-    function splitDocumentDiffUnits( text ) {
-      const lines = ( text || '' )
-        .split( /\n+/ )
-        .map( line => line.replace( /\s+/g, ' ' ).trim() )
-        .filter( line => line.length > 0 );
-      return lines.length > 1 ? lines : tokenizeSnapshotText( text );
-    }
-
-    /**
-     * Adds a unit to a diff, merging adjacent operations of the same type.
-     *
-     * @param {Object[]} diff
-     * @param {string} operation
-     * @param {string} text
-     */
-    function appendDiffUnit( diff, operation, text ) {
-      if ( !text ) {
-        return;
-      }
-      const previous = diff[ diff.length - 1 ];
-      if ( previous && previous.operation === operation ) {
-        previous.text = `${previous.text}\n${text}`;
-      }
-      else {
-        diff.push( {
-          operation: operation,
-          text: text
-        } );
-      }
-    }
-
-    /**
-     * Gets all edited state-description prescriptions for the Codex prompt.
-     *
-     * @returns {Object[]}
-     */
-    function getCodexPromptDescriptionPrescriptions() {
-      return Array.from( designState.editRegistry.values() )
-        .filter( edit => edit.edited )
-        .map( edit => {
-          if ( edit.operation === 'insertBefore' || edit.operation === 'insertAfter' ) {
-            return {
-              operation: edit.operation,
-              anchorLocator: edit.anchorLocator,
-              nearbyText: edit.anchorLocator && edit.anchorLocator.textExcerpt || '',
-              prescribedText: edit.prescribedText
-            };
-          }
-
-          if ( edit.operation === 'deleteText' ) {
-            return {
-              operation: 'deleteText',
-              locator: edit.locator,
-              beforeText: edit.beforeText
-            };
-          }
-
-          return {
-            operation: 'replaceText',
-            locator: edit.locator,
-            beforeText: edit.beforeText,
-            prescribedText: edit.prescribedText
-          };
-        } );
-    }
-
-    /**
-     * Gets all records that should be included in the Codex prompt, including current state-description edits.
-     *
-     * @returns {Object[]}
-     */
-    function getCodexPromptPrescriptionRecords() {
-      const records = [];
-
-      const stateDescriptionRecord = createStateDescriptionPrescriptionRecord();
-      if ( stateDescriptionRecord &&
-           ( stateDescriptionRecord.prescriptions.length > 0 || stateDescriptionRecord.formattedViewEdit ) ) {
-        records.push( stateDescriptionRecord );
-      }
-
-      records.push( ...getEditedResponseDesigns().map( design => design.record ) );
-      return records;
-    }
-
-    /**
-     * Downloads and copies a Markdown prompt suitable for Codex or codex exec.
-     *
-     * @returns {Promise<void>}
-     */
-    async function downloadCodexPrompt() {
-      const prompt = createCodexPrompt();
-      downloadCodexPromptText( prompt );
-      await copyCodexPromptToClipboard( prompt );
-      showCodexClipboardStatus();
-    }
-
-    /**
-     * Downloads the supplied Codex prompt text.
-     *
-     * @param {string} prompt
-     */
-    function downloadCodexPromptText( prompt ) {
-      const blob = new Blob( [ prompt ], { type: 'text/markdown' } );
-      const url = URL.createObjectURL( blob );
-      const link = document.createElement( 'a' );
-      link.href = url;
-      link.download = `description-prescriptions-codex-${new Date().toISOString().replace( /[:.]/g, '-' )}.md`;
-      document.body.appendChild( link );
-      link.click();
-      document.body.removeChild( link );
-      URL.revokeObjectURL( url );
-    }
-
-    /**
-     * Copies the supplied Codex prompt text to the clipboard.
-     *
-     * @param {string} prompt
-     * @returns {Promise<void>}
-     */
-    async function copyCodexPromptToClipboard( prompt ) {
-      if ( navigator.clipboard && typeof navigator.clipboard.writeText === 'function' ) {
-        try {
-          await navigator.clipboard.writeText( prompt );
-          return;
-        }
-        catch( e ) {
-          // Fall back to the legacy copy path below.
-        }
-      }
-
-      const textArea = document.createElement( 'textarea' );
-      textArea.value = prompt;
-      textArea.setAttribute( 'readonly', '' );
-      textArea.style.position = 'fixed';
-      textArea.style.left = '-9999px';
-      document.body.appendChild( textArea );
-      textArea.select();
-      document.execCommand( 'copy' );
-      document.body.removeChild( textArea );
-    }
-
-    /**
-     * Shows a transient confirmation that the Codex prompt was copied to the clipboard.
-     */
-    function showCodexClipboardStatus() {
-      const status = domReferences.codexClipboardStatus;
-      if ( !status ) {
-        return;
-      }
-
-      if ( codexClipboardMessageTimeoutId !== null ) {
-        clearTimeout( codexClipboardMessageTimeoutId );
-      }
-
-      status.textContent = 'Copied to clipboard';
-      status.hidden = false;
-      codexClipboardMessageTimeoutId = setTimeout( () => {
-        status.hidden = true;
-        status.textContent = '';
-        codexClipboardMessageTimeoutId = null;
-      }, CODEX_CLIPBOARD_MESSAGE_DURATION );
-    }
-
-    /**
-     * Creates a compact Codex implementation prompt from all captured prescriptions.
-     *
-     * @returns {string}
-     */
-    function createCodexPrompt() {
-      const records = getCodexPromptPrescriptionRecords();
-      const simMetadata = getSimMetadata();
-      const counts = getPromptPrescriptionCounts();
-      const lines = [
-        `Implement these accessibility description prescriptions in ${simMetadata.repo || 'the current sim'}.`,
-        '',
-        `Prescription summary: ${counts.stateDescriptionAdditions} state-description additions, ${counts.stateDescriptionReplacements} replacements, ${counts.stateDescriptionDeletions} deletions, ${counts.responsePrescriptions} response prescriptions.`,
-        '',
-        'Constraints:',
-        '- Preserve existing PhET i18n/string patterns.',
-        '- Add or update strings in the appropriate sim strings file.',
-        '- Use existing describer, Core Description, and accessible response patterns.',
-        '- For formatted view edits, treat the edited rendered text and diff as the designer prescription for state descriptions.',
-        '- Treat accessible view state as the semantic comparison artifact for designing responses; Axon Properties and interaction listeners should still own live implementation triggers.',
-        '- For new accessible-state contracts, prefer component objects shaped like { visible: false } or { visible: true, ...screenReaderRelevantSemanticFields }.',
-        '- For context responses, prefer component accessibleContextResponse options when available; use addAccessibleContextResponse at the interaction point for custom interactions, and dedicated describer/transition classes only for complex state comparisons.',
-        '- Run ./bin/check --fix --skip-phet-io-compare-api.',
-        '- Generalize beyond what is provided -- across screens, across scenes, and across parameters. The designer probably specified one data point; implement the reusable intent.',
-        '- State deltas can be noisy. Implement the designer\'s intent, not every incidental state delta.',
-        '- Ignore the directional markers ‪ and ‬ or <0x202a> or <0x202c>, they will be added automatically downstream.',
-        '',
-        'Prescriptions:'
-      ];
-
-      records.forEach( ( record, recordIndex ) => {
-        lines.push( '', `${recordIndex + 1}. ${formatRecordHeading( record )}` );
-
-        if ( record.type === 'stateDescriptionPrescriptions' ) {
-          if ( record.formattedViewEdit ) {
-            lines.push( '   Formatted view edit:' );
-            lines.push( '      Original rendered text:' );
-            lines.push( `      ${record.formattedViewEdit.beforeText.replace( /\n/g, '\n      ' )}` );
-            lines.push( '      Edited rendered text:' );
-            lines.push( `      ${record.formattedViewEdit.afterText.replace( /\n/g, '\n      ' )}` );
-            lines.push( '      Diff:' );
-            lines.push( `      ${JSON.stringify( record.formattedViewEdit.diff, null, 2 ).replace( /\n/g, '\n      ' )}` );
-          }
-
-          if ( record.prescriptions.length > 0 ) {
-            record.prescriptions.forEach( ( prescription, prescriptionIndex ) => {
-              lines.push( `   ${recordIndex + 1}.${prescriptionIndex + 1}. Operation: ${prescription.operation}` );
-              appendPrescriptionLines( lines, prescription, '      ' );
-            } );
-          }
-        }
-        else if ( record.type === 'contextResponsePrescription' ) {
-          lines.push( `   Operation: ${record.response.operation}` );
-          lines.push( `   Category: ${record.response.category}` );
-          if ( record.response.beforeText ) {
-            lines.push( `   Current response: ${record.response.beforeText}` );
-          }
-          lines.push( `   Prescribed response: ${record.response.prescribedText}` );
-          lines.push( '   State delta:' );
-          lines.push( `      ${JSON.stringify( record.stateDelta, null, 2 ).replace( /\n/g, '\n      ' )}` );
-        }
-      } );
-
-      return `${lines.join( '\n' )}\n`;
-    }
-
-    /**
-     * Formats a record heading for the Codex prompt.
-     *
-     * @param {Object} record
-     * @returns {string}
-     */
-    function formatRecordHeading( record ) {
-      const sim = record.sim || {};
-      const screen = sim.screenName ? `${sim.screenName} (${sim.screenIndex})` : `screen ${sim.screenIndex === null ? '?' : sim.screenIndex}`;
-      return `${record.type} - ${sim.repo || 'unknown repo'} - ${screen}`;
-    }
-
-    /**
-     * Appends Markdown lines for one state-description prescription.
-     *
-     * @param {string[]} lines
-     * @param {Object} prescription
-     * @param {string} indent
-     */
-    function appendPrescriptionLines( lines, prescription, indent ) {
-      if ( prescription.locator ) {
-        lines.push( `${indent}Locator: ${JSON.stringify( prescription.locator )}` );
-      }
-      if ( prescription.anchorLocator ) {
-        lines.push( `${indent}Anchor locator: ${JSON.stringify( prescription.anchorLocator )}` );
-      }
-      if ( prescription.nearbyText ) {
-        lines.push( `${indent}Nearby text: ${prescription.nearbyText}` );
-      }
-      if ( prescription.beforeText ) {
-        lines.push( `${indent}Current text: ${prescription.beforeText}` );
-      }
-      if ( prescription.prescribedText ) {
-        lines.push( `${indent}Prescribed text: ${prescription.prescribedText}` );
-      }
-    }
-
-    /**
      * Observes the PDOM for changes and throttles re-rendering of the formatted DOM view.
      *
      * @param {HTMLElement} pdomRoot
@@ -3968,7 +2922,6 @@
           if ( !designState.isFrozen ) {
             renderViews( pdomRoot, viewContainers, renderers );
             renderAccessibleViewState( innerWindow, accessibleViewStateContainer );
-            updateStaleEditSection();
           }
           dirty = false;
           renderTimeoutId = null;
@@ -4067,7 +3020,7 @@
               }
 
               if ( responseCategory === 'context' ) {
-                captureContextResponseDesign( alertText, responseCategory );
+                addEditableContextResponse( alertText );
               }
 
             }
@@ -4079,45 +3032,26 @@
     }
 
     /**
-     * Captures a context response design with the latest pre-interaction snapshot and a delayed after snapshot.
+     * Adds a logged context response to the editable Context Responses list so its wording can be edited and
+     * round-tripped back to the strings YAML (see renderContextResponseItem).
      *
-     * @param {string} responseText
-     * @param {string} category
+     * @param {string} responseText - the spoken context-response text
      */
-    function captureContextResponseDesign( responseText, category ) {
+    function addEditableContextResponse( responseText ) {
       if ( !designState.designModeEnabled ) {
         return;
       }
-
-      const beforeSnapshot = Date.now() - designState.lastPreInteractionTimestamp <= PRE_INTERACTION_SNAPSHOT_MAX_AGE ?
-                             designState.lastPreInteractionSnapshot :
-                             null;
-
-      setTimeout( () => {
-        const afterSnapshot = captureDesignSnapshot();
-        if ( !afterSnapshot ) {
-          return;
-        }
-
-        const record = createContextResponsePrescriptionRecord( beforeSnapshot, afterSnapshot, responseText, category, 'replaceResponse', responseText );
-        const design = {
-          id: `response-design-${designState.responseDesigns.length + 1}`,
-          record: record,
-          edited: false
-        };
-        designState.responseDesigns.push( design );
-        renderResponseDesignItem( design );
-        console.log( JSON.stringify( record ) );
-        updatePromptStatus();
-      }, RESPONSE_AFTER_SNAPSHOT_DELAY );
+      renderContextResponseItem( responseText );
     }
 
     /**
-     * Renders one editable response design record.
+     * Renders one editable context-response item in the Context Responses list. In Design Mode the text is editable;
+     * committing an edit (Enter or blur) resolves it back to its source message in the strings YAML, exactly like
+     * edits in the formatted state-description view.
      *
-     * @param {{ id: string, record: Object, edited: boolean }} design
+     * @param {string} responseText
      */
-    function renderResponseDesignItem( design ) {
+    function renderContextResponseItem( responseText ) {
       const list = domReferences.responseDesignList;
       if ( !list ) {
         return;
@@ -4126,70 +3060,31 @@
       const item = document.createElement( 'div' );
       item.className = 'response-design-item';
 
-      const meta = document.createElement( 'span' );
-      meta.className = 'response-design-meta';
-      meta.textContent = `${design.record.timestamp} ${design.record.sim.repo || ''} screen ${design.record.sim.screenIndex === null ? '?' : design.record.sim.screenIndex}`;
-      item.appendChild( meta );
-
       const editable = document.createElement( 'span' );
       editable.className = 'response-design-editable';
-      if ( design.edited ) {
-        editable.classList.add( 'design-edited' );
-      }
       editable.contentEditable = designState.designModeEnabled ? 'true' : 'false';
-      editable.textContent = design.record.response.prescribedText;
-      editable.addEventListener( 'focus', () => {
-        if ( !designState.designModeEnabled ) {
+      editable.textContent = responseText;
+      editable.dataset.baselineText = responseText;
+
+      // Commit on Enter or blur; Escape reverts to the baseline. Same provenance round-trip as the formatted view.
+      editable.addEventListener( 'keydown', event => {
+        if ( !editorState.connected || !designState.designModeEnabled ) {
           return;
         }
-        design.edited = true;
-        editable.classList.add( 'design-edited' );
-        updatePromptStatus();
-      } );
-      editable.addEventListener( 'input', () => {
-        if ( !designState.designModeEnabled ) {
-          return;
+        if ( event.key === 'Enter' ) {
+          event.preventDefault();
+          editable.blur();
         }
-        design.edited = true;
-        editable.classList.add( 'design-edited' );
-        design.record.response.prescribedText = editable.textContent || '';
-        updatePromptStatus();
+        else if ( event.key === 'Escape' ) {
+          event.preventDefault();
+          editable.textContent = editable.dataset.baselineText || '';
+          editable.blur();
+        }
       } );
+      editable.addEventListener( 'blur', () => commitContextResponseEdit( editable ) );
       item.appendChild( editable );
 
-      const actions = document.createElement( 'div' );
-      actions.className = 'response-design-actions';
-      const logButton = document.createElement( 'button' );
-      logButton.type = 'button';
-      logButton.textContent = 'Log JSON';
-      logButton.addEventListener( 'click', () => console.log( JSON.stringify( design.record ) ) );
-      actions.appendChild( logButton );
-      item.appendChild( actions );
-
       list.appendChild( item );
-    }
-
-    /**
-     * Installs listeners that capture the state before likely interactions that can trigger context responses.
-     *
-     * @param {Document} iframeDocument
-     */
-    function installPreInteractionSnapshotListeners( iframeDocument ) {
-      const captureBeforeInteraction = () => {
-        if ( !designState.designModeEnabled ) {
-          return;
-        }
-
-        const snapshot = captureDesignSnapshot();
-        if ( snapshot ) {
-          designState.lastPreInteractionSnapshot = snapshot;
-          designState.lastPreInteractionTimestamp = Date.now();
-        }
-      };
-
-      [ 'pointerdown', 'keydown', 'input', 'change' ].forEach( eventType => {
-        iframeDocument.addEventListener( eventType, captureBeforeInteraction, true );
-      } );
     }
 
     /**
@@ -4214,6 +3109,530 @@
         return;
       }
       button.addEventListener( 'click', () => clearActivityLog( listElement ) );
+    }
+
+    /*******************************************************************************
+     * Description Editor server integration
+     *
+     * Connects to the Description Editor server (chipper/wrappers/description-editor/description-editor.ts), which is
+     * the persistence service for description design: span edits in Design Mode resolve to (message, segment,
+     * valueOffset) provenance via the server's provenance document, POST to /api/edit (which back-propagates to the
+     * strings YAML and regenerates {sim}-strings_en.json), and the resulting changed values are injected into the
+     * running sim's LocalizedStringProperties — the sim's FluentContainer rebuilds its bundle so every rendering of
+     * the edited term updates live, with sim state preserved.
+     */
+
+    /**
+     * Connects to the Description Editor server if one is running, then subscribes to its update events. When the
+     * server is unreachable, in-place editing is simply unavailable.
+     */
+    function initializeEditorServerConnection() {
+      if ( !editorState.simRepo ) {
+        return;
+      }
+
+      if ( domReferences.undoEditButton ) {
+        domReferences.undoEditButton.addEventListener( 'click', undoLastEdit );
+      }
+
+      fetchEditorDocument()
+        .then( () => {
+          editorState.connected = true;
+          updateEditorServerStatus();
+
+          const eventSource = new EventSource( `${editorState.serverUrl}/api/events` );
+          eventSource.addEventListener( 'update', event => {
+            let payload = {};
+            try {
+              payload = JSON.parse( event.data );
+            }
+            catch( e ) {
+              // ignore malformed events
+            }
+            handleEditorServerUpdate( payload );
+          } );
+          eventSource.onopen = () => updateEditorServerStatus();
+          eventSource.onerror = () => updateEditorServerStatus( 'Editor: reconnecting…', true );
+        } )
+        .catch( () => {
+          editorState.connected = false;
+          updateEditorServerStatus();
+        } );
+    }
+
+    /**
+     * Fetches the provenance document (every message with provenance-tagged segments) and rebuilds the reverse-lookup index.
+     *
+     * @returns {Promise<void>}
+     */
+    async function fetchEditorDocument() {
+      const response = await fetch( `${editorState.serverUrl}/api/document` );
+      if ( !response.ok ) {
+        throw new Error( `Document fetch failed (${response.status})` );
+      }
+      const payload = await response.json();
+      if ( payload.buildError ) {
+        setEditorTransientStatus( `Strings build error: ${payload.buildError}`, true );
+      }
+      if ( payload.document ) {
+        applyEditorDocument( payload.document );
+      }
+    }
+
+    /**
+     * Stores a freshly fetched provenance document and rebuilds the reverse-lookup index.
+     *
+     * @param {Object} provenanceDocument
+     */
+    function applyEditorDocument( provenanceDocument ) {
+      editorState.provenanceDocument = provenanceDocument;
+      rebuildFoldIndex();
+    }
+
+    /**
+     * Handles a server-sent update (from an editor commit or an external YAML edit in an IDE): refreshes the
+     * provenance index and live-injects the changed string values into the running sim.
+     *
+     * @param {{ changedKeys?: string[], changedStringKeys?: string[] }} payload
+     */
+    function handleEditorServerUpdate( payload ) {
+      fetchEditorDocument().catch( () => setEditorTransientStatus( 'Could not refresh strings document.', true ) );
+
+      const changedStringKeys = ( payload && payload.changedStringKeys ) || [];
+      if ( changedStringKeys.length === 0 ) {
+        return;
+      }
+
+      fetch( `${editorState.serverUrl}/api/strings` )
+        .then( response => response.json() )
+        .then( data => {
+          const injectedCount = injectChangedStrings( changedStringKeys, data.strings || {} );
+          if ( injectedCount > 0 ) {
+            setEditorTransientStatus( `Updated ${injectedCount} string${injectedCount === 1 ? '' : 's'} in the running sim` );
+          }
+        } )
+        .catch( () => setEditorTransientStatus( 'Could not fetch updated strings.', true ) );
+    }
+
+    /**
+     * Writes changed string values into the running sim's LocalizedStringProperties via the same-origin iframe.
+     * The sim's FluentContainer multilinks all string Properties and rebuilds its FluentBundle on any change, so
+     * every rendering that uses an edited term (including shared fragments) recomputes — without reloading the sim.
+     * Values are wrapped in the same directional marks that load-unbuilt-strings.js applies, for parity with relaunch.
+     *
+     * @param {string[]} changedKeys - dot-joined string keys relative to the sim repo, e.g. 'a11y.someSection.someMessage'
+     * @param {Object} strings - flat dotKey → value map from GET /api/strings
+     * @returns {number} how many string Properties were updated
+     */
+    function injectChangedStrings( changedKeys, strings ) {
+      const innerWindow = designState.innerWindow;
+      const chipper = innerWindow && innerWindow.phet && innerWindow.phet.chipper;
+      if ( !chipper || !chipper.localizedStrings ) {
+        return 0;
+      }
+
+      const repoData = ( chipper.stringRepos || [] ).find( data => data.repo === editorState.simRepo );
+      if ( !repoData ) {
+        return 0;
+      }
+
+      let injectedCount = 0;
+      for ( const dotKey of changedKeys ) {
+        const stringKey = `${repoData.requirejsNamespace}/${dotKey}`;
+        const localizedString = chipper.localizedStrings.find( entry => entry.stringKey === stringKey );
+        const value = strings[ dotKey ];
+        if ( localizedString && typeof value === 'string' ) {
+          localizedString.property.value = value.length > 0 ? '\u202a' + value + '\u202c' : value;
+          injectedCount++;
+        }
+      }
+      return injectedCount;
+    }
+
+    /**
+     * Rebuilds the provenance index (rendered text → provenance) and the fluentId → dotKey map from the document. One
+     * entry per message, built from the message's default-variant segments.
+     */
+    function rebuildFoldIndex() {
+      const foldIndex = [];
+      const fluentIdToDotKey = new Map();
+      const messages = ( editorState.provenanceDocument && editorState.provenanceDocument.messages ) || [];
+
+      messages.forEach( message => {
+        fluentIdToDotKey.set( message.fluentId, message.dotKey );
+
+        try {
+          foldIndex.push( {
+            message: message,
+            segments: message.segments,
+            regex: buildFoldRegex( message.segments )
+          } );
+        }
+        catch( e ) {
+          // Skip messages whose segments cannot form a valid regex; they are simply not editable in place.
+        }
+      } );
+
+      editorState.foldIndex = foldIndex;
+      editorState.fluentIdToDotKey = fluentIdToDotKey;
+    }
+
+    /**
+     * Builds a whitespace-flexible regular expression matching a fold's rendered text, with one capture group per
+     * segment so a match locates each segment's position. Static segments match their literal text; variable
+     * segments match any value (the live sim renders real values where the server used placeholders).
+     * The 'd' flag provides match indices for the groups.
+     *
+     * @param {{ text: string, kind: string }[]} segments
+     * @returns {RegExp}
+     */
+    function buildFoldRegex( segments ) {
+      const parts = segments.map( segment => {
+        if ( segment.kind === 'static' ) {
+          const collapsed = collapseEditorText( segment.text );
+          return `(${escapeRegExpText( collapsed ).replace( / /g, '\\s+' )})`;
+        }
+        return '([\\s\\S]*?)';
+      } );
+      return new RegExp( `^\\s*${parts.join( '\\s*' )}\\s*$`, 'd' );
+    }
+
+    /**
+     * Strips Unicode directional formatting characters that load-unbuilt-strings.js wraps around string values.
+     *
+     * @param {string} text
+     * @returns {string}
+     */
+    function stripDirectionalMarks( text ) {
+      return ( text || '' ).replace( /[\u202a-\u202e\u2066-\u2069]/g, '' );
+    }
+
+    /**
+     * Normalizes rendered text for provenance matching: directional marks removed, whitespace collapsed, trimmed.
+     *
+     * @param {string} text
+     * @returns {string}
+     */
+    function collapseEditorText( text ) {
+      return stripDirectionalMarks( text ).replace( /\s+/g, ' ' ).trim();
+    }
+
+    /**
+     * Escapes regular-expression metacharacters in literal text.
+     *
+     * @param {string} text
+     * @returns {string}
+     */
+    function escapeRegExpText( text ) {
+      return text.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' );
+    }
+
+    /**
+     * Resolves an edited span back to a single YAML edit: matches the span's baseline text against the fold index,
+     * locates the changed region within one static segment, and produces the /api/edit payload. Refuses (with a
+     * designer-readable error) rather than guessing when the text is ambiguous, not YAML-backed, or the change
+     * crosses a variable/fragment boundary.
+     *
+     * @param {string} baselineRaw - the span's text as originally rendered
+     * @param {string} editedRaw - the span's text after the designer's edit
+     * @returns {{ edit: { dotKey: string, oldText: string, newText: string, valueOffset: number|undefined }|null, error?: string }}
+     */
+    function resolveSpanEdit( baselineRaw, editedRaw ) {
+      const baseline = collapseEditorText( baselineRaw );
+      const edited = collapseEditorText( editedRaw );
+      if ( baseline === edited ) {
+        return { edit: null };
+      }
+      if ( baseline.length === 0 ) {
+        return { edit: null, error: 'Cannot resolve an edit on empty text.' };
+      }
+
+      // Changed region via common prefix/suffix, in the collapsed text space
+      let prefixLength = 0;
+      while ( prefixLength < baseline.length && prefixLength < edited.length && baseline[ prefixLength ] === edited[ prefixLength ] ) {
+        prefixLength++;
+      }
+      let suffixLength = 0;
+      while ( suffixLength < baseline.length - prefixLength && suffixLength < edited.length - prefixLength &&
+              baseline[ baseline.length - 1 - suffixLength ] === edited[ edited.length - 1 - suffixLength ] ) {
+        suffixLength++;
+      }
+      const changeStart = prefixLength;
+      const changeEnd = baseline.length - suffixLength;
+      const replacement = edited.slice( prefixLength, edited.length - suffixLength );
+
+      // For a pure insertion the region is empty, so widen the anchors one character to locate the owning segment.
+      const anchorStart = changeStart === changeEnd ? Math.max( 0, changeStart - 1 ) : changeStart;
+      const anchorEnd = changeStart === changeEnd ? Math.min( baseline.length, changeEnd + 1 ) : changeEnd;
+
+      const candidateEdits = new Map();
+      let sawBoundaryProblem = false;
+      let matchedFoldCount = 0;
+
+      for ( const entry of editorState.foldIndex ) {
+        const match = entry.regex.exec( baseline );
+        if ( !match || !match.indices ) {
+          continue;
+        }
+        matchedFoldCount++;
+
+        // Find the capture group (one per segment) containing the changed region
+        let groupIndex = -1;
+        for ( let i = 1; i < match.indices.length; i++ ) {
+          const range = match.indices[ i ];
+          if ( range && anchorStart >= range[ 0 ] && anchorEnd <= range[ 1 ] ) {
+            groupIndex = i;
+            break;
+          }
+        }
+        if ( groupIndex < 0 ) {
+          sawBoundaryProblem = true;
+          continue;
+        }
+
+        const segment = entry.segments[ groupIndex - 1 ];
+        if ( segment.kind !== 'static' ) {
+          sawBoundaryProblem = true;
+          continue;
+        }
+
+        const dotKey = editorState.fluentIdToDotKey.get( segment.messageId );
+        if ( !dotKey ) {
+          continue;
+        }
+
+        const range = match.indices[ groupIndex ];
+        const newText = baseline.slice( range[ 0 ], changeStart ) + replacement + baseline.slice( changeEnd, range[ 1 ] );
+        const edit = { dotKey: dotKey, oldText: segment.text, newText: newText, valueOffset: segment.valueOffset };
+
+        // The same text routinely matches many folds of one message (and shared fragments match through every
+        // consumer); those resolve to the identical YAML edit, so dedupe before deciding whether we are ambiguous.
+        candidateEdits.set( [ dotKey, segment.valueOffset, segment.text, newText ].join( '\u0000' ), edit );
+      }
+
+      if ( candidateEdits.size === 1 ) {
+        return { edit: candidateEdits.values().next().value };
+      }
+      if ( candidateEdits.size > 1 ) {
+        const dotKeys = Array.from( new Set( Array.from( candidateEdits.values() ).map( edit => edit.dotKey ) ) );
+        return { edit: null, error: `Ambiguous edit — the text matches ${dotKeys.join( ', ' )}. Edit the YAML directly.` };
+      }
+      if ( sawBoundaryProblem ) {
+        return { edit: null, error: 'The edit touches a variable or fragment boundary — edit the YAML directly.' };
+      }
+      if ( matchedFoldCount === 0 ) {
+        return { edit: null, error: 'This text isn\'t indexed for in-place editing (it may be hard-coded in TypeScript, or a non-default message variant) — edit the YAML in your IDE.' };
+      }
+      return { edit: null, error: 'Could not resolve this edit to a single string.' };
+    }
+
+    /**
+     * Commits all pending span-level edits in the formatted view to the editor server. Each successful edit is
+     * written to the strings YAML immediately; failures are surfaced and leave the draft intact for correction.
+     * Called on Enter and when the formatted view loses focus.
+     *
+     * @param {HTMLElement} container
+     */
+    async function commitFormattedViewEdits( container ) {
+      if ( !editorState.connected || !container ) {
+        return;
+      }
+
+      const spans = Array.from( container.querySelectorAll( '.design-editable-text' ) );
+      const dirtySpans = spans.filter( span =>
+        collapseEditorText( span.textContent ) !== collapseEditorText( span.dataset.baselineText || '' ) );
+      if ( dirtySpans.length === 0 ) {
+        return;
+      }
+
+      let failureCount = 0;
+      for ( const span of dirtySpans ) {
+        const resolution = resolveSpanEdit( span.dataset.baselineText || '', span.textContent );
+        if ( !resolution.edit ) {
+          failureCount++;
+          setEditorTransientStatus( resolution.error || 'Could not resolve edit.', true );
+          continue;
+        }
+
+        try {
+          await postEditorEdit( resolution.edit );
+          editorState.undoJournal.push( {
+            dotKey: resolution.edit.dotKey,
+            oldText: resolution.edit.newText.trim(),
+            newText: resolution.edit.oldText.trim(),
+            valueOffset: resolution.edit.valueOffset
+          } );
+          span.dataset.baselineText = span.textContent;
+          setEditorTransientStatus( `Saved to ${resolution.edit.dotKey}` );
+        }
+        catch( error ) {
+          failureCount++;
+          setEditorTransientStatus( error.message, true );
+        }
+      }
+      updateUndoButton();
+
+      if ( failureCount === 0 ) {
+
+        // Drop the draft so the next live render (which reflects the injected values) becomes the new baseline.
+        designState.formattedDocumentDraft = null;
+        designState.liveFormattedDocument = null;
+        rerenderCurrentPDOMViews();
+      }
+      else {
+
+        // Refresh the draft snapshot so successfully committed spans are no longer flagged as edited.
+        updateFormattedDocumentDraft( container );
+      }
+    }
+
+    /**
+     * Commits an edit to one context-response item in the Context Responses list. The response text is resolved back
+     * to its source message in the strings YAML through the same provenance path as formatted-view edits, so the
+     * change round-trips to the YAML and live-injects into the running sim. On failure the span reverts to its
+     * baseline so the displayed response stays consistent with the YAML.
+     *
+     * @param {HTMLElement} editable - the contenteditable response span, carrying its baseline in dataset.baselineText
+     */
+    async function commitContextResponseEdit( editable ) {
+      if ( !editorState.connected || !designState.designModeEnabled ) {
+        return;
+      }
+      const baseline = editable.dataset.baselineText || '';
+      if ( collapseEditorText( editable.textContent ) === collapseEditorText( baseline ) ) {
+        return;
+      }
+
+      const resolution = resolveSpanEdit( baseline, editable.textContent );
+      if ( !resolution.edit ) {
+        setEditorTransientStatus( resolution.error || 'Could not resolve edit.', true );
+        editable.textContent = baseline;
+        return;
+      }
+
+      try {
+        await postEditorEdit( resolution.edit );
+        editorState.undoJournal.push( {
+          dotKey: resolution.edit.dotKey,
+          oldText: resolution.edit.newText.trim(),
+          newText: resolution.edit.oldText.trim(),
+          valueOffset: resolution.edit.valueOffset
+        } );
+        editable.dataset.baselineText = editable.textContent;
+        updateUndoButton();
+        setEditorTransientStatus( `Saved to ${resolution.edit.dotKey}` );
+      }
+      catch( error ) {
+        setEditorTransientStatus( error.message, true );
+        editable.textContent = baseline;
+      }
+    }
+
+    /**
+     * POSTs one edit to the editor server, throwing a designer-readable Error on rejection.
+     *
+     * @param {{ dotKey: string, oldText: string, newText: string, valueOffset: number|undefined }} edit
+     * @returns {Promise<Object>}
+     */
+    async function postEditorEdit( edit ) {
+      const response = await fetch( `${editorState.serverUrl}/api/edit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( edit )
+      } );
+      const payload = await response.json().catch( () => ( {} ) );
+      if ( !response.ok ) {
+        throw new Error( payload.error || `Edit failed (${response.status})` );
+      }
+      return payload;
+    }
+
+    /**
+     * Reverts the most recently committed edit by applying its inverse through the same /api/edit path.
+     */
+    async function undoLastEdit() {
+      const inverse = editorState.undoJournal.pop();
+      if ( !inverse ) {
+        updateUndoButton();
+        return;
+      }
+
+      try {
+        await postEditorEdit( inverse );
+        setEditorTransientStatus( `Undid edit to ${inverse.dotKey}` );
+      }
+      catch( error ) {
+        editorState.undoJournal.push( inverse );
+        setEditorTransientStatus( `Undo failed: ${error.message}`, true );
+      }
+      updateUndoButton();
+    }
+
+    /**
+     * Handles Enter (commit) and Escape (discard) in the formatted-view editor when the server is connected.
+     *
+     * @param {KeyboardEvent} event
+     * @param {HTMLElement} container
+     */
+    function handleFormattedEditorKeydown( event, container ) {
+      if ( !editorState.connected || !designState.designModeEnabled ) {
+        return;
+      }
+      if ( event.key === 'Enter' ) {
+        event.preventDefault();
+        commitFormattedViewEdits( container );
+      }
+      else if ( event.key === 'Escape' ) {
+        event.preventDefault();
+        discardFormattedViewEdits();
+      }
+    }
+
+    /**
+     * Discards all uncommitted formatted-view edits and re-renders from the live PDOM.
+     */
+    function discardFormattedViewEdits() {
+      designState.formattedDocumentDraft = null;
+      designState.liveFormattedDocument = null;
+      rerenderCurrentPDOMViews();
+      setEditorTransientStatus( 'Edits discarded.' );
+    }
+
+    /**
+     * Updates the editor-server status chip to reflect the connection state.
+     *
+     * @param {string} [message] - transient message; omitted for the steady-state connected/offline label
+     * @param {boolean} [isError]
+     */
+    function updateEditorServerStatus( message, isError ) {
+      const status = domReferences.editorServerStatus;
+      if ( !status ) {
+        return;
+      }
+      status.dataset.connected = editorState.connected ? 'true' : 'false';
+      status.dataset.error = isError ? 'true' : 'false';
+      status.textContent = message || ( editorState.connected ? 'Editor: connected' : 'Editor: offline' );
+    }
+
+    /**
+     * Shows a transient message in the status chip, reverting to the steady-state label after a few seconds.
+     *
+     * @param {string} message
+     * @param {boolean} [isError]
+     */
+    function setEditorTransientStatus( message, isError ) {
+      updateEditorServerStatus( message, isError );
+      clearTimeout( editorState.statusResetTimeoutId );
+      editorState.statusResetTimeoutId = setTimeout( () => updateEditorServerStatus(), 5000 );
+    }
+
+    /**
+     * Shows or hides the Undo button based on whether the undo journal has entries.
+     */
+    function updateUndoButton() {
+      if ( domReferences.undoEditButton ) {
+        domReferences.undoEditButton.hidden = editorState.undoJournal.length === 0;
+      }
     }
 
     /**
@@ -4342,7 +3761,6 @@
         const iframeDocument = domRefs.iframe.contentWindow.document;
 
         domRefs.iframe.focus();
-        installPreInteractionSnapshotListeners( iframeDocument );
 
         let previousElement = null;
         const handleIframeFocus = () => {
@@ -4365,7 +3783,7 @@
     /**
      * Collects frequently accessed DOM nodes for later use.
      *
-     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, promptStatus: HTMLElement|null, clearPromptButton: HTMLElement|null, downloadCodexPromptButton: HTMLElement|null, codexClipboardStatus: HTMLElement|null, staleEditsContainer: HTMLElement|null, staleEditsList: HTMLElement|null, responseDesignsContainer: HTMLElement|null, responseDesignList: HTMLElement|null, manualContextBeforeButton: HTMLElement|null, manualContextAfterButton: HTMLElement|null, manualContextAddButton: HTMLElement|null, manualContextResponseInput: HTMLTextAreaElement|null, manualContextResponseStatus: HTMLElement|null }}
+     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, domCopyContainer: HTMLElement|null, accessibleViewStateCode: HTMLElement|null, splitLayout: HTMLElement|null, splitPanes: HTMLElement[], splitResizers: HTMLElement[], designModeCheckbox: HTMLInputElement|null, freezeDesignButton: HTMLElement|null, freezeStatus: HTMLElement|null, editorServerStatus: HTMLElement|null, undoEditButton: HTMLElement|null, responseDesignsContainer: HTMLElement|null, responseDesignList: HTMLElement|null }}
      */
     function createDomReferences() {
       return {
@@ -4381,19 +3799,10 @@
         designModeCheckbox: document.getElementById( 'design-mode-checkbox' ),
         freezeDesignButton: document.getElementById( 'freeze-design-button' ),
         freezeStatus: document.getElementById( 'freeze-status' ),
-        promptStatus: document.getElementById( 'prompt-status' ),
-        clearPromptButton: document.getElementById( 'clear-prompt-button' ),
-        downloadCodexPromptButton: document.getElementById( 'download-codex-prompt-button' ),
-        codexClipboardStatus: document.getElementById( 'codex-clipboard-status' ),
-        staleEditsContainer: document.getElementById( 'stale-edits-container' ),
-        staleEditsList: document.getElementById( 'stale-edits-list' ),
+        editorServerStatus: document.getElementById( 'editor-server-status' ),
+        undoEditButton: document.getElementById( 'undo-edit-button' ),
         responseDesignsContainer: document.getElementById( 'response-designs-container' ),
-        responseDesignList: document.getElementById( 'response-design-list' ),
-        manualContextBeforeButton: document.getElementById( 'manual-context-before-button' ),
-        manualContextAfterButton: document.getElementById( 'manual-context-after-button' ),
-        manualContextAddButton: document.getElementById( 'manual-context-add-button' ),
-        manualContextResponseInput: document.getElementById( 'manual-context-response-input' ),
-        manualContextResponseStatus: document.getElementById( 'manual-context-response-status' )
+        responseDesignList: document.getElementById( 'response-design-list' )
       };
     }
 
