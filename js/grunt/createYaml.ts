@@ -5,12 +5,12 @@
  *
  * Run from the root of totality:
  *
- *   npm run grunt -- create-yaml --repo={{sim}}
+ *   bin/grunt create-yaml --repo={{sim}}
  *
  * Or set an active repo first:
  *
- *   npm run use -- {{sim}}
- *   npm run grunt -- create-yaml
+ *   bin/use {{sim}}
+ *   bin/grunt create-yaml
  *
  * This script now supports extracting metadata from JSON to YAML:
  * - deprecated: true → __deprecated: true

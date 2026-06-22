@@ -3,7 +3,7 @@
 /**
  * Run browser QUnit tests (via puppeteer) and `npm run test` for a repo. Extracted from
  * pre-commit-task.ts so it can be called from both the legacy pre-commit path and the
- * totality `npm run check` path.
+ * totality `bin/check` path.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)

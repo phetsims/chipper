@@ -3,7 +3,7 @@
 /**
  * Compare PhET-iO APIs for a repo and any phet-io-stable sim that depends on it.
  * Extracted from pre-commit-task.ts so it can be called from both the legacy pre-commit
- * path and the totality `npm run check` path.
+ * path and the totality `bin/check` path.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
