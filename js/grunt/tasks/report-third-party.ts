@@ -43,6 +43,36 @@ type Augmentable = Record<string, {
   usedBy: 'all-sims' | string[];
 }>;
 
+// Third-party libraries used by PhET's web tools. Unlike simulations, these tools are not published with embedded
+// third-party license entries in their HTML, so their dependencies are enumerated manually here. Lists are limited to
+// runtime libraries (test-only and build-tooling dependencies are excluded). Versions for PhET-iO Studio come from the
+// vendored filenames in sherpa/lib; versions for PhET Studio come from its npm dependencies (phet-studio +
+// website-meteor). All entries are MIT-licensed.
+type PhetToolLibrary = { name: string; version: string; license: string };
+const phetTools: Array<{ name: string; libraries: PhetToolLibrary[] }> = [
+  {
+    name: 'PhET-iO Studio',
+    libraries: [
+      { name: 'react', version: '18.1.0', license: 'The MIT License' },
+      { name: 'react-dom', version: '18.1.0', license: 'The MIT License' },
+      { name: 'pako', version: '2.0.3', license: 'The MIT License' },
+      { name: 'lodash', version: '4.17.4', license: 'The MIT License' }
+    ]
+  },
+  {
+    name: 'PhET Studio',
+    libraries: [
+      { name: 'react', version: '^18.3.1', license: 'The MIT License' },
+      { name: 'react-dom', version: '^18.3.1', license: 'The MIT License' },
+      { name: 'lodash', version: '^4.17.21', license: 'The MIT License' },
+      { name: 'react-router', version: '^6.30.4', license: 'The MIT License' },
+      { name: 'react-router-dom', version: '^6.30.4', license: 'The MIT License' },
+      { name: 'pg', version: '^8.21.0', license: 'The MIT License' },
+      { name: 'query-string', version: '^7.1.3', license: 'The MIT License' }
+    ]
+  }
+];
+
 ( async () => {
 
   // read configuration file - required to write to website database
@@ -272,6 +302,15 @@ type Augmentable = Record<string, {
   // Summarize licenses used
   const fileList = simTitles.join( '\n* ' );
 
+  // Render the manually-maintained PhET Tools section: an h2 subheading per tool, then one entry per library in the same
+  // <br>-joined style as the code entries above (name + version, license, project URL, and provenance).
+  const phetToolsOutput = phetTools.map( tool => {
+    const entries = tool.libraries.map( lib =>
+      [ `**${lib.name}** ${lib.version}`, `License: ${lib.license}` ].join( '<br>' )
+    ).join( '\n\n' );
+    return `## ${tool.name}\n${entries}`;
+  } ).join( '\n\n' );
+
   const outputString =
     '<!--@formatter:off-->\n' +
     `${'This report enumerates the third-party resources (code, images, sounds, etc) used in a set of simulations.\n' +
@@ -279,6 +318,7 @@ type Augmentable = Record<string, {
     '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
     '* [Third-party Media](#third-party-media)\n' +
     '* [Third-party Media License Summary](#third-party-media-license-summary)\n' +
+    '* [PhET Tools](#phet-tools)\n' +
     '\n' +
     'This report is for the following simulations: \n\n* '}${fileList}\n\nTo see the third party resources used in a particular published ` +
     `simulation, inspect the HTML file between the \`${ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES}\` and \`${ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES}\` ` +
@@ -300,7 +340,12 @@ type Augmentable = Record<string, {
 
     `# <a name="third-party-media-license-summary"></a>Third-party Media License Summary:<br>\n${
       mediaLicensesUsed.join( '<br>' )}\n\n` +
-    '<!--@formatter:on-->\\n';
+
+    '---\n' +
+
+    `# <a name="phet-tools"></a>PhET Tools:<br>\n${
+      phetToolsOutput}\n\n` +
+    '<!--@formatter:on-->\n';
 
   // Compare the file output to the existing file, and write & git commit only if different
   if ( !grunt.file.exists( outputFilename ) || grunt.file.read( outputFilename ) !== outputString ) {
