@@ -87,6 +87,28 @@
     },
 
     /**
+     * Controls the browser's native context menu (right-click / long-press menu) over the simulation:
+     *
+     *   'always' - (default) never suppress; the native menu behaves as usual everywhere.
+     *   'never'  - always suppress the native menu over the simulation.
+     *   'auto'   - suppress the native menu only when the right-click lands on interactive simulation content
+     *              (a Scenery node with input listeners or pickable:true); preserve it over inert background space
+     *              and browser-like content such as text inputs, editable HTML, links, and accessibility (PDOM)
+     *              content. Reduces accidental interruptions during direct manipulation, especially in full-window
+     *              sims.
+     *
+     * This query parameter is public facing.
+     * @memberOf PhetQueryParameters
+     * @type {string}
+     */
+    contextMenu: {
+      type: 'string',
+      defaultValue: 'always',
+      validValues: [ 'always', 'never', 'auto' ],
+      public: true
+    },
+
+    /**
      * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
      * must be supported by the sim for this to have any effect.
      * @memberOf PhetQueryParameters
