@@ -1,7 +1,7 @@
 // Copyright 2019-2025, University of Colorado Boulder
 
 /**
- * Launch an instance of the simulation using puppeteer, gather the PhET-iO API of the simulation,
+ * Launch an instance of the simulation using playwright (chromium), gather the PhET-iO API of the simulation,
  * see phetioEngine.getPhetioElementsBaseline
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Chris Klusendorf (PhET Interactive Simulations)
@@ -12,7 +12,7 @@ import assert from 'assert';
 import callbackOnWorkers from '../../../perennial-alias/js/common/callbackOnWorkers.js';
 import withServer from '../../../perennial-alias/js/common/withServer.js';
 import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
-import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
+import playwright from '../../../perennial-alias/js/npm-dependencies/playwright.js';
 import optionize from '../../../phet-core/js/optionize.js';
 import { PhetioAPI } from '../../../tandem/js/phet-io-types.js';
 import showCommandLineProgress from '../common/showCommandLineProgress.js';
@@ -24,7 +24,7 @@ type GeneratePhetioMacroAPIOptions = {
   // if the built file should be used to generate the API (otherwise uses unbuilt)
   fromBuiltVersion?: boolean;
 
-  // how many internal workers to run (how many instances of puppeteer to kick off in parallel)
+  // how many internal workers to run (how many browser pages to load in parallel)
   workers?: number;
   showProgressBar?: boolean;
   showMessagesFromSim?: boolean;
@@ -41,7 +41,7 @@ type Resolved = {
   error?: Error;
 };
 
-type Browser = Awaited<ReturnType<typeof puppeteer.launch>>;
+type Browser = Awaited<ReturnType<typeof playwright.chromium.launch>>;
 
 /**
  * Load each sim provided and get the
@@ -63,7 +63,7 @@ const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: Genera
   repos.length > 1 && console.log( 'Generating PhET-iO API for repos:', repos.join( ', ' ) );
 
   return withServer( async ( port: number ) => {
-    const browser = await puppeteer.launch( {
+    const browser = await playwright.chromium.launch( {
       timeout: 10000000, // Don't timeout the browser when generating PhET-iO API, we handle it lower down.
       args: [
         '--disable-gpu',
@@ -174,7 +174,8 @@ const loadOneSim = async ( repo: string, browser: Browser, port: number, fromBui
       // }
     } );
 
-    page.on( 'error', cleanupAndReject );
+    // playwright's counterpart to puppeteer's page 'error' event, fired when the page crashes
+    page.on( 'crash', () => cleanupAndReject( new Error( `Page crashed in generatePhetioMacroAPI for ${repo}` ) ) );
     page.on( 'pageerror', cleanupAndReject );
 
     const relativePath = fromBuiltVersion ?
