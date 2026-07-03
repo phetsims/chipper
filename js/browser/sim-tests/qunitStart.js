@@ -4,7 +4,7 @@ import isPhetioEnabled from '../../../../phet-core/js/isPhetioEnabled.js';
 import { qunitStartImplementation } from './qunitStartWithoutPhetio.js';
 
 /**
- * Start Qunit while all runtime modalities (phet-io/debugging/headless puppeteer). Adding support
+ * Start Qunit while all runtime modalities (phet-io/debugging/headless browser harness). Adding support
  * for phet-io when it is enabled
  *
  * @author Michael Kauzmann (PhET Interactive Simulations)

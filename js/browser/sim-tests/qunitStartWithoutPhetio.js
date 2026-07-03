@@ -1,7 +1,7 @@
 // Copyright 2020-2024, University of Colorado Boulder
 
 /**
- * Start Qunit while all runtime modalities (debugging/headless puppeteer).
+ * Start Qunit while all runtime modalities (debugging/headless browser harness).
  * To be used in cases where you should not depend on PhET-iO repos (via phetioEngine).
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
@@ -19,7 +19,8 @@ export const qunitStartImplementation = ready => {
     ready();
   };
 
-  // When running in the puppeteer harness, we need the opportunity to wire up listeners before QUnit begins.
+  // When running in the browser-automation harness (see playwrightQUnit.js), we need the opportunity to wire up
+  // listeners before QUnit begins.
   if ( QueryStringMachine.containsKey( 'qunitHooks' ) ) {
     window.qunitLaunchAfterHooks = start;
   }

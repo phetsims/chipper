@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Run browser QUnit tests (via puppeteer) and `npm run test` for a repo. Extracted from
+ * Run browser QUnit tests (via playwright chromium) and `npm run test` for a repo. Extracted from
  * pre-commit-task.ts so it can be called from both the legacy pre-commit path and the
  * totality `bin/check` path.
  *
@@ -15,8 +15,8 @@ import net from 'net';
 import path from 'path';
 import execute from '../../../../perennial-alias/js/common/execute.js';
 import { npmCommand } from '../../../../perennial-alias/js/common/npmCommand.js';
-import puppeteer from '../../../../perennial-alias/js/npm-dependencies/puppeteer.js';
-import puppeteerQUnit from '../../../../perennial-alias/js/test/puppeteerQUnit.js';
+import playwright from '../../../../perennial-alias/js/npm-dependencies/playwright.js';
+import playwrightQUnit from '../../../../perennial-alias/js/test/playwrightQUnit.js';
 
 export type QUnitCounts = {
   total: number;
@@ -47,7 +47,7 @@ export type QUnitResult = {
 export type RunUnitTestsResult = {
   ok: boolean;
 
-  // True iff browser QUnit (puppeteer) actually ran.
+  // True iff browser QUnit (playwright) actually ran.
   ranBrowserQUnit: boolean;
 
   // True iff `npm run test` actually ran.
@@ -137,13 +137,13 @@ export default async function runUnitTests(
     // instead of reading stale chipper/dist/js/ from a previous build.
     const { child: devServer, port } = await startDevServer( monorepoRoot );
 
-    const browser = await puppeteer.launch( {
+    const browser = await playwright.chromium.launch( {
       args: [ '--disable-gpu' ]
     } );
 
     let result: QUnitResult;
     try {
-      result = await puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` ) as QUnitResult;
+      result = await playwrightQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` ) as QUnitResult;
     }
     finally {
       await browser.close();
