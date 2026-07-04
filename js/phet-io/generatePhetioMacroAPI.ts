@@ -1,4 +1,4 @@
-// Copyright 2019-2025, University of Colorado Boulder
+// Copyright 2019-2026, University of Colorado Boulder
 
 /**
  * Launch an instance of the simulation using playwright (chromium), gather the PhET-iO API of the simulation,
