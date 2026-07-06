@@ -46,8 +46,8 @@ type Augmentable = Record<string, {
 // Third-party libraries used by PhET's web tools. Unlike simulations, these tools are not published with embedded
 // third-party license entries in their HTML, so their dependencies are enumerated manually here. Lists are limited to
 // runtime libraries (test-only and build-tooling dependencies are excluded). Versions for PhET-iO Studio come from the
-// vendored filenames in sherpa/lib; versions for PhET Studio come from its npm dependencies (phet-studio +
-// website-meteor). All entries are MIT-licensed.
+// vendored filenames in sherpa/lib; versions for PhET Studio come from its npm dependencies (website-singularity). All
+// entries are MIT-licensed.
 type PhetToolLibrary = { name: string; version: string; license: string };
 const phetTools: Array<{ name: string; libraries: PhetToolLibrary[] }> = [
   {
