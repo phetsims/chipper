@@ -21,7 +21,7 @@ const getPreCommitTasks = ( outputToConsole: boolean ): string[] => {
 
   // check local preferences for overrides for which tasks to turn 'off'
   const hookPreCommit = buildLocal.hookPreCommit;
-  if ( hookPreCommit && hookPreCommit[ OPT_OUT_ALL ] === false ) {
+  if ( hookPreCommit && !hookPreCommit[ OPT_OUT_ALL ] ) {
     outputToConsole && console.log( 'all tasks opted out from build-local.json' );
     tasksToRun.length = 0;
   }
@@ -29,7 +29,7 @@ const getPreCommitTasks = ( outputToConsole: boolean ): string[] => {
   SUPPORTED_TASKS.forEach( ( task: string ) => {
 
     // process the buildLocal preferences first
-    if ( hookPreCommit && hookPreCommit[ task ] === false ) {
+    if ( hookPreCommit && !hookPreCommit[ task ] ) {
       outputToConsole && console.log( 'task opted out from build-local.json:', task );
       tasksToRun = tasksToRun.filter( t => t !== task );
     }
